@@ -15,8 +15,8 @@ const Header: React.FC = () => {
       className="sticky top-0 z-50 header-glass border-b border-slate-700/30"
     >
       <div className="max-w-7xl mx-auto container-padding">
-        <div className="flex justify-center items-center h-16">
-          {/* Centered Logo */}
+        <div className="flex justify-between items-center h-16">
+          {/* Left-aligned Logo */}
           <div className="flex items-center gap-3 group">
             <motion.div 
               className="relative w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden"
@@ -46,8 +46,16 @@ const Header: React.FC = () => {
             </motion.span>
           </div>
 
-          {/* CTA Button - positioned absolutely to the right */}
-          <div className="absolute right-4">
+          {/* Right-aligned Navigation */}
+          <div className="flex items-center gap-6">
+            <motion.a
+              href="#features"
+              className="text-white hover:text-indigo-400 transition-all duration-300 font-medium"
+              whileHover={{ y: -1 }}
+            >
+              Features
+            </motion.a>
+            
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -60,8 +68,8 @@ const Header: React.FC = () => {
                 transition={{ duration: 0.3 }}
               />
               <div className="relative z-10 flex items-center gap-2">
+                Join Waitlist
                 <ExternalLink className="w-4 h-4" />
-                Meet AI Investor
               </div>
             </motion.button>
           </div>
