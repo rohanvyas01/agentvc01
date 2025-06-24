@@ -175,7 +175,6 @@ const LandingPage: React.FC = () => {
                 icon: <MessageSquare className="w-8 h-8 text-orange-400" />,
                 title: "Softball Questions",
                 description: "Generic questions like 'tell me about your business' don't prepare you for investor due diligence.",
-                stat: "Only 23% face hard questions"
               },
               {
                 icon: <Target className="w-8 h-8 text-pink-400" />,
