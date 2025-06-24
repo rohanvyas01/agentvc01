@@ -77,8 +77,9 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Rohan is the World's First AI Investor
+              Perfect Your Pitch
               <br />
+              Before It's Too Late
             </motion.h1>
 
             <motion.div
@@ -182,6 +183,140 @@ const LandingPage: React.FC = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Meet Rohan Section */}
+      <section className="relative section-spacing">
+        <div className="max-w-7xl mx-auto container-padding">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-4 py-2 mb-6"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Bot className="w-4 h-4 text-indigo-400" />
+              <span className="text-sm font-medium text-white">Meet Your AI Investor</span>
+            </motion.div>
+            
+            <h2 className="text-headline mb-6 text-white">
+              Meet <span className="text-gradient-accent">Rohan</span>
+            </h2>
+            <p className="text-subtitle max-w-3xl mx-auto text-white">
+              The world's first AI investor trained on thousands of real VC conversations. 
+              Rohan thinks, questions, and evaluates just like top-tier investors.
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-2xl p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <Bot className="w-8 h-8 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">Rohan</h3>
+                    <p className="text-indigo-400 font-medium">Your AI Investor</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-white">Trained on conversations from Sequoia, Andreessen Horowitz, and 50+ top VCs</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-white">Asks the hard questions real investors care about</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-white">Provides detailed feedback on your pitch performance</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p className="text-white">Available 24/7 for unlimited practice sessions</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center">
+                    <Brain className="w-5 h-5 text-indigo-400" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-white">Thinks Like Real VCs</h4>
+                </div>
+                <p className="text-white">Rohan evaluates your business model, market opportunity, and competitive positioning just like human investors.</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-white">Asks Tough Questions</h4>
+                </div>
+                <p className="text-white">Get challenged on customer acquisition costs, unit economics, and scalability - the questions that matter most.</p>
+              </div>
+
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-white">Detailed Analysis</h4>
+                </div>
+                <p className="text-white">Receive comprehensive feedback on your pitch clarity, confidence, and ability to address investor concerns.</p>
+              </div>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mt-16"
+          >
+            <motion.button
+              onClick={handleJoinWaitlist}
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+              <div className="relative z-10 flex items-center gap-2">
+                <Bot className="w-5 h-5" />
+                Meet Rohan
+                <ExternalLink className="w-4 h-4" />
+              </div>
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
