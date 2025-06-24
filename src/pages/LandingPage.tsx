@@ -206,7 +206,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Solution Section */}
+      {/* Solution Section - Converted to centered card layout */}
       <section className="relative section-spacing">
         <div className="max-w-7xl mx-auto container-padding">
           <motion.div
@@ -225,108 +225,42 @@ const LandingPage: React.FC = () => {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Centered Card Layout */}
+          <div className="flex justify-center">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="space-y-8"
+              className="max-w-md w-full p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl text-center"
             >
               <motion.div 
-                className="p-6 bg-red-500/5 border border-red-500/20 rounded-xl"
-                whileHover={{ scale: 1.02 }}
+                className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-6 relative overflow-hidden"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
               >
-                <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
-                  <Building className="w-6 h-6 text-red-400" />
-                  Traditional Practice
-                </h3>
-                <div className="space-y-3">
-                  {[
-                    'Friends ask: "How\'s business going?"',
-                    'Family says: "Sounds amazing!"',
-                    'Result: False confidence, real rejection'
-                  ].map((item, index) => (
-                    <motion.div 
-                      key={index}
-                      className="flex items-center gap-3 text-white"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <div className="w-2 h-2 bg-red-500 rounded-full" />
-                      <span>{item}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.div 
-                className="p-6 bg-indigo-500/5 border border-indigo-500/20 rounded-xl"
-                whileHover={{ scale: 1.02 }}
-              >
-                <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-3">
-                  <Brain className="w-6 h-6 text-indigo-400" />
-                  AgentVC Training
-                </h3>
-                <div className="space-y-3">
-                  {[
-                    'AI asks: "What\'s your customer acquisition cost?"',
-                    'AI probes: "How do you defend against competition?"',
-                    'Result: Real preparation, successful funding'
-                  ].map((item, index) => (
-                    <motion.div 
-                      key={index}
-                      className="flex items-center gap-3 text-white"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <div className="w-2 h-2 bg-indigo-500 rounded-full" />
-                      <span>{item}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl"
-            >
-              <div className="text-center mb-8">
-                <motion.div 
-                  className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 relative overflow-hidden"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
+                <Brain className="w-8 h-8 text-white relative z-10" />
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
+                  whileHover={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
-                >
-                  <Brain className="w-8 h-8 text-white relative z-10" />
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.div>
-                <h3 className="text-xl font-semibold text-white mb-2">AI Investor Simulation</h3>
-                <p className="text-white/80">Trained on thousands of real VC conversations</p>
-              </div>
+                />
+              </motion.div>
+              
+              <h3 className="text-2xl font-bold text-white mb-3">AI Investor Simulation</h3>
+              <p className="text-white/80 mb-8">Trained on thousands of real VC conversations</p>
 
               <div className="space-y-4">
                 {[
                   "Asks investor-specific questions",
-                  "Adapts to your business model",
+                  "Adapts to your business model", 
                   "Provides detailed performance analysis",
                   "Gives actionable improvement tips"
                 ].map((feature, index) => (
                   <motion.div 
                     key={index}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: 20 }}
+                    className="flex items-center gap-3 text-left"
+                    initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     viewport={{ once: true }}
