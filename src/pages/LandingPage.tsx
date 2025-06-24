@@ -311,7 +311,7 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <h2 className="text-headline mb-6 text-white">
-              How can Rohan help you raise your round?t</span>
+              How can Rohan help you raise your round?
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
             </p>
