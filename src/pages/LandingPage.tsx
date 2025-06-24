@@ -185,6 +185,184 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Without Rohan vs With Rohan Comparison */}
+      <section className="relative section-spacing">
+        <div className="max-w-7xl mx-auto container-padding">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-headline mb-6 text-white">
+              Practice smart, not hard.
+            </h2>
+            <p className="text-subtitle max-w-3xl mx-auto text-white">
+              Traditional pitch practice vs. AI-powered training. See the difference Rohan makes in your fundraising journey.
+            </p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              viewport={{ once: true }}
+              className="mt-8"
+            >
+              <motion.button
+                onClick={handleJoinWaitlist}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Meet Rohan
+                <ArrowRight className="w-4 h-4" />
+              </motion.button>
+            </motion.div>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Without Rohan */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-red-900/20 to-red-800/20 border border-red-500/30 rounded-2xl p-8"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
+                  <X className="w-5 h-5 text-red-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Without Rohan</h3>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  {
+                    icon: <Users className="w-5 h-5" />,
+                    text: "Practice with friends who ask easy questions"
+                  },
+                  {
+                    icon: <MessageSquare className="w-5 h-5" />,
+                    text: "Get generic feedback like 'sounds great!'"
+                  },
+                  {
+                    icon: <Clock className="w-5 h-5" />,
+                    text: "Spend months preparing for investor meetings"
+                  },
+                  {
+                    icon: <TrendingDown className="w-5 h-5" />,
+                    text: "Face rejection without knowing why"
+                  },
+                  {
+                    icon: <AlertTriangle className="w-5 h-5" />,
+                    text: "Miss critical investor concerns"
+                  },
+                  {
+                    icon: <Target className="w-5 h-5" />,
+                    text: "Struggle to articulate value proposition clearly"
+                  }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-3 text-red-300"
+                  >
+                    <div className="text-red-400 flex-shrink-0">{item.icon}</div>
+                    <span>{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* With Rohan */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-green-900/20 to-emerald-800/20 border border-green-500/30 rounded-2xl p-8"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Check className="w-5 h-5 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">With Rohan</h3>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  {
+                    icon: <Brain className="w-5 h-5" />,
+                    text: "Practice with AI that thinks like top VCs"
+                  },
+                  {
+                    icon: <BarChart3 className="w-5 h-5" />,
+                    text: "Get detailed analysis and actionable insights"
+                  },
+                  {
+                    icon: <Zap className="w-5 h-5" />,
+                    text: "Perfect your pitch in days, not months"
+                  },
+                  {
+                    icon: <Growth className="w-5 h-5" />,
+                    text: "Raise capital 3x faster with confidence"
+                  },
+                  {
+                    icon: <Shield className="w-5 h-5" />,
+                    text: "Address investor concerns before they arise"
+                  },
+                  {
+                    icon: <Rocket className="w-5 h-5" />,
+                    text: "Deliver compelling pitches that convert"
+                  }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    className="flex items-center gap-3 text-green-300"
+                  >
+                    <div className="text-green-400 flex-shrink-0">{item.icon}</div>
+                    <span>{item.text}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <motion.button
+              onClick={handleJoinWaitlist}
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+              <div className="relative z-10 flex items-center gap-2">
+                Get started for free
+                <ExternalLink className="w-4 h-4" />
+              </div>
+            </motion.button>
+          </motion.div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="relative section-spacing">
         <div className="max-w-7xl mx-auto container-padding">
