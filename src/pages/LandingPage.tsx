@@ -231,7 +231,11 @@ const LandingPage: React.FC = () => {
                   <img
                     src="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
                     alt="Rohan Vyas - Your AI Investor"
-                    className="w-96 h-96 object-cover rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl"
+                    className="w-80 h-80 object-cover object-center rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl"
+                    style={{
+                      objectPosition: 'center top',
+                      filter: 'brightness(1.1) contrast(1.1)'
+                    }}
                   />
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
                 </motion.div>
