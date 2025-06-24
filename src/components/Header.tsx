@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 const Header: React.FC = () => {
   const handleJoinWaitlist = () => {
@@ -19,15 +19,14 @@ const Header: React.FC = () => {
           {/* Left-aligned Logo - Mobile Optimized */}
           <div className="flex items-center gap-2 sm:gap-3 group">
             <motion.div 
-              className="relative w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden"
+              className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Bot className="w-3 h-3 sm:w-5 sm:h-5 text-white relative z-10" />
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+              <img 
+                src="/Gemini_Generated_Image_20nfzq20nfzq20nf.jpeg" 
+                alt="AgentVC Logo" 
+                className="w-full h-full object-contain"
               />
             </motion.div>
             <motion.span 
