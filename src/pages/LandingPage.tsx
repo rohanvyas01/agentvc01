@@ -147,16 +147,6 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <motion.div 
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full px-6 py-3 mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
-                <AlertTriangle className="w-4 h-4 text-red-400" />
-              </div>
-              <span className="text-sm font-medium text-white">The Hard Truth</span>
-            </motion.div>
-            
             <h2 className="text-headline mb-6 text-white">
               Why Most Pitches <span className="text-red-400">Fail</span>
             </h2>
@@ -226,16 +216,6 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <motion.div 
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full px-6 py-3 mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="flex items-center justify-center w-8 h-8 bg-indigo-500/20 rounded-full">
-                <Brain className="w-4 h-4 text-indigo-400" />
-              </div>
-              <span className="text-sm font-medium text-white">The Solution</span>
-            </motion.div>
-            
             <h2 className="text-headline mb-6 text-white">
               Meet Your <span className="text-gradient-accent">AI Investors</span>
             </h2>
@@ -371,16 +351,6 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <motion.div 
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full px-6 py-3 mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="flex items-center justify-center w-8 h-8 bg-purple-500/20 rounded-full">
-                <Sparkles className="w-4 h-4 text-purple-400" />
-              </div>
-              <span className="text-sm font-medium text-white">How It Works</span>
-            </motion.div>
-            
             <h2 className="text-headline mb-6 text-white">
               Three Steps to <span className="text-gradient-accent">Pitch Mastery</span>
             </h2>
@@ -469,16 +439,6 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <motion.div 
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-full px-6 py-3 mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="flex items-center justify-center w-8 h-8 bg-yellow-500/20 rounded-full">
-                <Zap className="w-4 h-4 text-yellow-400" />
-              </div>
-              <span className="text-sm font-medium text-white">Features</span>
-            </motion.div>
-            
             <h2 className="text-headline mb-6 text-white">
               Everything You Need to <span className="text-gradient-accent">Succeed</span>
             </h2>
@@ -558,16 +518,6 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl"
           >
-            <motion.div 
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full px-6 py-3 mb-8"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
-                <Rocket className="w-4 h-4 text-red-400" />
-              </div>
-              <span className="text-sm font-medium text-white">Ready to Start?</span>
-            </motion.div>
-
             <h2 className="text-headline mb-8 text-white">
               Don't Let Your Startup Become
               <br />
