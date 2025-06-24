@@ -205,7 +205,7 @@ const LandingPage: React.FC = () => {
             </motion.div>
             
             <h2 className="text-headline mb-6 text-white">
-              Meet <span className="text-gradient-accent">Rohan</span>
+              Meet <span className="text-gradient-accent">Rohan Vyas</span>
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
               The world's first AI investor with a legendary track record. 
@@ -229,8 +229,8 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <img
-                    src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=800"
-                    alt="Rohan - Your AI Investor"
+                    src="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
+                    alt="Rohan Vyas - Your AI Investor"
                     className="w-96 h-96 object-cover rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl"
                   />
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
@@ -238,7 +238,7 @@ const LandingPage: React.FC = () => {
               </div>
               
               <div className="space-y-4">
-                <h3 className="text-3xl font-bold text-white">Rohan Kapoor</h3>
+                <h3 className="text-3xl font-bold text-white">Rohan Vyas</h3>
                 <p className="text-xl text-indigo-400 font-medium">Your AI Investor</p>
                 <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
                   <span className="bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-3 py-1 text-sm text-white">
@@ -321,7 +321,7 @@ const LandingPage: React.FC = () => {
               />
               <div className="relative z-10 flex items-center gap-2">
                 <Bot className="w-5 h-5" />
-                Meet Rohan
+                Meet Rohan Vyas
                 <ExternalLink className="w-4 h-4" />
               </div>
             </motion.button>
@@ -358,7 +358,7 @@ const LandingPage: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Meet Rohan
+                Meet Rohan Vyas
                 <ArrowRight className="w-4 h-4" />
               </motion.button>
             </motion.div>
@@ -434,7 +434,7 @@ const LandingPage: React.FC = () => {
                 <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <Check className="w-5 h-5 text-green-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white">With Rohan</h3>
+                <h3 className="text-2xl font-bold text-white">With Rohan Vyas</h3>
               </div>
 
               <div className="space-y-4">
