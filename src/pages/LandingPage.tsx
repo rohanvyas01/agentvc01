@@ -347,7 +347,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Comparison Section - Mobile Optimized */}
+      {/* Comparison Section - Mobile Optimized with Emojis */}
       <section className="relative py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -378,7 +378,7 @@ const LandingPage: React.FC = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-            {/* Without Rohan - Mobile Optimized */}
+            {/* Without Rohan - Mobile Optimized with Emojis */}
             <GlassTextBox className="bg-gradient-to-br from-red-900/20 to-red-800/20 border border-red-500/30">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
@@ -390,27 +390,27 @@ const LandingPage: React.FC = () => {
               <div className="space-y-3 sm:space-y-4">
                 {[
                   {
-                    icon: <Users className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "👥",
                     text: "Practice with friends who ask easy questions"
                   },
                   {
-                    icon: <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "💬",
                     text: "Get generic feedback like 'sounds great!'"
                   },
                   {
-                    icon: <Clock className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "⏰",
                     text: "Spend months preparing for investor meetings"
                   },
                   {
-                    icon: <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "📉",
                     text: "Face rejection without knowing why"
                   },
                   {
-                    icon: <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "⚠️",
                     text: "Miss critical investor concerns"
                   },
                   {
-                    icon: <Target className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "🎯",
                     text: "Struggle to articulate value proposition clearly"
                   }
                 ].map((item, index) => (
@@ -422,14 +422,14 @@ const LandingPage: React.FC = () => {
                     viewport={{ once: true }}
                     className="flex items-center gap-2 sm:gap-3 text-red-300 text-sm sm:text-base"
                   >
-                    <div className="text-red-400 flex-shrink-0">{item.icon}</div>
+                    <span className="text-lg flex-shrink-0">{item.emoji}</span>
                     <span>{item.text}</span>
                   </motion.div>
                 ))}
               </div>
             </GlassTextBox>
 
-            {/* With Rohan - Mobile Optimized */}
+            {/* With Rohan - Mobile Optimized with Emojis */}
             <GlassTextBox className="bg-gradient-to-br from-green-900/20 to-emerald-800/20 border border-green-500/30">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
@@ -441,27 +441,27 @@ const LandingPage: React.FC = () => {
               <div className="space-y-3 sm:space-y-4">
                 {[
                   {
-                    icon: <Brain className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "🧠",
                     text: "Practice with AI that thinks like top VCs"
                   },
                   {
-                    icon: <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "📊",
                     text: "Get detailed analysis and actionable insights"
                   },
                   {
-                    icon: <Zap className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "⚡",
                     text: "Perfect your pitch in days, not months"
                   },
                   {
-                    icon: <Growth className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "📈",
                     text: "Raise capital 3x faster with confidence"
                   },
                   {
-                    icon: <Shield className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "🛡️",
                     text: "Address investor concerns before they arise"
                   },
                   {
-                    icon: <Rocket className="w-4 h-4 sm:w-5 sm:h-5" />,
+                    emoji: "🚀",
                     text: "Deliver compelling pitches that convert"
                   }
                 ].map((item, index) => (
@@ -473,7 +473,7 @@ const LandingPage: React.FC = () => {
                     viewport={{ once: true }}
                     className="flex items-center gap-2 sm:gap-3 text-green-300 text-sm sm:text-base"
                   >
-                    <div className="text-green-400 flex-shrink-0">{item.icon}</div>
+                    <span className="text-lg flex-shrink-0">{item.emoji}</span>
                     <span>{item.text}</span>
                   </motion.div>
                 ))}
