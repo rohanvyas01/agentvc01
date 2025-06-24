@@ -78,6 +78,8 @@ const LandingPage: React.FC = () => {
               transition={{ delay: 0.3, duration: 0.8 }}
             >
               Meet the World's First AI Investor
+              <br />
+            </motion.h1>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
