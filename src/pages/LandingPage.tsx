@@ -160,7 +160,7 @@ const LandingPage: React.FC = () => {
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
               Most founders practice with the wrong people and get the wrong feedback. 
-              Real investors ask tough questions you've never heard before.
+              Rohan asks tough questions you've never heard before.
             </p>
           </motion.div>
 
