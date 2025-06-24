@@ -209,10 +209,10 @@ const LandingPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl sm:text-2xl lg:text-3xl mb-12 sm:mb-16 max-w-4xl mx-auto text-white text-center leading-relaxed px-4"
+              className="text-xl sm:text-2xl lg:text-3xl mb-12 sm:mb-16 max-w-4xl mx-auto text-white text-center leading-relaxed"
             >
               Get real feedback from an AI that thinks like top VCs. Practice unlimited times, 
-              perfect your pitch, and <span className="font-bold text-indigo-400">raise capital faster</span> than ever before.
+              perfect your pitch, and <span className="font-bold text-gradient-accent">raise capital faster</span> than ever before.
             </motion.div>
 
             {/* CTA Button - Positioned lower */}
@@ -220,34 +220,13 @@ const LandingPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 sm:mb-20 px-4"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto text-xl px-10 py-5">
                 <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
                 Join Waitlist
                 <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
               </GlassButton>
-            </motion.div>
-
-            {/* Statistics - Positioned at bottom of hero */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 mt-16 sm:mt-20 px-4"
-            >
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-indigo-400 mb-3">5000+</div>
-                <div className="text-white text-base sm:text-lg">Pitch Decks Analyzed</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-purple-400 mb-3">3x</div>
-                <div className="text-white text-base sm:text-lg">Faster Capital Raising</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-cyan-400 mb-3">24/7</div>
-                <div className="text-white text-base sm:text-lg">AI Investor Available</div>
-              </div>
             </motion.div>
           </motion.div>
         </div>
