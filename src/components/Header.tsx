@@ -14,16 +14,16 @@ const Header: React.FC = () => {
       transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
       className="sticky top-0 z-50 header-glass border-b border-slate-700/30"
     >
-      <div className="max-w-7xl mx-auto container-padding">
-        <div className="flex justify-between items-center h-16">
-          {/* Left-aligned Logo */}
-          <div className="flex items-center gap-3 group">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
+          {/* Left-aligned Logo - Mobile Optimized */}
+          <div className="flex items-center gap-2 sm:gap-3 group">
             <motion.div 
-              className="relative w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden"
+              className="relative w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Bot className="w-5 h-5 text-white relative z-10" />
+              <Bot className="w-3 h-3 sm:w-5 sm:h-5 text-white relative z-10" />
               <motion.div
                 className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
                 whileHover={{ opacity: 1 }}
@@ -31,14 +31,14 @@ const Header: React.FC = () => {
               />
             </motion.div>
             <motion.span 
-              className="text-xl font-bold text-white"
+              className="text-lg sm:text-xl font-bold text-white"
               whileHover={{ x: 2 }}
               transition={{ duration: 0.2 }}
             >
               AgentVC
             </motion.span>
             <motion.span 
-              className="text-xs bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 py-1 rounded-full font-medium"
+              className="hidden sm:inline text-xs bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 py-1 rounded-full font-medium"
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
@@ -46,11 +46,11 @@ const Header: React.FC = () => {
             </motion.span>
           </div>
 
-          {/* Right-aligned Navigation */}
-          <div className="flex items-center gap-6">
+          {/* Right-aligned Navigation - Mobile Optimized */}
+          <div className="flex items-center gap-3 sm:gap-6">
             <motion.a
               href="#features"
-              className="text-white hover:text-indigo-400 transition-all duration-300 font-medium"
+              className="hidden sm:block text-white hover:text-indigo-400 transition-all duration-300 font-medium"
               whileHover={{ y: -1 }}
             >
               Features
@@ -60,16 +60,17 @@ const Header: React.FC = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleJoinWaitlist}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group"
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium px-3 sm:px-6 py-2 sm:py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group text-sm sm:text-base"
             >
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
                 whileHover={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               />
-              <div className="relative z-10 flex items-center gap-2">
-                Join Waitlist
-                <ExternalLink className="w-4 h-4" />
+              <div className="relative z-10 flex items-center gap-1 sm:gap-2">
+                <span className="hidden sm:inline">Join Waitlist</span>
+                <span className="sm:hidden">Join</span>
+                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </div>
             </motion.button>
           </div>
