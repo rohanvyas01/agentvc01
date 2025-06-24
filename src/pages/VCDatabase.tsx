@@ -178,7 +178,7 @@ const VCDatabase: React.FC = () => {
           <div className="flex items-center h-16">
             <motion.button
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 text-white hover:text-indigo-400 transition-colors"
               whileHover={{ x: -4 }}
               transition={{ duration: 0.2 }}
             >
@@ -197,17 +197,19 @@ const VCDatabase: React.FC = () => {
           className="text-center mb-12"
         >
           <motion.div 
-            className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-slate-600/30"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full px-6 py-3 mb-6"
             whileHover={{ scale: 1.05 }}
           >
-            <Building className="w-4 h-4 text-indigo-400" />
-            <span className="text-sm font-medium text-slate-300">VC Database</span>
+            <div className="flex items-center justify-center w-8 h-8 bg-indigo-500/20 rounded-full">
+              <Building className="w-4 h-4 text-indigo-400" />
+            </div>
+            <span className="text-sm font-medium text-white">VC Database</span>
           </motion.div>
           
-          <h1 className="text-headline mb-6 text-gradient">
+          <h1 className="text-headline mb-6 text-white">
             Indian VC <span className="text-gradient-accent">Directory</span>
           </h1>
-          <p className="text-subtitle max-w-3xl mx-auto">
+          <p className="text-subtitle max-w-3xl mx-auto text-white">
             Comprehensive database of Indian venture capital firms with contact information, 
             investment focus, and funding details.
           </p>
@@ -229,7 +231,7 @@ const VCDatabase: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search VCs, sectors, locations..."
-                className="input-field pl-10"
+                className="input-field pl-10 text-white placeholder-slate-400"
               />
             </div>
 
@@ -237,7 +239,7 @@ const VCDatabase: React.FC = () => {
             <select
               value={selectedStage}
               onChange={(e) => setSelectedStage(e.target.value)}
-              className="input-field"
+              className="input-field text-white"
             >
               <option value="">All Stages</option>
               {allStages.map(stage => (
@@ -249,7 +251,7 @@ const VCDatabase: React.FC = () => {
             <select
               value={selectedSector}
               onChange={(e) => setSelectedSector(e.target.value)}
-              className="input-field"
+              className="input-field text-white"
             >
               <option value="">All Sectors</option>
               {allSectors.map(sector => (
@@ -261,7 +263,7 @@ const VCDatabase: React.FC = () => {
             <select
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
-              className="input-field"
+              className="input-field text-white"
             >
               <option value="">All Locations</option>
               {allLocations.map(location => (
@@ -271,13 +273,13 @@ const VCDatabase: React.FC = () => {
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-slate-400">
+            <p className="text-white">
               Showing {filteredVCs.length} of {vcData.length} VCs
             </p>
             {(searchTerm || selectedStage || selectedSector || selectedLocation) && (
               <motion.button
                 onClick={clearFilters}
-                className="btn-secondary text-sm"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium px-4 py-2 rounded-lg transition-all duration-300 text-sm"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -302,7 +304,7 @@ const VCDatabase: React.FC = () => {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-white mb-1">{vc.name}</h3>
-                  <div className="flex items-center gap-4 text-sm text-slate-400">
+                  <div className="flex items-center gap-4 text-sm text-white">
                     <div className="flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
                       <span>{vc.location}</span>
@@ -316,7 +318,7 @@ const VCDatabase: React.FC = () => {
                     href={`https://${vc.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-800/50"
+                    className="p-2 text-white hover:text-indigo-400 transition-colors rounded-lg hover:bg-slate-800/50"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                   >
@@ -330,14 +332,14 @@ const VCDatabase: React.FC = () => {
                 <div className="glass rounded-lg p-3 border border-slate-700/30">
                   <div className="flex items-center gap-2 mb-1">
                     <DollarSign className="w-4 h-4 text-green-400" />
-                    <span className="text-xs text-slate-400">AUM</span>
+                    <span className="text-xs text-white">AUM</span>
                   </div>
                   <span className="text-white font-semibold">{vc.aum}</span>
                 </div>
                 <div className="glass rounded-lg p-3 border border-slate-700/30">
                   <div className="flex items-center gap-2 mb-1">
                     <Building className="w-4 h-4 text-blue-400" />
-                    <span className="text-xs text-slate-400">Cheque Size</span>
+                    <span className="text-xs text-white">Cheque Size</span>
                   </div>
                   <span className="text-white font-semibold">{vc.chequeSize}</span>
                 </div>
@@ -345,7 +347,7 @@ const VCDatabase: React.FC = () => {
 
               {/* Investment Focus */}
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-slate-300 mb-2">Investment Stages</h4>
+                <h4 className="text-sm font-semibold text-white mb-2">Investment Stages</h4>
                 <div className="flex flex-wrap gap-2">
                   {vc.stages.split(', ').map((stage, idx) => (
                     <span
@@ -360,7 +362,7 @@ const VCDatabase: React.FC = () => {
 
               {/* Sectors */}
               <div className="mb-4">
-                <h4 className="text-sm font-semibold text-slate-300 mb-2">Sectors</h4>
+                <h4 className="text-sm font-semibold text-white mb-2">Sectors</h4>
                 <div className="flex flex-wrap gap-2">
                   {vc.sectors.split(', ').slice(0, 4).map((sector, idx) => (
                     <span
@@ -371,7 +373,7 @@ const VCDatabase: React.FC = () => {
                     </span>
                   ))}
                   {vc.sectors.split(', ').length > 4 && (
-                    <span className="px-2 py-1 bg-slate-500/20 text-slate-300 rounded text-xs border border-slate-500/30">
+                    <span className="px-2 py-1 bg-slate-500/20 text-white rounded text-xs border border-slate-500/30">
                       +{vc.sectors.split(', ').length - 4} more
                     </span>
                   )}
@@ -381,12 +383,12 @@ const VCDatabase: React.FC = () => {
               {/* Contact Info */}
               {(vc.keyContacts || vc.contactInfo) && (
                 <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-slate-300 mb-2">Key Contacts</h4>
+                  <h4 className="text-sm font-semibold text-white mb-2">Key Contacts</h4>
                   <div className="space-y-1">
                     {vc.keyContacts && (
                       <div className="flex items-center gap-2">
                         <Users className="w-4 h-4 text-slate-400" />
-                        <span className="text-slate-300 text-sm">{vc.keyContacts}</span>
+                        <span className="text-white text-sm">{vc.keyContacts}</span>
                       </div>
                     )}
                     {vc.contactInfo && (
@@ -407,8 +409,8 @@ const VCDatabase: React.FC = () => {
               {/* Philosophy */}
               {vc.philosophy && (
                 <div className="border-t border-slate-700/30 pt-4">
-                  <h4 className="text-sm font-semibold text-slate-300 mb-2">Investment Philosophy</h4>
-                  <p className="text-slate-400 text-sm leading-relaxed">
+                  <h4 className="text-sm font-semibold text-white mb-2">Investment Philosophy</h4>
+                  <p className="text-white text-sm leading-relaxed">
                     {vc.philosophy.length > 150 
                       ? `${vc.philosophy.substring(0, 150)}...` 
                       : vc.philosophy
@@ -428,15 +430,15 @@ const VCDatabase: React.FC = () => {
             className="text-center py-12"
           >
             <Search className="w-16 h-16 text-slate-500 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-300 mb-2">
+            <h3 className="text-xl font-semibold text-white mb-2">
               No VCs Found
             </h3>
-            <p className="text-slate-500 mb-6">
+            <p className="text-white mb-6">
               Try adjusting your search criteria or clearing the filters
             </p>
             <motion.button
               onClick={clearFilters}
-              className="btn-primary"
+              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -455,12 +457,12 @@ const VCDatabase: React.FC = () => {
           <h3 className="text-xl font-bold text-white mb-4">
             Complete VC Database
           </h3>
-          <p className="text-slate-400 mb-6">
+          <p className="text-white mb-6">
             This database contains comprehensive information about Indian venture capital firms, 
             including contact details, investment focus, and funding criteria. Perfect for founders 
             looking to connect with the right investors.
           </p>
-          <div className="flex items-center justify-center gap-4 text-sm text-slate-500">
+          <div className="flex items-center justify-center gap-4 text-sm text-white">
             <span>Last Updated: January 2025</span>
             <span>•</span>
             <span>{vcData.length} VCs Listed</span>
