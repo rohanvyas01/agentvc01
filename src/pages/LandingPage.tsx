@@ -71,23 +71,6 @@ const LandingPage: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             className="text-center max-w-4xl mx-auto"
           >
-            {/* Announcement Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full px-6 py-3 mb-8"
-            >
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="flex items-center justify-center w-8 h-8 bg-indigo-500/20 rounded-full"
-              >
-                <Bot className="w-4 h-4 text-indigo-400" />
-              </motion.div>
-              <span className="text-white font-semibold">World's First AI Investor</span>
-            </motion.div>
-
             <motion.h1 
               className="text-display mb-6 text-white"
               initial={{ opacity: 0, y: 20 }}
@@ -410,14 +393,6 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl"
           >
-            <motion.div 
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full px-4 py-2 mb-8"
-              whileHover={{ scale: 1.05 }}
-            >
-              <Bot className="w-4 h-4 text-indigo-400" />
-              <span className="text-sm font-medium text-white">Ready to Meet Your AI Investor?</span>
-            </motion.div>
-
             <h2 className="text-headline mb-8 text-white">
               Stop Practicing with Friends.
               <br />
