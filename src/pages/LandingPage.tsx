@@ -55,19 +55,19 @@ const LandingPage: React.FC = () => {
       
       <Header />
       
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      {/* Hero Section - Centered */}
+      <section className="relative overflow-hidden flex items-center justify-center min-h-screen">
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent"
           style={{ y: y1 }}
         />
         
-        <div className="relative max-w-7xl mx-auto container-padding section-spacing">
+        <div className="relative max-w-4xl mx-auto container-padding text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center"
           >
             {/* Announcement Badge */}
             <motion.div
@@ -92,20 +92,16 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Perfect Your Pitch
-              <br />
-              <span className="text-white/80">Before It's Too Late</span>
+              The fastest path from pitch deck to term sheet
             </motion.h1>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-subtitle mb-8 max-w-3xl mx-auto text-white"
+              className="text-subtitle mb-12 max-w-3xl mx-auto text-white"
             >
-              Get real feedback from AI investors who simulate actual VC conversations.
-              <br />
-              <span className="text-white font-semibold">Make raising capital easier and faster.</span>
+              Streamline your fundraise with AI-driven prep that gets you funded and back to building.
             </motion.div>
 
             <motion.div
@@ -126,8 +122,8 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 />
                 <div className="relative z-10 flex items-center gap-2">
-                  <Bell className="w-5 h-5" />
-                  Join the Waitlist
+                  <Database className="w-5 h-5" />
+                  Get 200+ VC Emails
                   <ExternalLink className="w-4 h-4" />
                 </div>
               </motion.button>
@@ -154,93 +150,9 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Problem Section */}
+      {/* Solution Section - Redesigned and Centered */}
       <section className="relative section-spacing">
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-transparent"
-          style={{ y: y2 }}
-        />
-        
-        <div className="relative max-w-7xl mx-auto container-padding">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <motion.div 
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full px-6 py-3 mb-6"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
-                <AlertTriangle className="w-4 h-4 text-red-400" />
-              </div>
-              <span className="text-sm font-medium text-white">The Hard Truth</span>
-            </motion.div>
-            
-            <h2 className="text-headline mb-6 text-white">
-              Why Most Pitches <span className="text-red-400">Fail</span>
-            </h2>
-            <p className="text-subtitle max-w-3xl mx-auto text-white">
-              You practice with friends who ask easy questions. Real investors ask the hard ones.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Users className="w-8 h-8 text-red-400" />,
-                title: "Wrong Practice Partners",
-                description: "Friends and family give encouragement, not the brutal honesty you need to prepare for real investors.",
-                stat: "87% practice with non-investors"
-              },
-              {
-                icon: <MessageSquare className="w-8 h-8 text-orange-400" />,
-                title: "Softball Questions",
-                description: "Generic questions like 'tell me about your business' don't prepare you for investor-specific concerns.",
-                stat: "Only 23% face hard questions"
-              },
-              {
-                icon: <Target className="w-8 h-8 text-pink-400" />,
-                title: "No Real Feedback",
-                description: "Vague praise doesn't help you improve. You need specific, actionable insights on what investors care about.",
-                stat: "91% get generic feedback"
-              }
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-                className="card hover-lift hover-glow text-center group"
-                whileHover={{ y: -4 }}
-              >
-                <motion.div 
-                  className="flex justify-center mb-6"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {item.icon}
-                </motion.div>
-                <h3 className="text-title mb-4 text-white">{item.title}</h3>
-                <p className="text-white mb-4">{item.description}</p>
-                <motion.div 
-                  className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 border border-red-500/20"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <span className="text-sm text-red-300 font-medium">{item.stat}</span>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Solution Section - Redesigned */}
-      <section className="relative section-spacing">
-        <div className="max-w-7xl mx-auto container-padding">
+        <div className="max-w-6xl mx-auto container-padding">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -267,89 +179,91 @@ const LandingPage: React.FC = () => {
             </p>
           </motion.div>
 
-          {/* Comparison Cards */}
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {/* Traditional Practice */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="bg-gradient-to-br from-red-900/20 to-red-800/10 border border-red-500/20 rounded-2xl p-8 h-full">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex items-center justify-center w-12 h-12 bg-red-500/20 rounded-xl">
-                    <X className="w-6 h-6 text-red-400" />
+          {/* Comparison Cards - Centered */}
+          <div className="flex justify-center">
+            <div className="grid lg:grid-cols-2 gap-8 max-w-5xl w-full">
+              {/* Traditional Practice */}
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <div className="bg-gradient-to-br from-red-900/20 to-red-800/10 border border-red-500/20 rounded-2xl p-8 h-full">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="flex items-center justify-center w-12 h-12 bg-red-500/20 rounded-xl">
+                      <X className="w-6 h-6 text-red-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white">Without AgentVC</h3>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Without AgentVC</h3>
+                  
+                  <div className="space-y-4">
+                    {[
+                      { icon: "🤝", text: "Practice with friends and family" },
+                      { icon: "💬", text: "Get generic, encouraging feedback" },
+                      { icon: "❓", text: "Face softball questions" },
+                      { icon: "🎭", text: "Build false confidence" },
+                      { icon: "💔", text: "Get rejected by real investors" },
+                      { icon: "⏰", text: "Waste months of preparation time" }
+                    ].map((item, index) => (
+                      <motion.div 
+                        key={index}
+                        className="flex items-center gap-4 p-3 bg-red-500/5 rounded-lg border border-red-500/10"
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        viewport={{ once: true }}
+                      >
+                        <span className="text-2xl">{item.icon}</span>
+                        <span className="text-white">{item.text}</span>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-                
-                <div className="space-y-4">
-                  {[
-                    { icon: "🤝", text: "Practice with friends and family" },
-                    { icon: "💬", text: "Get generic, encouraging feedback" },
-                    { icon: "❓", text: "Face softball questions" },
-                    { icon: "🎭", text: "Build false confidence" },
-                    { icon: "💔", text: "Get rejected by real investors" },
-                    { icon: "⏰", text: "Waste months of preparation time" }
-                  ].map((item, index) => (
-                    <motion.div 
-                      key={index}
-                      className="flex items-center gap-4 p-3 bg-red-500/5 rounded-lg border border-red-500/10"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <span className="text-2xl">{item.icon}</span>
-                      <span className="text-white">{item.text}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            {/* AgentVC Training */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="bg-gradient-to-br from-indigo-900/20 to-purple-800/10 border border-indigo-500/20 rounded-2xl p-8 h-full">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl">
-                    <Check className="w-6 h-6 text-white" />
+              {/* AgentVC Training */}
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <div className="bg-gradient-to-br from-indigo-900/20 to-purple-800/10 border border-indigo-500/20 rounded-2xl p-8 h-full">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl">
+                      <Check className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white">With AgentVC</h3>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">With AgentVC</h3>
+                  
+                  <div className="space-y-4">
+                    {[
+                      { icon: "🤖", text: "Practice with AI investor personas" },
+                      { icon: "🎯", text: "Get specific, actionable feedback" },
+                      { icon: "🔥", text: "Face tough, realistic questions" },
+                      { icon: "💪", text: "Build genuine confidence" },
+                      { icon: "✅", text: "Impress real investors" },
+                      { icon: "🚀", text: "Raise capital faster" }
+                    ].map((item, index) => (
+                      <motion.div 
+                        key={index}
+                        className="flex items-center gap-4 p-3 bg-indigo-500/5 rounded-lg border border-indigo-500/10"
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        viewport={{ once: true }}
+                      >
+                        <span className="text-2xl">{item.icon}</span>
+                        <span className="text-white">{item.text}</span>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-                
-                <div className="space-y-4">
-                  {[
-                    { icon: "🤖", text: "Practice with AI investor personas" },
-                    { icon: "🎯", text: "Get specific, actionable feedback" },
-                    { icon: "🔥", text: "Face tough, realistic questions" },
-                    { icon: "💪", text: "Build genuine confidence" },
-                    { icon: "✅", text: "Impress real investors" },
-                    { icon: "🚀", text: "Raise capital faster" }
-                  ].map((item, index) => (
-                    <motion.div 
-                      key={index}
-                      className="flex items-center gap-4 p-3 bg-indigo-500/5 rounded-lg border border-indigo-500/10"
-                      initial={{ opacity: 0, x: 20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <span className="text-2xl">{item.icon}</span>
-                      <span className="text-white">{item.text}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -590,8 +504,8 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 />
                 <div className="relative z-10 flex items-center gap-2">
-                  <Bell className="w-5 h-5" />
-                  Join the Waitlist
+                  <Database className="w-5 h-5" />
+                  Get 200+ VC Emails
                   <ExternalLink className="w-4 h-4" />
                 </div>
               </motion.button>
