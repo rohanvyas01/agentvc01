@@ -45,6 +45,7 @@ const LandingPage: React.FC = () => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, -50]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
+  const y3 = useTransform(scrollY, [0, 500], [0, -150]);
 
   const handleJoinWaitlist = () => {
     window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
@@ -87,16 +88,101 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 bg-pattern-dots opacity-30" />
+      {/* Enhanced Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        {/* Primary gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-purple-900/10 to-slate-900/30" />
+        
+        {/* Animated floating orbs */}
+        <motion.div
+          className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full blur-xl"
+          animate={{
+            x: [0, 30, 0],
+            y: [0, -20, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-xl"
+          animate={{
+            x: [0, -25, 0],
+            y: [0, 15, 0],
+            scale: [1, 0.9, 1],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1
+          }}
+        />
+        <motion.div
+          className="absolute bottom-40 left-1/4 w-20 h-20 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-xl"
+          animate={{
+            x: [0, 20, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+        />
+        
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 bg-pattern-grid opacity-5" />
+        
+        {/* Floating particles */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-white/20 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: 4 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
       
       <Header />
       
-      {/* Hero Section - Mobile Optimized */}
-      <section className="relative overflow-hidden py-16 sm:py-24 lg:py-40">
+      {/* Hero Section - Mobile Optimized with padding for fixed header */}
+      <section className="relative overflow-hidden pt-20 sm:pt-24 pb-16 sm:pb-24 lg:pb-40">
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent"
           style={{ y: y1 }}
+        />
+        
+        {/* Hero-specific background elements */}
+        <motion.div
+          className="absolute top-1/4 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
         />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -164,11 +250,25 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Problem Section - Mobile Optimized */}
+      {/* Problem Section - Mobile Optimized with enhanced background */}
       <section className="relative py-16 sm:py-24">
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-transparent"
           style={{ y: y2 }}
+        />
+        
+        {/* Section-specific background elements */}
+        <motion.div
+          className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-l from-red-500/5 to-transparent rounded-full blur-2xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -226,9 +326,24 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Meet Rohan Section - Mobile Optimized */}
+      {/* Meet Rohan Section - Mobile Optimized with enhanced background */}
       <section className="relative py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section-specific background elements */}
+        <motion.div
+          className="absolute top-1/4 left-0 w-80 h-80 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-full blur-3xl"
+          animate={{
+            x: [0, 50, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -347,9 +462,23 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Comparison Section - Mobile Optimized with Emojis */}
+      {/* Comparison Section - Mobile Optimized with Emojis and enhanced background */}
       <section className="relative py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section-specific background elements */}
+        <motion.div
+          className="absolute bottom-0 right-1/4 w-72 h-72 bg-gradient-to-t from-green-500/5 to-red-500/5 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.3, 1],
+            rotate: [0, 90, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -496,9 +625,24 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* How It Works - Mobile Optimized with Glass Boxes */}
+      {/* How It Works - Mobile Optimized with Glass Boxes and enhanced background */}
       <section className="relative py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section-specific background elements */}
+        <motion.div
+          className="absolute top-1/3 right-0 w-60 h-60 bg-gradient-to-l from-cyan-500/5 to-indigo-500/5 rounded-full blur-2xl"
+          animate={{
+            x: [0, -40, 0],
+            y: [0, 20, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -581,9 +725,23 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Features - Mobile Optimized */}
+      {/* Features - Mobile Optimized with enhanced background */}
       <section id="features" className="relative py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section-specific background elements */}
+        <motion.div
+          className="absolute top-0 left-1/3 w-96 h-96 bg-gradient-to-br from-purple-500/5 to-pink-500/5 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, -90, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -653,9 +811,23 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Final CTA - Mobile Optimized */}
+      {/* Final CTA - Mobile Optimized with enhanced background */}
       <section className="relative py-16 sm:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Section-specific background elements */}
+        <motion.div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-cyan-500/5 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 360, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
