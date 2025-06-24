@@ -496,7 +496,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* How It Works - Mobile Optimized */}
+      {/* How It Works - Mobile Optimized with Glass Boxes */}
       <section className="relative py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -538,12 +538,9 @@ const LandingPage: React.FC = () => {
                 time: "Instant results"
               }
             ].map((item, index) => (
-              <motion.div
+              <GlassTextBox
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
+                delay={index * 0.2}
                 className="relative group text-center"
               >
                 <motion.div 
@@ -578,7 +575,7 @@ const LandingPage: React.FC = () => {
                     {item.time}
                   </motion.span>
                 </div>
-              </motion.div>
+              </GlassTextBox>
             ))}
           </div>
         </div>
