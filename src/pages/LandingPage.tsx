@@ -32,7 +32,9 @@ import {
   Mail,
   Bell,
   ExternalLink,
-  Database
+  Database,
+  X,
+  Check
 } from 'lucide-react';
 import Header from '../components/Header';
 
@@ -72,33 +74,34 @@ const LandingPage: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 border border-red-500/20"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full px-6 py-3 mb-8"
             >
               <motion.div
                 animate={{ rotate: [0, -5, 5, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full"
               >
                 <TrendingDown className="w-4 h-4 text-red-400" />
               </motion.div>
-              <span className="text-red-300 font-medium text-sm">38% of startups fail due to running out of cash</span>
+              <span className="text-white font-semibold">38% of startups fail due to running out of cash</span>
             </motion.div>
 
             <motion.h1 
-              className="text-display mb-6 text-gradient"
+              className="text-display mb-6 text-white"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
               Perfect Your Pitch
               <br />
-              <span className="text-slate-400">Before It's Too Late</span>
+              <span className="text-white/80">Before It's Too Late</span>
             </motion.h1>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-subtitle mb-8 max-w-3xl mx-auto"
+              className="text-subtitle mb-8 max-w-3xl mx-auto text-white"
             >
               Get real feedback from AI investors who simulate actual VC conversations.
               <br />
@@ -115,7 +118,7 @@ const LandingPage: React.FC = () => {
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleJoinWaitlist}
-                className="btn-primary text-lg px-8 py-4 relative group overflow-hidden"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
@@ -138,7 +141,7 @@ const LandingPage: React.FC = () => {
               className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 border border-slate-600/30"
             >
               <Database className="w-4 h-4 text-cyan-400" />
-              <span className="text-slate-300 text-sm">Looking for investors?</span>
+              <span className="text-white text-sm">Looking for investors?</span>
               <Link
                 to="/vc-database"
                 className="text-cyan-400 hover:text-cyan-300 font-medium text-sm transition-colors flex items-center gap-1"
@@ -167,17 +170,19 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <motion.div 
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-red-500/20"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full px-6 py-3 mb-6"
               whileHover={{ scale: 1.05 }}
             >
-              <AlertTriangle className="w-4 h-4 text-red-400" />
-              <span className="text-sm font-medium text-red-300">The Hard Truth</span>
+              <div className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
+                <AlertTriangle className="w-4 h-4 text-red-400" />
+              </div>
+              <span className="text-sm font-medium text-white">The Hard Truth</span>
             </motion.div>
             
-            <h2 className="text-headline mb-6 text-gradient">
+            <h2 className="text-headline mb-6 text-white">
               Why Most Pitches <span className="text-red-400">Fail</span>
             </h2>
-            <p className="text-subtitle max-w-3xl mx-auto">
+            <p className="text-subtitle max-w-3xl mx-auto text-white">
               You practice with friends who ask easy questions. Real investors ask the hard ones.
             </p>
           </motion.div>
@@ -219,8 +224,8 @@ const LandingPage: React.FC = () => {
                 >
                   {item.icon}
                 </motion.div>
-                <h3 className="text-title mb-4">{item.title}</h3>
-                <p className="text-body mb-4">{item.description}</p>
+                <h3 className="text-title mb-4 text-white">{item.title}</h3>
+                <p className="text-white mb-4">{item.description}</p>
                 <motion.div 
                   className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 border border-red-500/20"
                   whileHover={{ scale: 1.05 }}
@@ -233,7 +238,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Solution Section */}
+      {/* Solution Section - Redesigned */}
       <section className="relative section-spacing">
         <div className="max-w-7xl mx-auto container-padding">
           <motion.div
@@ -244,132 +249,105 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <motion.div 
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-slate-600/30"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full px-6 py-3 mb-6"
               whileHover={{ scale: 1.05 }}
             >
-              <Brain className="w-4 h-4 text-indigo-400" />
-              <span className="text-sm font-medium text-slate-300">The Solution</span>
+              <div className="flex items-center justify-center w-8 h-8 bg-indigo-500/20 rounded-full">
+                <Brain className="w-4 h-4 text-indigo-400" />
+              </div>
+              <span className="text-sm font-medium text-white">The Solution</span>
             </motion.div>
             
-            <h2 className="text-headline mb-6 text-gradient">
+            <h2 className="text-headline mb-6 text-white">
               Meet Your <span className="text-gradient-accent">AI Investors</span>
             </h2>
-            <p className="text-subtitle max-w-3xl mx-auto">
+            <p className="text-subtitle max-w-3xl mx-auto text-white">
               Train with AI that thinks like real VCs. Get the tough questions and honest feedback 
               you need to perfect your pitch and raise capital faster.
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Comparison Cards */}
+          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Traditional Practice */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="space-y-8"
+              className="relative"
             >
-              <motion.div 
-                className="card border border-red-500/20"
-                whileHover={{ scale: 1.02 }}
-              >
-                <h3 className="text-title mb-4 flex items-center gap-3">
-                  <Building className="w-6 h-6 text-red-400" />
-                  Traditional Practice
-                </h3>
-                <div className="space-y-3">
+              <div className="bg-gradient-to-br from-red-900/20 to-red-800/10 border border-red-500/20 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 bg-red-500/20 rounded-xl">
+                    <X className="w-6 h-6 text-red-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">Without AgentVC</h3>
+                </div>
+                
+                <div className="space-y-4">
                   {[
-                    'Friends ask: "How\'s business going?"',
-                    'Family says: "Sounds amazing!"',
-                    'Result: False confidence, real rejection'
+                    { icon: "🤝", text: "Practice with friends and family" },
+                    { icon: "💬", text: "Get generic, encouraging feedback" },
+                    { icon: "❓", text: "Face softball questions" },
+                    { icon: "🎭", text: "Build false confidence" },
+                    { icon: "💔", text: "Get rejected by real investors" },
+                    { icon: "⏰", text: "Waste months of preparation time" }
                   ].map((item, index) => (
                     <motion.div 
                       key={index}
-                      className="flex items-center gap-3 text-slate-300"
+                      className="flex items-center gap-4 p-3 bg-red-500/5 rounded-lg border border-red-500/10"
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                       viewport={{ once: true }}
                     >
-                      <div className="w-2 h-2 bg-red-500 rounded-full" />
-                      <span>{item}</span>
+                      <span className="text-2xl">{item.icon}</span>
+                      <span className="text-white">{item.text}</span>
                     </motion.div>
                   ))}
                 </div>
-              </motion.div>
-
-              <motion.div 
-                className="card-elevated border border-indigo-500/30 glow-accent"
-                whileHover={{ scale: 1.02 }}
-              >
-                <h3 className="text-title mb-4 flex items-center gap-3">
-                  <Brain className="w-6 h-6 text-indigo-400" />
-                  AgentVC Training
-                </h3>
-                <div className="space-y-3">
-                  {[
-                    'AI asks: "What\'s your customer acquisition cost?"',
-                    'AI probes: "How do you defend against competition?"',
-                    'Result: Real preparation, successful funding'
-                  ].map((item, index) => (
-                    <motion.div 
-                      key={index}
-                      className="flex items-center gap-3 text-slate-300"
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                    >
-                      <div className="w-2 h-2 bg-indigo-500 rounded-full" />
-                      <span>{item}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
+              </div>
             </motion.div>
 
+            {/* AgentVC Training */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="card-elevated glow-subtle"
+              className="relative"
             >
-              <div className="text-center mb-8">
-                <motion.div 
-                  className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 relative overflow-hidden"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Brain className="w-8 h-8 text-white relative z-10" />
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.div>
-                <h3 className="text-title mb-2">AI Investor Simulation</h3>
-                <p className="text-slate-400">Trained on thousands of real VC conversations</p>
-              </div>
-
-              <div className="space-y-4">
-                {[
-                  "Asks investor-specific questions",
-                  "Adapts to your business model",
-                  "Provides detailed performance analysis",
-                  "Gives actionable improvement tips"
-                ].map((feature, index) => (
-                  <motion.div 
-                    key={index}
-                    className="flex items-center gap-3"
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <CheckCircle className="w-5 h-5 text-indigo-400 flex-shrink-0" />
-                    <span className="text-slate-300">{feature}</span>
-                  </motion.div>
-                ))}
+              <div className="bg-gradient-to-br from-indigo-900/20 to-purple-800/10 border border-indigo-500/20 rounded-2xl p-8 h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl">
+                    <Check className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">With AgentVC</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  {[
+                    { icon: "🤖", text: "Practice with AI investor personas" },
+                    { icon: "🎯", text: "Get specific, actionable feedback" },
+                    { icon: "🔥", text: "Face tough, realistic questions" },
+                    { icon: "💪", text: "Build genuine confidence" },
+                    { icon: "✅", text: "Impress real investors" },
+                    { icon: "🚀", text: "Raise capital faster" }
+                  ].map((item, index) => (
+                    <motion.div 
+                      key={index}
+                      className="flex items-center gap-4 p-3 bg-indigo-500/5 rounded-lg border border-indigo-500/10"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <span className="text-2xl">{item.icon}</span>
+                      <span className="text-white">{item.text}</span>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           </div>
@@ -387,17 +365,19 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <motion.div 
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-slate-600/30"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full px-6 py-3 mb-6"
               whileHover={{ scale: 1.05 }}
             >
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span className="text-sm font-medium text-slate-300">How It Works</span>
+              <div className="flex items-center justify-center w-8 h-8 bg-purple-500/20 rounded-full">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+              </div>
+              <span className="text-sm font-medium text-white">How It Works</span>
             </motion.div>
             
-            <h2 className="text-headline mb-6 text-gradient">
+            <h2 className="text-headline mb-6 text-white">
               Three Steps to <span className="text-gradient-accent">Pitch Mastery</span>
             </h2>
-            <p className="text-subtitle max-w-3xl mx-auto">
+            <p className="text-subtitle max-w-3xl mx-auto text-white">
               From upload to confidence in minutes, not months.
             </p>
           </motion.div>
@@ -458,13 +438,13 @@ const LandingPage: React.FC = () => {
                   <h3 className="text-xl font-semibold text-white mb-4 text-center">
                     {item.title}
                   </h3>
-                  <p className="text-slate-300 text-center mb-6">
+                  <p className="text-white text-center mb-6">
                     {item.description}
                   </p>
                   
                   <div className="text-center">
                     <motion.span 
-                      className="glass rounded-full px-3 py-1 text-sm text-slate-300 font-medium border border-slate-600/30"
+                      className="glass rounded-full px-3 py-1 text-sm text-white font-medium border border-slate-600/30"
                       whileHover={{ scale: 1.05 }}
                     >
                       {item.time}
@@ -488,17 +468,19 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <motion.div 
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-slate-600/30"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-full px-6 py-3 mb-6"
               whileHover={{ scale: 1.05 }}
             >
-              <Zap className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm font-medium text-slate-300">Features</span>
+              <div className="flex items-center justify-center w-8 h-8 bg-yellow-500/20 rounded-full">
+                <Zap className="w-4 h-4 text-yellow-400" />
+              </div>
+              <span className="text-sm font-medium text-white">Features</span>
             </motion.div>
             
-            <h2 className="text-headline mb-6 text-gradient">
+            <h2 className="text-headline mb-6 text-white">
               Everything You Need to <span className="text-gradient-accent">Succeed</span>
             </h2>
-            <p className="text-subtitle max-w-3xl mx-auto">
+            <p className="text-subtitle max-w-3xl mx-auto text-white">
               Built for founders who want to raise capital faster and with more confidence.
             </p>
           </motion.div>
@@ -557,7 +539,7 @@ const LandingPage: React.FC = () => {
                     {feature.title}
                   </h3>
                 </div>
-                <p className="text-slate-300">{feature.description}</p>
+                <p className="text-white">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -575,20 +557,22 @@ const LandingPage: React.FC = () => {
             className="card-elevated glow-accent"
           >
             <motion.div 
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 border border-red-500/20"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full px-6 py-3 mb-8"
               whileHover={{ scale: 1.05 }}
             >
-              <Rocket className="w-4 h-4 text-red-400" />
-              <span className="text-sm font-medium text-red-300">Ready to Start?</span>
+              <div className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full">
+                <Rocket className="w-4 h-4 text-red-400" />
+              </div>
+              <span className="text-sm font-medium text-white">Ready to Start?</span>
             </motion.div>
 
-            <h2 className="text-headline mb-8 text-gradient">
+            <h2 className="text-headline mb-8 text-white">
               Don't Let Your Startup Become
               <br />
               <span className="text-red-400">Part of the 38%</span>
             </h2>
             
-            <p className="text-subtitle mb-12 max-w-2xl mx-auto">
+            <p className="text-subtitle mb-12 max-w-2xl mx-auto text-white">
               Join the waitlist of founders who are preparing to perfect their pitch 
               and raise capital faster. Your next investor meeting could change everything.
             </p>
@@ -598,7 +582,7 @@ const LandingPage: React.FC = () => {
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleJoinWaitlist}
-                className="btn-primary text-lg px-8 py-4 relative group overflow-hidden"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
@@ -612,7 +596,7 @@ const LandingPage: React.FC = () => {
                 </div>
               </motion.button>
               
-              <div className="text-slate-400 text-sm">
+              <div className="text-white text-sm">
                 <p>No credit card required</p>
                 <p>Early access guaranteed</p>
               </div>
@@ -630,21 +614,21 @@ const LandingPage: React.FC = () => {
                 <Brain className="w-5 h-5 text-indigo-400" />
                 AgentVC
               </h3>
-              <p className="text-slate-400">
+              <p className="text-white">
                 AI-powered pitch training for founders who want to raise capital faster.
               </p>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Product</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+              <ul className="space-y-2 text-white">
+                <li><a href="#features" className="hover:text-indigo-400 transition-colors">Features</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Resources</h4>
-              <ul className="space-y-2 text-slate-400">
+              <ul className="space-y-2 text-white">
                 <li>
-                  <Link to="/vc-database" className="hover:text-white transition-colors flex items-center gap-1">
+                  <Link to="/vc-database" className="hover:text-indigo-400 transition-colors flex items-center gap-1">
                     VC Database
                     <Database className="w-3 h-3" />
                   </Link>
@@ -653,13 +637,13 @@ const LandingPage: React.FC = () => {
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Support</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              <ul className="space-y-2 text-white">
+                <li><a href="#" className="hover:text-indigo-400 transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-indigo-400 transition-colors">Contact</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-slate-700/30 mt-8 pt-8 text-center text-slate-500">
+          <div className="border-t border-slate-700/30 mt-8 pt-8 text-center text-white">
             <p>&copy; 2025 AgentVC. All rights reserved.</p>
           </div>
         </div>
