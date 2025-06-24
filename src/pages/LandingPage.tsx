@@ -129,7 +129,7 @@ const LandingPage: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-400" />
-                <span>Real VC-style questions</span>
+                <span>Real VC Conversations</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-green-400" />
