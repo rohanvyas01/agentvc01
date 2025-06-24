@@ -72,7 +72,7 @@ const LandingPage: React.FC = () => {
             className="text-center max-w-4xl mx-auto"
           >
             <motion.h1 
-              className="text-display mb-6 text-white"
+              className="text-display mb-6 text-white text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
@@ -85,7 +85,7 @@ const LandingPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-subtitle mb-8 max-w-3xl mx-auto text-white"
+              className="text-subtitle mb-8 max-w-3xl mx-auto text-white text-center"
             >
               Get real feedback from an AI that thinks like top VCs. Practice unlimited times, 
               perfect your pitch, and <span className="font-bold text-indigo-400">raise capital faster</span> than ever before.
@@ -402,10 +402,10 @@ const LandingPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="relative border-t border-slate-700/30 py-12 container-padding">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="grid md:grid-cols-3 gap-8 justify-items-center">
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center justify-center gap-2">
                 <Bot className="w-5 h-5 text-indigo-400" />
                 AgentVC
               </h3>
