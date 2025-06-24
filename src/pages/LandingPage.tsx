@@ -164,8 +164,8 @@ const LandingPage: React.FC = () => {
       
       <Header />
       
-      {/* Hero Section - Mobile Optimized with padding for fixed header */}
-      <section className="relative overflow-hidden pt-20 sm:pt-24 pb-16 sm:pb-24 lg:pb-40">
+      {/* Hero Section - Adjusted positioning to match Toolhouse layout */}
+      <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent"
           style={{ y: y1 }}
@@ -185,15 +185,16 @@ const LandingPage: React.FC = () => {
           }}
         />
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center max-w-4xl mx-auto"
+            className="text-center max-w-5xl mx-auto"
           >
+            {/* Main Headline - Positioned lower like Toolhouse */}
             <motion.h1 
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 sm:mb-8 text-white text-center leading-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 sm:mb-10 text-white text-center leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
@@ -203,47 +204,49 @@ const LandingPage: React.FC = () => {
               Before It's Too Late
             </motion.h1>
 
+            {/* Subtitle - Positioned lower with more spacing */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-lg sm:text-xl lg:text-2xl mb-8 sm:mb-12 max-w-3xl mx-auto text-white text-center leading-relaxed px-4"
+              className="text-xl sm:text-2xl lg:text-3xl mb-12 sm:mb-16 max-w-4xl mx-auto text-white text-center leading-relaxed px-4"
             >
               Get real feedback from an AI that thinks like top VCs. Practice unlimited times, 
               perfect your pitch, and <span className="font-bold text-indigo-400">raise capital faster</span> than ever before.
             </motion.div>
 
+            {/* CTA Button - Positioned lower */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 sm:mb-16 px-4"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 sm:mb-20 px-4"
             >
-              <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
-                <Rocket className="w-4 h-4 sm:w-5 sm:h-5" />
+              <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto text-xl px-10 py-5">
+                <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
                 Join Waitlist
-                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
+                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
               </GlassButton>
             </motion.div>
 
-            {/* Mobile-optimized statistics */}
+            {/* Statistics - Positioned at bottom of hero */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-8 sm:mt-16 px-4"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12 mt-16 sm:mt-20 px-4"
             >
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-indigo-400 mb-2">5000+</div>
-                <div className="text-white text-sm sm:text-base">Pitch Decks Analyzed</div>
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-indigo-400 mb-3">5000+</div>
+                <div className="text-white text-base sm:text-lg">Pitch Decks Analyzed</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-purple-400 mb-2">3x</div>
-                <div className="text-white text-sm sm:text-base">Faster Capital Raising</div>
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-purple-400 mb-3">3x</div>
+                <div className="text-white text-base sm:text-lg">Faster Capital Raising</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-cyan-400 mb-2">24/7</div>
-                <div className="text-white text-sm sm:text-base">AI Investor Available</div>
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-cyan-400 mb-3">24/7</div>
+                <div className="text-white text-base sm:text-lg">AI Investor Available</div>
               </div>
             </motion.div>
           </motion.div>
