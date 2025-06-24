@@ -77,7 +77,7 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Meet the World's First AI Investor
+              Meet - Rohan the World's First AI Investor
               <br />
             </motion.h1>
 
