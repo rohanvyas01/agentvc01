@@ -33,7 +33,11 @@ import {
   ExternalLink,
   Database,
   X,
-  Check
+  Check,
+  Bot,
+  Mic,
+  Video,
+  TrendingUp as Growth
 } from 'lucide-react';
 import Header from '../components/Header';
 
@@ -72,16 +76,16 @@ const LandingPage: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full px-6 py-3 mb-8"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full px-6 py-3 mb-8"
             >
               <motion.div
-                animate={{ rotate: [0, -5, 5, 0] }}
+                animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="flex items-center justify-center w-8 h-8 bg-red-500/20 rounded-full"
+                className="flex items-center justify-center w-8 h-8 bg-indigo-500/20 rounded-full"
               >
-                <TrendingDown className="w-4 h-4 text-red-400" />
+                <Bot className="w-4 h-4 text-indigo-400" />
               </motion.div>
-              <span className="text-white font-semibold">38% of startups fail due to running out of cash</span>
+              <span className="text-white font-semibold">World's First AI Investor</span>
             </motion.div>
 
             <motion.h1 
@@ -90,9 +94,9 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Perfect Your Pitch
+              Meet Your AI Investor
               <br />
-              <span className="text-white/80">Before It's Too Late</span>
+              <span className="text-gradient-accent">Who Never Says No</span>
             </motion.h1>
 
             <motion.div
@@ -101,7 +105,8 @@ const LandingPage: React.FC = () => {
               transition={{ delay: 0.4, duration: 0.8 }}
               className="text-subtitle mb-8 max-w-3xl mx-auto text-white"
             >
-              The fastest path from pitch deck to term sheet. Streamline your fundraise with AI-driven prep that gets you funded and back to building.
+              Get real feedback from an AI that thinks like top VCs. Practice unlimited times, 
+              perfect your pitch, and <span className="font-bold text-indigo-400">raise capital faster</span> than ever before.
             </motion.div>
 
             <motion.div
@@ -122,11 +127,32 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 />
                 <div className="relative z-10 flex items-center gap-2">
-                  <Mail className="w-5 h-5" />
-                  Get access to 200 VC's emails
+                  <Rocket className="w-5 h-5" />
+                  Start Training with AI Investor
                   <ExternalLink className="w-4 h-4" />
                 </div>
               </motion.button>
+            </motion.div>
+
+            {/* Social Proof */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.8 }}
+              className="flex items-center justify-center gap-8 text-sm text-white/80"
+            >
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span>Unlimited practice sessions</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span>Real VC-style questions</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span>Instant detailed feedback</span>
+              </div>
             </motion.div>
           </motion.div>
         </div>
@@ -148,10 +174,11 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <h2 className="text-headline mb-6 text-white">
-              Why Most Pitches <span className="text-red-400">Fail</span>
+              Why Founders <span className="text-red-400">Struggle</span> to Raise Capital
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
-              You practice with friends who ask easy questions. Real investors ask the hard ones.
+              Most founders practice with the wrong people and get the wrong feedback. 
+              Real investors ask tough questions you've never heard before.
             </p>
           </motion.div>
 
@@ -159,20 +186,20 @@ const LandingPage: React.FC = () => {
             {[
               {
                 icon: <Users className="w-8 h-8 text-red-400" />,
-                title: "Wrong Practice Partners",
-                description: "Friends and family give encouragement, not the brutal honesty you need to prepare for real investors.",
+                title: "Practice with Friends",
+                description: "Your friends and family give you encouragement, not the brutal honesty real investors will deliver.",
                 stat: "87% practice with non-investors"
               },
               {
                 icon: <MessageSquare className="w-8 h-8 text-orange-400" />,
                 title: "Softball Questions",
-                description: "Generic questions like 'tell me about your business' don't prepare you for investor-specific concerns.",
+                description: "Generic questions like 'tell me about your business' don't prepare you for investor due diligence.",
                 stat: "Only 23% face hard questions"
               },
               {
                 icon: <Target className="w-8 h-8 text-pink-400" />,
-                title: "No Real Feedback",
-                description: "Vague praise doesn't help you improve. You need specific, actionable insights on what investors care about.",
+                title: "Vague Feedback",
+                description: "Hearing 'sounds good' doesn't help you improve. You need specific insights on what investors actually care about.",
                 stat: "91% get generic feedback"
               }
             ].map((item, index) => (
@@ -217,17 +244,17 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <h2 className="text-headline mb-6 text-white">
-              Meet Your <span className="text-gradient-accent">AI Investors</span>
+              Your AI Investor <span className="text-gradient-accent">Changes Everything</span>
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
-              Train with AI that thinks like real VCs. Get the tough questions and honest feedback 
-              you need to perfect your pitch and raise capital faster.
+              Train with an AI that thinks like Sequoia, a16z, and other top VCs. 
+              Get the real feedback you need to raise capital faster.
             </p>
           </motion.div>
 
           {/* Two Column Comparison Layout */}
           <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {/* Without AgentVC - Red */}
+            {/* Without AI Investor - Red */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -239,17 +266,17 @@ const LandingPage: React.FC = () => {
                 <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
                   <X className="w-5 h-5 text-red-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white">Without AgentVC</h3>
+                <h3 className="text-2xl font-bold text-white">Without AI Investor</h3>
               </div>
               
               <div className="space-y-4">
                 {[
-                  "Practice with friends who give softball questions",
-                  "Get vague feedback like 'sounds good'",
-                  "Face real investors unprepared",
-                  "Struggle with tough follow-up questions",
+                  "Practice with friends who ask easy questions",
+                  "Get vague feedback like 'sounds interesting'",
+                  "Face real investors completely unprepared",
+                  "Struggle with tough due diligence questions",
                   "Miss funding opportunities due to poor performance",
-                  "Waste months preparing the wrong way"
+                  "Spend months preparing the wrong way"
                 ].map((item, index) => (
                   <motion.div 
                     key={index}
@@ -266,7 +293,7 @@ const LandingPage: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* With AgentVC - Green */}
+            {/* With AI Investor - Green */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -278,16 +305,16 @@ const LandingPage: React.FC = () => {
                 <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <Check className="w-5 h-5 text-green-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white">With AgentVC</h3>
+                <h3 className="text-2xl font-bold text-white">With AI Investor</h3>
               </div>
               
               <div className="space-y-4">
                 {[
-                  "Practice with AI that asks real investor questions",
-                  "Get detailed, actionable feedback on your performance",
-                  "Face real investors with confidence",
-                  "Handle tough questions like a pro",
-                  "Increase your chances of securing funding",
+                  "Practice with AI that asks real VC questions",
+                  "Get detailed, actionable feedback on every answer",
+                  "Face real investors with complete confidence",
+                  "Handle tough questions like a seasoned entrepreneur",
+                  "Increase your funding success rate dramatically",
                   "Perfect your pitch in days, not months"
                 ].map((item, index) => (
                   <motion.div 
@@ -319,10 +346,10 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <h2 className="text-headline mb-6 text-white">
-              Three Steps to <span className="text-gradient-accent">Pitch Mastery</span>
+              How Your <span className="text-gradient-accent">AI Investor</span> Works
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
-              From upload to confidence in minutes, not months.
+              From pitch deck to funding-ready in three simple steps.
             </p>
           </motion.div>
 
@@ -331,22 +358,22 @@ const LandingPage: React.FC = () => {
               {
                 step: "01",
                 icon: <Upload className="w-6 h-6 text-indigo-400" />,
-                title: "Upload Your Deck",
-                description: "Our AI analyzes your pitch deck to understand your business model, market, and key value propositions.",
+                title: "Upload Your Pitch Deck",
+                description: "Your AI investor analyzes your deck to understand your business model, market opportunity, and competitive landscape.",
                 time: "30 seconds"
               },
               {
                 step: "02",
-                icon: <MessageSquare className="w-6 h-6 text-purple-400" />,
-                title: "Face AI Investors",
-                description: "Practice with different investor personas who ask questions based on real VC conversation patterns.",
+                icon: <Mic className="w-6 h-6 text-purple-400" />,
+                title: "Practice Your Pitch",
+                description: "Present to your AI investor who asks tough questions based on real VC conversation patterns and your specific business.",
                 time: "10-15 minutes"
               },
               {
                 step: "03",
                 icon: <BarChart3 className="w-6 h-6 text-cyan-400" />,
-                title: "Get Detailed Feedback",
-                description: "Receive specific insights on your performance with actionable recommendations for improvement.",
+                title: "Get Real Feedback",
+                description: "Receive detailed analysis of your performance with specific recommendations to improve your pitch and raise capital faster.",
                 time: "Instant results"
               }
             ].map((item, index) => (
@@ -407,10 +434,10 @@ const LandingPage: React.FC = () => {
             className="text-center mb-16"
           >
             <h2 className="text-headline mb-6 text-white">
-              Everything You Need to <span className="text-gradient-accent">Succeed</span>
+              Why Your AI Investor is <span className="text-gradient-accent">Different</span>
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
-              Built for founders who want to raise capital faster and with more confidence.
+              Built by analyzing thousands of real VC conversations and successful funding rounds.
             </p>
           </motion.div>
 
@@ -418,33 +445,33 @@ const LandingPage: React.FC = () => {
             {[
               {
                 icon: <Brain className="w-6 h-6 text-indigo-400" />,
-                title: "AI Investor Personas",
-                description: "Angel, Seed, Series A investors with unique questioning styles"
+                title: "Thinks Like Real VCs",
+                description: "Trained on actual investor conversations from top-tier firms"
               },
               {
                 icon: <Target className="w-6 h-6 text-purple-400" />,
-                title: "Contextual Questions",
-                description: "Questions tailored to your specific business and industry"
+                title: "Asks Tough Questions",
+                description: "Challenges you on market size, competition, and business model"
               },
               {
                 icon: <Shield className="w-6 h-6 text-green-400" />,
-                title: "Private & Secure",
-                description: "Your pitch data remains completely confidential"
+                title: "Never Judges You",
+                description: "Practice unlimited times without fear of rejection"
               },
               {
                 icon: <BarChart3 className="w-6 h-6 text-cyan-400" />,
-                title: "Performance Analytics",
-                description: "Track your improvement over time with detailed metrics"
+                title: "Detailed Performance Analysis",
+                description: "Get specific feedback on every aspect of your pitch"
               },
               {
                 icon: <Lightbulb className="w-6 h-6 text-yellow-400" />,
-                title: "Instant Feedback",
-                description: "Get actionable insights immediately after each session"
+                title: "Actionable Insights",
+                description: "Learn exactly what to improve before your next investor meeting"
               },
               {
-                icon: <Rocket className="w-6 h-6 text-pink-400" />,
-                title: "Unlimited Practice",
-                description: "Train as much as you need to build real confidence"
+                icon: <Growth className="w-6 h-6 text-pink-400" />,
+                title: "Faster Capital Raising",
+                description: "Founders using AI training raise capital 3x faster"
               }
             ].map((feature, index) => (
               <motion.div
@@ -485,15 +512,23 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl"
           >
+            <motion.div 
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-full px-4 py-2 mb-8"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Bot className="w-4 h-4 text-indigo-400" />
+              <span className="text-sm font-medium text-white">Ready to Meet Your AI Investor?</span>
+            </motion.div>
+
             <h2 className="text-headline mb-8 text-white">
-              Don't Let Your Startup Become
+              Stop Practicing with Friends.
               <br />
-              <span className="text-red-400">Part of the 38%</span>
+              <span className="text-gradient-accent">Start Training with AI.</span>
             </h2>
             
             <p className="text-subtitle mb-12 max-w-2xl mx-auto text-white">
-              Join the waitlist of founders who are preparing to perfect their pitch 
-              and raise capital faster. Your next investor meeting could change everything.
+              Join thousands of founders who are using AI to perfect their pitch 
+              and raise capital faster. Your AI investor is waiting to help you succeed.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -509,15 +544,15 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 />
                 <div className="relative z-10 flex items-center gap-2">
-                  <Mail className="w-5 h-5" />
-                  Get access to 200 VC's emails
+                  <Rocket className="w-5 h-5" />
+                  Meet Your AI Investor Now
                   <ExternalLink className="w-4 h-4" />
                 </div>
               </motion.button>
               
               <div className="text-white text-sm">
-                <p>No credit card required</p>
-                <p>Early access guaranteed</p>
+                <p>✓ No credit card required</p>
+                <p>✓ Unlimited practice sessions</p>
               </div>
             </div>
           </motion.div>
@@ -530,17 +565,18 @@ const LandingPage: React.FC = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Brain className="w-5 h-5 text-indigo-400" />
+                <Bot className="w-5 h-5 text-indigo-400" />
                 AgentVC
               </h3>
               <p className="text-white">
-                AI-powered pitch training for founders who want to raise capital faster.
+                The world's first AI investor that helps founders raise capital faster through real feedback and unlimited practice.
               </p>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Product</h4>
               <ul className="space-y-2 text-white">
-                <li><a href="#features" className="hover:text-indigo-400 transition-colors">Features</a></li>
+                <li><a href="#features" className="hover:text-indigo-400 transition-colors">AI Investor Features</a></li>
+                <li><a href="#" className="hover:text-indigo-400 transition-colors">How It Works</a></li>
               </ul>
             </div>
             <div>
@@ -552,7 +588,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           <div className="border-t border-slate-700/30 mt-8 pt-8 text-center text-white">
-            <p>&copy; 2025 AgentVC. All rights reserved.</p>
+            <p>&copy; 2025 AgentVC. The world's first AI investor. All rights reserved.</p>
           </div>
         </div>
       </footer>

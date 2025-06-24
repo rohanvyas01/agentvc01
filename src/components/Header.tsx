@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, ExternalLink } from 'lucide-react';
+import { Bot, ExternalLink } from 'lucide-react';
 
 const Header: React.FC = () => {
   const handleJoinWaitlist = () => {
@@ -23,7 +23,7 @@ const Header: React.FC = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Zap className="w-5 h-5 text-white relative z-10" />
+              <Bot className="w-5 h-5 text-white relative z-10" />
               <motion.div
                 className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
                 whileHover={{ opacity: 1 }}
@@ -36,6 +36,13 @@ const Header: React.FC = () => {
               transition={{ duration: 0.2 }}
             >
               AgentVC
+            </motion.span>
+            <motion.span 
+              className="text-xs bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 py-1 rounded-full font-medium"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              AI Investor
             </motion.span>
           </div>
 
@@ -54,7 +61,7 @@ const Header: React.FC = () => {
               />
               <div className="relative z-10 flex items-center gap-2">
                 <ExternalLink className="w-4 h-4" />
-                Get Started
+                Meet AI Investor
               </div>
             </motion.button>
           </div>
