@@ -170,7 +170,6 @@ const LandingPage: React.FC = () => {
                 icon: <Users className="w-8 h-8 text-red-400" />,
                 title: "Practice with Friends",
                 description: "Your friends and family give you encouragement, not the brutal honesty real investors will deliver.",
-                stat: "87% practice with non-investors"
               },
               {
                 icon: <MessageSquare className="w-8 h-8 text-orange-400" />,
