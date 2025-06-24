@@ -206,7 +206,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Solution Section - Converted to centered card layout */}
+      {/* Solution Section - Two Column Comparison */}
       <section className="relative section-spacing">
         <div className="max-w-7xl mx-auto container-padding">
           <motion.div
@@ -225,48 +225,81 @@ const LandingPage: React.FC = () => {
             </p>
           </motion.div>
 
-          {/* Centered Card Layout */}
-          <div className="flex justify-center">
+          {/* Two Column Comparison Layout */}
+          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Without AgentVC - Red */}
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="max-w-md w-full p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl text-center"
+              className="bg-gradient-to-br from-red-900/20 to-red-800/10 border border-red-500/30 rounded-2xl p-8"
             >
-              <motion.div 
-                className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-6 relative overflow-hidden"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Brain className="w-8 h-8 text-white relative z-10" />
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
+                  <X className="w-5 h-5 text-red-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Without AgentVC</h3>
+              </div>
               
-              <h3 className="text-2xl font-bold text-white mb-3">AI Investor Simulation</h3>
-              <p className="text-white/80 mb-8">Trained on thousands of real VC conversations</p>
-
               <div className="space-y-4">
                 {[
-                  "Asks investor-specific questions",
-                  "Adapts to your business model", 
-                  "Provides detailed performance analysis",
-                  "Gives actionable improvement tips"
-                ].map((feature, index) => (
+                  "Practice with friends who give softball questions",
+                  "Get vague feedback like 'sounds good'",
+                  "Face real investors unprepared",
+                  "Struggle with tough follow-up questions",
+                  "Miss funding opportunities due to poor performance",
+                  "Waste months preparing the wrong way"
+                ].map((item, index) => (
                   <motion.div 
                     key={index}
-                    className="flex items-center gap-3 text-left"
+                    className="flex items-start gap-3"
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     viewport={{ once: true }}
                   >
-                    <CheckCircle className="w-5 h-5 text-indigo-400 flex-shrink-0" />
-                    <span className="text-white">{feature}</span>
+                    <X className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-white">{item}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* With AgentVC - Green */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="bg-gradient-to-br from-green-900/20 to-green-800/10 border border-green-500/30 rounded-2xl p-8"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Check className="w-5 h-5 text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">With AgentVC</h3>
+              </div>
+              
+              <div className="space-y-4">
+                {[
+                  "Practice with AI that asks real investor questions",
+                  "Get detailed, actionable feedback on your performance",
+                  "Face real investors with confidence",
+                  "Handle tough questions like a pro",
+                  "Increase your chances of securing funding",
+                  "Perfect your pitch in days, not months"
+                ].map((item, index) => (
+                  <motion.div 
+                    key={index}
+                    className="flex items-start gap-3"
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-white">{item}</span>
                   </motion.div>
                 ))}
               </div>
