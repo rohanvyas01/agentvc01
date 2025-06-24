@@ -314,7 +314,6 @@ const LandingPage: React.FC = () => {
               Why Your AI Investor is <span className="text-gradient-accent">Different</span>
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
-              Built by analyzing thousands of real VC conversations and successful funding rounds.
             </p>
           </motion.div>
 
