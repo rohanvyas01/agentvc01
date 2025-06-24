@@ -38,7 +38,6 @@ import {
 import Header from '../components/Header';
 
 const LandingPage: React.FC = () => {
-  const navigate = useNavigate();
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 300], [0, -50]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
@@ -380,7 +379,7 @@ const LandingPage: React.FC = () => {
                 <p>Early access guaranteed</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
