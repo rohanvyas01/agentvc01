@@ -1,4 +1,4 @@
- import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
   Target, 
@@ -19,3 +19,821 @@ import {
   Rocket,
   Eye,
   Award,
+  Lightbulb,
+  CheckCircle2,
+  TrendingDown,
+  Building,
+  Briefcase,
+  PieChart,
+  Sparkles,
+  ChevronRight,
+  Quote,
+  Mail,
+  Bell,
+  ExternalLink,
+  Database,
+  Bot,
+  GraduationCap,
+  TrendingUpIcon,
+  Handshake
+} from 'lucide-react';
+import Header from '../components/Header';
+
+const LandingPage: React.FC = () => {
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 300], [0, -50]);
+  const y2 = useTransform(scrollY, [0, 300], [0, -100]);
+
+  const handleJoinWaitlist = () => {
+    window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-pattern-dots opacity-30" />
+      
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent"
+          style={{ y: y1 }}
+        />
+        
+        <div className="relative max-w-7xl mx-auto container-padding section-spacing">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            {/* Announcement Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 border border-red-500/20"
+            >
+              <motion.div
+                animate={{ rotate: [0, -5, 5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <TrendingDown className="w-4 h-4 text-red-400" />
+              </motion.div>
+              <span className="text-red-300 font-medium text-sm">38% of startups fail due to running out of cash</span>
+            </motion.div>
+
+            <motion.h1 
+              className="text-display mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              Perfect Your Pitch
+              <br />
+              Before It's Too Late
+            </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-subtitle mb-8 max-w-3xl mx-auto"
+            >
+              Get real feedback from AI investors who simulate actual VC conversations.
+              <br />
+              <span className="font-semibold">Make raising capital easier and faster.</span>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            >
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleJoinWaitlist}
+                className="btn-primary text-lg px-8 py-4 relative group overflow-hidden"
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <div className="relative z-10 flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Join the Waitlist
+                  <ExternalLink className="w-4 h-4" />
+                </div>
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Problem Section */}
+      <section className="relative section-spacing">
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-transparent"
+          style={{ y: y2 }}
+        />
+        
+        <div className="relative max-w-7xl mx-auto container-padding">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-red-500/20"
+              whileHover={{ scale: 1.05 }}
+            >
+              <AlertTriangle className="w-4 h-4 text-red-400" />
+              <span className="text-sm font-medium text-red-300">The Hard Truth</span>
+            </motion.div>
+            
+            <h2 className="text-headline mb-6">
+              Why Most Pitches <span className="text-red-400">Fail</span>
+            </h2>
+            <p className="text-subtitle max-w-3xl mx-auto">
+              You practice with friends who ask easy questions. Real investors ask the hard ones.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <Users className="w-8 h-8 text-red-400" />,
+                title: "Wrong Practice Partners",
+                description: "Friends and family give encouragement, not the brutal honesty you need to prepare for real investors.",
+                stat: "87% practice with non-investors"
+              },
+              {
+                icon: <MessageSquare className="w-8 h-8 text-orange-400" />,
+                title: "Softball Questions",
+                description: "Generic questions like 'tell me about your business' don't prepare you for investor-specific concerns.",
+                stat: "Only 23% face hard questions"
+              },
+              {
+                icon: <Target className="w-8 h-8 text-pink-400" />,
+                title: "No Real Feedback",
+                description: "Vague praise doesn't help you improve. You need specific, actionable insights on what investors care about.",
+                stat: "91% get generic feedback"
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="card hover-lift hover-glow text-center group"
+                whileHover={{ y: -4 }}
+              >
+                <motion.div 
+                  className="flex justify-center mb-6"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {item.icon}
+                </motion.div>
+                <h3 className="text-title mb-4">{item.title}</h3>
+                <p className="text-body mb-4">{item.description}</p>
+                <motion.div 
+                  className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 border border-red-500/20"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <span className="text-sm text-red-300 font-medium">{item.stat}</span>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Meet Rohan Section */}
+      <section className="relative section-spacing">
+        <div className="max-w-7xl mx-auto container-padding">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-indigo-500/30"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Bot className="w-4 h-4 text-indigo-400" />
+              <span className="text-sm font-medium text-indigo-300">Meet Your AI Partner</span>
+            </motion.div>
+            
+            <h2 className="text-headline mb-6">
+              Meet <span className="text-gradient-accent">Rohan</span>
+            </h2>
+            <p className="text-subtitle max-w-3xl mx-auto">
+              Your AI investment partner with real-world VC experience and institutional-grade evaluation methodology.
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left side - Rohan's Profile */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="card-elevated border border-indigo-500/30 glow-accent"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center relative overflow-hidden"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Bot className="w-8 h-8 text-white relative z-10" />
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Rohan</h3>
+                  <p className="text-indigo-400 font-medium">AI Investment Partner</p>
+                </div>
+              </div>
+
+              {/* Professional Background */}
+              <div className="space-y-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <GraduationCap className="w-5 h-5 text-indigo-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-medium">MBA, Stanford Graduate School of Business</p>
+                    <p className="text-slate-400 text-sm">Specialized in Venture Capital & Entrepreneurship</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <Briefcase className="w-5 h-5 text-purple-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-medium">8+ Years in Venture Capital</p>
+                    <p className="text-slate-400 text-sm">Startup evaluation and due diligence expertise</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <TrendingUpIcon className="w-5 h-5 text-cyan-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-medium">500+ Startups Evaluated</p>
+                    <p className="text-slate-400 text-sm">Series A to C rounds across multiple sectors</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <Target className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
+                  <div>
+                    <p className="text-white font-medium">Investment Focus</p>
+                    <p className="text-slate-400 text-sm">SaaS, FinTech, B2B Marketplaces</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quote */}
+              <div className="border-t border-slate-700/30 pt-6">
+                <Quote className="w-6 h-6 text-indigo-400 mb-3" />
+                <p className="text-slate-300 italic leading-relaxed">
+                  "I've seen thousands of pitches. The difference between funded and unfunded startups 
+                  isn't just the idea—it's how well founders can articulate their vision and address 
+                  investor concerns with confidence."
+                </p>
+                <p className="text-indigo-400 font-medium mt-3">— Rohan, AI Investment Partner</p>
+              </div>
+            </motion.div>
+
+            {/* Right side - Capabilities */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              {[
+                {
+                  icon: <Brain className="w-6 h-6 text-indigo-400" />,
+                  title: "Investment Methodology",
+                  description: "Evaluates your business model, market opportunity, and competitive positioning using proven VC frameworks."
+                },
+                {
+                  icon: <MessageSquare className="w-6 h-6 text-purple-400" />,
+                  title: "Due Diligence Focus",
+                  description: "Asks the tough questions real investors care about: customer acquisition costs, unit economics, and scalability."
+                },
+                {
+                  icon: <BarChart3 className="w-6 h-6 text-cyan-400" />,
+                  title: "Performance Analysis",
+                  description: "Provides comprehensive feedback on your pitch clarity, confidence, and ability to address investor concerns."
+                },
+                {
+                  icon: <Handshake className="w-6 h-6 text-green-400" />,
+                  title: "Investment Readiness",
+                  description: "Helps you understand what investors look for and how to position your startup for successful funding rounds."
+                }
+              ].map((capability, index) => (
+                <motion.div 
+                  key={index}
+                  className="card hover-lift"
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ x: 4 }}
+                >
+                  <div className="flex items-start gap-4">
+                    <motion.div 
+                      className="w-12 h-12 glass rounded-xl flex items-center justify-center border border-slate-600/30 flex-shrink-0"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {capability.icon}
+                    </motion.div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-white mb-2">
+                        {capability.title}
+                      </h4>
+                      <p className="text-slate-300">{capability.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              {/* CTA Button */}
+              <motion.div 
+                className="pt-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                <motion.button
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleJoinWaitlist}
+                  className="btn-primary text-lg px-8 py-4 w-full relative group overflow-hidden"
+                >
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  <div className="relative z-10 flex items-center justify-center gap-2">
+                    <Bot className="w-5 h-5" />
+                    Pitch to Rohan
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Solution Section */}
+      <section className="relative section-spacing">
+        <div className="max-w-7xl mx-auto container-padding">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-slate-600/30"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Brain className="w-4 h-4 text-indigo-400" />
+              <span className="text-sm font-medium text-slate-300">The Solution</span>
+            </motion.div>
+            
+            <h2 className="text-headline mb-6">
+              Meet Your <span className="text-gradient-accent">AI Investors</span>
+            </h2>
+            <p className="text-subtitle max-w-3xl mx-auto">
+              Train with AI that thinks like real VCs. Get the tough questions and honest feedback 
+              you need to perfect your pitch and raise capital faster.
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <motion.div 
+                className="card border border-red-500/20"
+                whileHover={{ scale: 1.02 }}
+              >
+                <h3 className="text-title mb-4 flex items-center gap-3">
+                  <Building className="w-6 h-6 text-red-400" />
+                  Traditional Practice
+                </h3>
+                <div className="space-y-3">
+                  {[
+                    'Friends ask: "How\'s business going?"',
+                    'Family says: "Sounds amazing!"',
+                    'Result: False confidence, real rejection'
+                  ].map((item, index) => (
+                    <motion.div 
+                      key={index}
+                      className="flex items-center gap-3 text-slate-300"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="w-2 h-2 bg-red-500 rounded-full" />
+                      <span>{item}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div 
+                className="card-elevated border border-indigo-500/30 glow-accent"
+                whileHover={{ scale: 1.02 }}
+              >
+                <h3 className="text-title mb-4 flex items-center gap-3">
+                  <Brain className="w-6 h-6 text-indigo-400" />
+                  AgentVC Training
+                </h3>
+                <div className="space-y-3">
+                  {[
+                    'AI asks: "What\'s your customer acquisition cost?"',
+                    'AI probes: "How do you defend against competition?"',
+                    'Result: Real preparation, successful funding'
+                  ].map((item, index) => (
+                    <motion.div 
+                      key={index}
+                      className="flex items-center gap-3 text-slate-300"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="w-2 h-2 bg-indigo-500 rounded-full" />
+                      <span>{item}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="card-elevated glow-subtle"
+            >
+              <div className="text-center mb-8">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 relative overflow-hidden"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Brain className="w-8 h-8 text-white relative z-10" />
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-500 opacity-0"
+                    whileHover={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </motion.div>
+                <h3 className="text-title mb-2">AI Investor Simulation</h3>
+                <p className="text-slate-400">Trained on thousands of real VC conversations</p>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  "Asks investor-specific questions",
+                  "Adapts to your business model",
+                  "Provides detailed performance analysis",
+                  "Gives actionable improvement tips"
+                ].map((feature, index) => (
+                  <motion.div 
+                    key={index}
+                    className="flex items-center gap-3"
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <CheckCircle className="w-5 h-5 text-indigo-400 flex-shrink-0" />
+                    <span className="text-slate-300">{feature}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="relative section-spacing">
+        <div className="max-w-7xl mx-auto container-padding">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-slate-600/30"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <span className="text-sm font-medium text-slate-300">How It Works</span>
+            </motion.div>
+            
+            <h2 className="text-headline mb-6">
+              Three Steps to <span className="text-gradient-accent">Pitch Mastery</span>
+            </h2>
+            <p className="text-subtitle max-w-3xl mx-auto">
+              From upload to confidence in minutes, not months.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                step: "01",
+                icon: <Upload className="w-6 h-6 text-indigo-400" />,
+                title: "Upload Your Deck",
+                description: "Our AI analyzes your pitch deck to understand your business model, market, and key value propositions.",
+                time: "30 seconds"
+              },
+              {
+                step: "02",
+                icon: <MessageSquare className="w-6 h-6 text-purple-400" />,
+                title: "Face AI Investors",
+                description: "Practice with different investor personas who ask questions based on real VC conversation patterns.",
+                time: "10-15 minutes"
+              },
+              {
+                step: "03",
+                icon: <BarChart3 className="w-6 h-6 text-cyan-400" />,
+                title: "Get Detailed Feedback",
+                description: "Receive specific insights on your performance with actionable recommendations for improvement.",
+                time: "Instant results"
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="relative group"
+              >
+                <motion.div 
+                  className="card hover-lift hover-glow h-full"
+                  whileHover={{ y: -4 }}
+                >
+                  <motion.div 
+                    className="absolute -top-4 left-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-3 py-1 rounded-full font-semibold text-sm"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    {item.step}
+                  </motion.div>
+                  
+                  <div className="mt-4 mb-6 flex justify-center">
+                    <motion.div 
+                      className="w-12 h-12 glass rounded-xl flex items-center justify-center border border-slate-600/30"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {item.icon}
+                    </motion.div>
+                  </div>
+                  
+                  <h3 className="text-xl font-semibold text-white mb-4 text-center">
+                    {item.title}
+                  </h3>
+                  <p className="text-slate-300 text-center mb-6">
+                    {item.description}
+                  </p>
+                  
+                  <div className="text-center">
+                    <motion.span 
+                      className="glass rounded-full px-3 py-1 text-sm text-slate-300 font-medium border border-slate-600/30"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      {item.time}
+                    </motion.span>
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="relative section-spacing">
+        <div className="max-w-7xl mx-auto container-padding">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 border border-slate-600/30"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Zap className="w-4 h-4 text-yellow-400" />
+              <span className="text-sm font-medium text-slate-300">Features</span>
+            </motion.div>
+            
+            <h2 className="text-headline mb-6">
+              Everything You Need to <span className="text-gradient-accent">Succeed</span>
+            </h2>
+            <p className="text-subtitle max-w-3xl mx-auto">
+              Built for founders who want to raise capital faster and with more confidence.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                icon: <Brain className="w-6 h-6 text-indigo-400" />,
+                title: "AI Investor Personas",
+                description: "Angel, Seed, Series A investors with unique questioning styles"
+              },
+              {
+                icon: <Target className="w-6 h-6 text-purple-400" />,
+                title: "Contextual Questions",
+                description: "Questions tailored to your specific business and industry"
+              },
+              {
+                icon: <Shield className="w-6 h-6 text-green-400" />,
+                title: "Private & Secure",
+                description: "Your pitch data remains completely confidential"
+              },
+              {
+                icon: <BarChart3 className="w-6 h-6 text-cyan-400" />,
+                title: "Performance Analytics",
+                description: "Track your improvement over time with detailed metrics"
+              },
+              {
+                icon: <Lightbulb className="w-6 h-6 text-yellow-400" />,
+                title: "Instant Feedback",
+                description: "Get actionable insights immediately after each session"
+              },
+              {
+                icon: <Rocket className="w-6 h-6 text-pink-400" />,
+                title: "Unlimited Practice",
+                description: "Train as much as you need to build real confidence"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="card hover-lift hover-glow group"
+                whileHover={{ y: -2 }}
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <motion.div 
+                    className="w-12 h-12 glass rounded-xl flex items-center justify-center border border-slate-600/30"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {feature.icon}
+                  </motion.div>
+                  <h3 className="text-lg font-semibold text-white">
+                    {feature.title}
+                  </h3>
+                </div>
+                <p className="text-slate-300">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="relative section-spacing">
+        <div className="max-w-4xl mx-auto container-padding text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="card-elevated glow-accent"
+          >
+            <motion.div 
+              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8 border border-red-500/20"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Rocket className="w-4 h-4 text-red-400" />
+              <span className="text-sm font-medium text-red-300">Ready to Start?</span>
+            </motion.div>
+
+            <h2 className="text-headline mb-8">
+              Don't Let Your Startup Become
+              <br />
+              <span className="text-red-400">Part of the 38%</span>
+            </h2>
+            
+            <p className="text-subtitle mb-12 max-w-2xl mx-auto">
+              Join the waitlist of founders who are preparing to perfect their pitch 
+              and raise capital faster. Your next investor meeting could change everything.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleJoinWaitlist}
+                className="btn-primary text-lg px-8 py-4 relative group overflow-hidden"
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <div className="relative z-10 flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Join the Waitlist
+                  <ExternalLink className="w-4 h-4" />
+                </div>
+              </motion.button>
+              
+              <div className="text-slate-400 text-sm">
+                <p>No credit card required</p>
+                <p>Early access guaranteed</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative border-t border-slate-700/30 py-12 container-padding">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Brain className="w-5 h-5 text-indigo-400" />
+                AgentVC
+              </h3>
+              <p className="text-slate-400">
+                AI-powered pitch training with Rohan, your professional AI investment partner.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Product</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">AI Partner</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li><span className="hover:text-white transition-colors">Pitch to Rohan</span></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white mb-4">Support</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-slate-700/30 mt-8 pt-8 text-center text-slate-500">
+            <p>&copy; 2025 AgentVC. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default LandingPage;
