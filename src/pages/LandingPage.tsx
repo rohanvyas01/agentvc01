@@ -229,9 +229,9 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <img
-                    src="/files_5605307-1750763797337-image.png"
+                    src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=800"
                     alt="Rohan - Your AI Investor"
-                    className="w-80 h-80 object-cover rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl"
+                    className="w-96 h-96 object-cover rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl"
                   />
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
                 </motion.div>
