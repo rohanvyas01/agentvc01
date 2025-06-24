@@ -180,7 +180,6 @@ const LandingPage: React.FC = () => {
                 icon: <Target className="w-8 h-8 text-pink-400" />,
                 title: "Vague Feedback",
                 description: "Hearing 'sounds good' doesn't help you improve. You need specific insights on what investors actually care about.",
-                stat: "91% get generic feedback"
               }
             ].map((item, index) => (
               <motion.div
