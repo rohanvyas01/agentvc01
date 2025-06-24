@@ -87,63 +87,121 @@ const LandingPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-      {/* Enhanced Animated Background Elements */}
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Revolutionary New Background Design */}
       <div className="fixed inset-0 pointer-events-none">
-        {/* Primary gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-purple-900/10 to-slate-900/30" />
+        {/* Base gradient with mesh effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-indigo-950/50 to-purple-950/30" />
         
-        {/* Animated floating orbs */}
+        {/* Animated mesh gradient overlay */}
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-cyan-500/10 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-l from-pink-500/5 via-blue-500/5 to-green-500/5 animate-pulse" style={{ animationDelay: '1s' }} />
+        </div>
+        
+        {/* Dynamic geometric patterns */}
+        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(99, 102, 241, 0.1)" strokeWidth="1"/>
+            </pattern>
+            <pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse">
+              <circle cx="20" cy="20" r="1" fill="rgba(139, 92, 246, 0.2)"/>
+            </pattern>
+            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(99, 102, 241, 0.3)" />
+              <stop offset="50%" stopColor="rgba(139, 92, 246, 0.2)" />
+              <stop offset="100%" stopColor="rgba(6, 182, 212, 0.1)" />
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+          <rect width="100%" height="100%" fill="url(#dots)" />
+        </svg>
+        
+        {/* Floating geometric shapes */}
         <motion.div
-          className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full blur-xl"
+          className="absolute top-20 left-10 w-32 h-32 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
+            filter: 'blur(20px)'
+          }}
           animate={{
-            x: [0, 30, 0],
-            y: [0, -20, 0],
-            scale: [1, 1.1, 1],
+            x: [0, 50, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.2, 1],
           }}
           transition={{
-            duration: 8,
+            duration: 12,
             repeat: Infinity,
             ease: "easeInOut"
           }}
         />
+        
         <motion.div
-          className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-full blur-xl"
+          className="absolute top-1/3 right-20 w-24 h-24 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%)',
+            filter: 'blur(15px)'
+          }}
           animate={{
-            x: [0, -25, 0],
-            y: [0, 15, 0],
-            scale: [1, 0.9, 1],
+            x: [0, -40, 0],
+            y: [0, 25, 0],
+            scale: [1, 0.8, 1],
           }}
           transition={{
-            duration: 6,
+            duration: 8,
             repeat: Infinity,
             ease: "easeInOut",
             delay: 1
           }}
         />
+        
         <motion.div
-          className="absolute bottom-40 left-1/4 w-20 h-20 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-xl"
+          className="absolute bottom-1/3 left-1/4 w-40 h-40 rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%)',
+            filter: 'blur(25px)'
+          }}
           animate={{
-            x: [0, 20, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.2, 1],
+            x: [0, 30, 0],
+            y: [0, -40, 0],
+            scale: [1, 1.3, 1],
           }}
           transition={{
-            duration: 10,
+            duration: 15,
             repeat: Infinity,
             ease: "easeInOut",
             delay: 2
           }}
         />
         
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-pattern-grid opacity-5" />
+        {/* Animated lines connecting elements */}
+        <svg className="absolute inset-0 w-full h-full opacity-30">
+          <motion.path
+            d="M 100 200 Q 400 100 800 300 T 1200 200"
+            stroke="url(#lineGradient)"
+            strokeWidth="2"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
+          />
+          <motion.path
+            d="M 200 500 Q 600 400 1000 600 T 1400 500"
+            stroke="url(#lineGradient)"
+            strokeWidth="1.5"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 4, ease: "easeInOut", repeat: Infinity, repeatType: "reverse", delay: 1 }}
+          />
+        </svg>
         
-        {/* Floating particles */}
-        {[...Array(6)].map((_, i) => (
+        {/* Particle system */}
+        {[...Array(12)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-white/20 rounded-full"
+            className="absolute w-1 h-1 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -151,35 +209,60 @@ const LandingPage: React.FC = () => {
             animate={{
               y: [0, -100, 0],
               opacity: [0, 1, 0],
+              scale: [0, 1, 0],
             }}
             transition={{
-              duration: 4 + Math.random() * 2,
+              duration: 6 + Math.random() * 4,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: Math.random() * 3,
               ease: "easeInOut"
             }}
           />
         ))}
-      </div>
-      
-      <Header />
-      
-      {/* Hero Section - Adjusted positioning to match Toolhouse layout */}
-      <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent"
-          style={{ y: y1 }}
-        />
         
-        {/* Hero-specific background elements */}
+        {/* Glowing orbs with different colors */}
         <motion.div
-          className="absolute top-1/4 left-1/2 transform -translate-x-1/2 w-96 h-96 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full opacity-20"
+          style={{
+            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.2) 30%, rgba(6, 182, 212, 0.1) 60%, transparent 100%)',
+            filter: 'blur(40px)'
+          }}
           animate={{
-            scale: [1, 1.1, 1],
+            scale: [1, 1.2, 1],
             rotate: [0, 180, 360],
           }}
           transition={{
             duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+        
+        {/* Subtle noise texture overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.02] mix-blend-overlay"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
+      
+      <Header />
+      
+      {/* Hero Section - Enhanced with new background */}
+      <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
+        {/* Hero-specific background elements */}
+        <motion.div
+          className="absolute top-1/4 left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-10"
+          style={{
+            background: 'conic-gradient(from 0deg, rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.4))',
+            filter: 'blur(60px)'
+          }}
+          animate={{
+            rotate: [0, 360],
+          }}
+          transition={{
+            duration: 30,
             repeat: Infinity,
             ease: "linear"
           }}
@@ -192,7 +275,7 @@ const LandingPage: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             className="text-center max-w-5xl mx-auto"
           >
-            {/* Main Headline - Positioned lower like Toolhouse */}
+            {/* Main Headline */}
             <motion.h1 
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 sm:mb-10 text-white text-center leading-tight"
               initial={{ opacity: 0, y: 20 }}
@@ -204,7 +287,7 @@ const LandingPage: React.FC = () => {
               Before It's Too Late
             </motion.h1>
 
-            {/* Subtitle - Positioned lower with more spacing */}
+            {/* Subtitle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -215,7 +298,7 @@ const LandingPage: React.FC = () => {
               perfect your pitch, and <span className="font-bold text-gradient-accent">raise capital faster</span> than ever before.
             </motion.div>
 
-            {/* CTA Button - Positioned lower */}
+            {/* CTA Button */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -232,7 +315,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Problem Section - Mobile Optimized with enhanced background */}
+      {/* Problem Section - Enhanced with section-specific background */}
       <section className="relative py-16 sm:py-24">
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-transparent"
@@ -241,13 +324,17 @@ const LandingPage: React.FC = () => {
         
         {/* Section-specific background elements */}
         <motion.div
-          className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-l from-red-500/5 to-transparent rounded-full blur-2xl"
+          className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-20"
+          style={{
+            background: 'radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, transparent 70%)',
+            filter: 'blur(40px)'
+          }}
           animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.4, 0.2],
           }}
           transition={{
-            duration: 8,
+            duration: 10,
             repeat: Infinity,
             ease: "easeInOut"
           }}
@@ -308,18 +395,22 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Meet Rohan Section - Mobile Optimized with enhanced background */}
+      {/* Meet Rohan Section - Enhanced with section-specific background */}
       <section className="relative py-16 sm:py-24">
         {/* Section-specific background elements */}
         <motion.div
-          className="absolute top-1/4 left-0 w-80 h-80 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 rounded-full blur-3xl"
+          className="absolute top-1/4 left-0 w-80 h-80 rounded-full opacity-15"
+          style={{
+            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.2) 50%, transparent 100%)',
+            filter: 'blur(50px)'
+          }}
           animate={{
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.1, 1],
+            x: [0, 60, 0],
+            y: [0, -40, 0],
+            scale: [1, 1.2, 1],
           }}
           transition={{
-            duration: 12,
+            duration: 14,
             repeat: Infinity,
             ease: "easeInOut"
           }}
@@ -351,7 +442,7 @@ const LandingPage: React.FC = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
-            {/* Rohan's Photo and Basic Info - Mobile Optimized */}
+            {/* Rohan's Photo and Basic Info */}
             <GlassTextBox className="text-center lg:text-left">
               <div className="relative inline-block mb-6 sm:mb-8">
                 <motion.div
@@ -389,7 +480,7 @@ const LandingPage: React.FC = () => {
               </div>
             </GlassTextBox>
 
-            {/* Rohan's Background - Mobile Optimized */}
+            {/* Rohan's Background */}
             <GlassTextBox>
               <h4 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
                 <Award className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
@@ -444,17 +535,21 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Comparison Section - Mobile Optimized with Emojis and enhanced background */}
+      {/* Comparison Section - Enhanced with section-specific background */}
       <section className="relative py-16 sm:py-24">
         {/* Section-specific background elements */}
         <motion.div
-          className="absolute bottom-0 right-1/4 w-72 h-72 bg-gradient-to-t from-green-500/5 to-red-500/5 rounded-full blur-3xl"
+          className="absolute bottom-0 right-1/4 w-72 h-72 rounded-full opacity-10"
+          style={{
+            background: 'conic-gradient(from 45deg, rgba(34, 197, 94, 0.3), rgba(239, 68, 68, 0.3), rgba(34, 197, 94, 0.3))',
+            filter: 'blur(50px)'
+          }}
           animate={{
-            scale: [1, 1.3, 1],
-            rotate: [0, 90, 0],
+            scale: [1, 1.4, 1],
+            rotate: [0, 180, 0],
           }}
           transition={{
-            duration: 15,
+            duration: 16,
             repeat: Infinity,
             ease: "easeInOut"
           }}
@@ -489,7 +584,7 @@ const LandingPage: React.FC = () => {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-            {/* Without Rohan - Mobile Optimized with Emojis */}
+            {/* Without Rohan */}
             <GlassTextBox className="bg-gradient-to-br from-red-900/20 to-red-800/20 border border-red-500/30">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
@@ -540,7 +635,7 @@ const LandingPage: React.FC = () => {
               </div>
             </GlassTextBox>
 
-            {/* With Rohan - Mobile Optimized with Emojis */}
+            {/* With Rohan */}
             <GlassTextBox className="bg-gradient-to-br from-green-900/20 to-emerald-800/20 border border-green-500/30">
               <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
@@ -607,18 +702,22 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* How It Works - Mobile Optimized with Glass Boxes and enhanced background */}
+      {/* How It Works - Enhanced with section-specific background */}
       <section className="relative py-16 sm:py-24">
         {/* Section-specific background elements */}
         <motion.div
-          className="absolute top-1/3 right-0 w-60 h-60 bg-gradient-to-l from-cyan-500/5 to-indigo-500/5 rounded-full blur-2xl"
+          className="absolute top-1/3 right-0 w-60 h-60 rounded-full opacity-15"
+          style={{
+            background: 'radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, rgba(99, 102, 241, 0.2) 50%, transparent 100%)',
+            filter: 'blur(40px)'
+          }}
           animate={{
-            x: [0, -40, 0],
-            y: [0, 20, 0],
-            scale: [1, 1.2, 1],
+            x: [0, -50, 0],
+            y: [0, 30, 0],
+            scale: [1, 1.3, 1],
           }}
           transition={{
-            duration: 10,
+            duration: 12,
             repeat: Infinity,
             ease: "easeInOut"
           }}
@@ -707,17 +806,21 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Features - Mobile Optimized with enhanced background */}
+      {/* Features - Enhanced with section-specific background */}
       <section id="features" className="relative py-16 sm:py-24">
         {/* Section-specific background elements */}
         <motion.div
-          className="absolute top-0 left-1/3 w-96 h-96 bg-gradient-to-br from-purple-500/5 to-pink-500/5 rounded-full blur-3xl"
+          className="absolute top-0 left-1/3 w-96 h-96 rounded-full opacity-10"
+          style={{
+            background: 'conic-gradient(from 90deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.3))',
+            filter: 'blur(60px)'
+          }}
           animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, -90, 0],
+            scale: [1, 1.2, 1],
+            rotate: [0, -180, 0],
           }}
           transition={{
-            duration: 18,
+            duration: 20,
             repeat: Infinity,
             ease: "easeInOut"
           }}
@@ -793,17 +896,21 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Final CTA - Mobile Optimized with enhanced background */}
+      {/* Final CTA - Enhanced with section-specific background */}
       <section className="relative py-16 sm:py-24">
         {/* Section-specific background elements */}
         <motion.div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-cyan-500/5 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-15"
+          style={{
+            background: 'conic-gradient(from 0deg, rgba(99, 102, 241, 0.4), rgba(139, 92, 246, 0.3), rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.4))',
+            filter: 'blur(80px)'
+          }}
           animate={{
-            scale: [1, 1.2, 1],
+            scale: [1, 1.3, 1],
             rotate: [0, 360, 0],
           }}
           transition={{
-            duration: 25,
+            duration: 30,
             repeat: Infinity,
             ease: "linear"
           }}
@@ -844,7 +951,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer - Mobile Optimized */}
+      {/* Footer */}
       <footer className="relative border-t border-slate-700/30 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <GlassTextBox className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 text-center sm:text-left">
