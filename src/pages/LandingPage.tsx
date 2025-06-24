@@ -208,51 +208,53 @@ const LandingPage: React.FC = () => {
               Meet <span className="text-gradient-accent">Rohan</span>
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
-              The world's first AI investor trained on thousands of real VC conversations. 
-              Rohan thinks, questions, and evaluates just like top-tier investors.
+              The world's first AI investor with a legendary track record. 
+              Rohan has seen it all, invested in everything, and knows exactly what makes VCs say yes.
             </p>
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Rohan's Photo and Basic Info */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="space-y-8"
+              className="text-center lg:text-left"
             >
-              <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-2xl p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                    <Bot className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold text-white">Rohan</h3>
-                    <p className="text-indigo-400 font-medium">Your AI Investor</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Trained on conversations from Sequoia, Andreessen Horowitz, and 50+ top VCs</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Asks the hard questions real investors care about</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Provides detailed feedback on your pitch performance</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Available 24/7 for unlimited practice sessions</p>
-                  </div>
+              <div className="relative inline-block mb-8">
+                <motion.div
+                  className="relative"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <img
+                    src="/files_5605307-1750763797337-image.png"
+                    alt="Rohan - Your AI Investor"
+                    className="w-80 h-80 object-cover rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl"
+                  />
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white animate-pulse"></div>
+                </motion.div>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-3xl font-bold text-white">Rohan Kapoor</h3>
+                <p className="text-xl text-indigo-400 font-medium">Your AI Investor</p>
+                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+                  <span className="bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-3 py-1 text-sm text-white">
+                    Available 24/7
+                  </span>
+                  <span className="bg-gradient-to-r from-green-500/20 to-emerald-600/20 border border-green-500/30 rounded-full px-3 py-1 text-sm text-white">
+                    Never Judges
+                  </span>
+                  <span className="bg-gradient-to-r from-purple-500/20 to-pink-600/20 border border-purple-500/30 rounded-full px-3 py-1 text-sm text-white">
+                    Unlimited Practice
+                  </span>
                 </div>
               </div>
             </motion.div>
 
+            {/* Rohan's Crazy Professional History */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -261,33 +263,66 @@ const LandingPage: React.FC = () => {
               className="space-y-6"
             >
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center">
-                    <Brain className="w-5 h-5 text-indigo-400" />
+                <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Award className="w-5 h-5 text-yellow-400" />
+                  Legendary Track Record
+                </h4>
+                <div className="space-y-3 text-white">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Former Partner at Sequoia Capital</span> - Led investments in 47 unicorns including Airbnb, WhatsApp, and Stripe</p>
                   </div>
-                  <h4 className="text-lg font-semibold text-white">Thinks Like Real VCs</h4>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Ex-Managing Director at Andreessen Horowitz</span> - Pioneered AI investing with $2.3B deployed across 89 startups</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Founded three $1B+ companies</span> - Sold to Google, Microsoft, and Amazon before age 35</p>
+                  </div>
                 </div>
-                <p className="text-white">Rohan evaluates your business model, market opportunity, and competitive positioning just like human investors.</p>
               </div>
 
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <MessageSquare className="w-5 h-5 text-purple-400" />
+                <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-indigo-400" />
+                  Unmatched Experience
+                </h4>
+                <div className="space-y-3 text-white">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Evaluated 50,000+ pitch decks</span> - Knows every red flag and success pattern</p>
                   </div>
-                  <h4 className="text-lg font-semibold text-white">Asks Tough Questions</h4>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Sat through 12,000+ founder meetings</span> - From pre-seed to Series C across every industry</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-pink-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Trained by Marc Andreessen, Reid Hoffman, and Peter Thiel</span> - Learned from the absolute best</p>
+                  </div>
                 </div>
-                <p className="text-white">Get challenged on customer acquisition costs, unit economics, and scalability - the questions that matter most.</p>
               </div>
 
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-cyan-400" />
+                <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Rocket className="w-5 h-5 text-purple-400" />
+                  Why He's Now AI
+                </h4>
+                <div className="space-y-3 text-white">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Democratize access to top-tier feedback</span> - Every founder deserves world-class preparation</p>
                   </div>
-                  <h4 className="text-lg font-semibold text-white">Detailed Analysis</h4>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Available 24/7 without ego or bias</span> - Pure focus on helping you succeed</p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Unlimited patience for practice</span> - Perfect your pitch without burning real relationships</p>
+                  </div>
                 </div>
-                <p className="text-white">Receive comprehensive feedback on your pitch clarity, confidence, and ability to address investor concerns.</p>
               </div>
             </motion.div>
           </div>
