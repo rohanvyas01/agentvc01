@@ -37,7 +37,10 @@ import {
   Bot,
   Mic,
   Video,
-  TrendingUp as Growth
+  TrendingUp as Growth,
+  GraduationCap,
+  MapPin,
+  Calendar
 } from 'lucide-react';
 import Header from '../components/Header';
 
@@ -208,8 +211,7 @@ const LandingPage: React.FC = () => {
               Meet <span className="text-gradient-accent">Rohan</span>
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
-              The world's first AI investor trained on thousands of real VC conversations. 
-              Rohan thinks, questions, and evaluates just like top-tier investors.
+              Your AI investment partner with deep experience in venture capital and startup evaluation.
             </p>
           </motion.div>
 
@@ -228,27 +230,47 @@ const LandingPage: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white">Rohan</h3>
-                    <p className="text-indigo-400 font-medium">Your AI Investor</p>
+                    <p className="text-indigo-400 font-medium">AI Investment Partner</p>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
+                {/* Professional Background */}
+                <div className="space-y-4 mb-6">
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Trained on conversations from Sequoia, Andreessen Horowitz, and 50+ top VCs</p>
+                    <GraduationCap className="w-5 h-5 text-indigo-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="text-white font-medium">Education</p>
+                      <p className="text-slate-300 text-sm">MBA from Stanford Graduate School of Business</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Asks the hard questions real investors care about</p>
+                    <Briefcase className="w-5 h-5 text-purple-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="text-white font-medium">Experience</p>
+                      <p className="text-slate-300 text-sm">8+ years in venture capital and startup evaluation</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Provides detailed feedback on your pitch performance</p>
+                    <Building className="w-5 h-5 text-cyan-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="text-white font-medium">Portfolio</p>
+                      <p className="text-slate-300 text-sm">Evaluated 500+ startups across Series A to C rounds</p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p className="text-white">Available 24/7 for unlimited practice sessions</p>
+                    <Target className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
+                    <div>
+                      <p className="text-white font-medium">Specialization</p>
+                      <p className="text-slate-300 text-sm">SaaS, FinTech, and B2B marketplace investments</p>
+                    </div>
                   </div>
+                </div>
+                
+                <div className="border-t border-slate-700/50 pt-4">
+                  <p className="text-slate-300 text-sm italic">
+                    "I've seen thousands of pitches. Let me help you avoid the common mistakes 
+                    that cost founders their funding rounds."
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -265,9 +287,9 @@ const LandingPage: React.FC = () => {
                   <div className="w-8 h-8 bg-indigo-500/20 rounded-lg flex items-center justify-center">
                     <Brain className="w-5 h-5 text-indigo-400" />
                   </div>
-                  <h4 className="text-lg font-semibold text-white">Thinks Like Real VCs</h4>
+                  <h4 className="text-lg font-semibold text-white">Investment Methodology</h4>
                 </div>
-                <p className="text-white">Rohan evaluates your business model, market opportunity, and competitive positioning just like human investors.</p>
+                <p className="text-white">Applies proven frameworks used by top-tier VCs to evaluate market opportunity, business model viability, and team execution capability.</p>
               </div>
 
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
@@ -275,9 +297,9 @@ const LandingPage: React.FC = () => {
                   <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
                     <MessageSquare className="w-5 h-5 text-purple-400" />
                   </div>
-                  <h4 className="text-lg font-semibold text-white">Asks Tough Questions</h4>
+                  <h4 className="text-lg font-semibold text-white">Due Diligence Focus</h4>
                 </div>
-                <p className="text-white">Get challenged on customer acquisition costs, unit economics, and scalability - the questions that matter most.</p>
+                <p className="text-white">Asks the critical questions investors care about: unit economics, customer acquisition costs, competitive moats, and scalability challenges.</p>
               </div>
 
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
@@ -285,9 +307,9 @@ const LandingPage: React.FC = () => {
                   <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
                     <BarChart3 className="w-5 h-5 text-cyan-400" />
                   </div>
-                  <h4 className="text-lg font-semibold text-white">Detailed Analysis</h4>
+                  <h4 className="text-lg font-semibold text-white">Performance Analysis</h4>
                 </div>
-                <p className="text-white">Receive comprehensive feedback on your pitch clarity, confidence, and ability to address investor concerns.</p>
+                <p className="text-white">Provides detailed feedback on pitch clarity, financial projections, market positioning, and readiness for institutional investment.</p>
               </div>
             </motion.div>
           </div>
@@ -312,7 +334,7 @@ const LandingPage: React.FC = () => {
               />
               <div className="relative z-10 flex items-center gap-2">
                 <Bot className="w-5 h-5" />
-                Meet Rohan
+                Start Training with Rohan
                 <ExternalLink className="w-4 h-4" />
               </div>
             </motion.button>
@@ -349,7 +371,7 @@ const LandingPage: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Meet Rohan
+                Start Training with Rohan
                 <ArrowRight className="w-4 h-4" />
               </motion.button>
             </motion.div>
@@ -723,7 +745,7 @@ const LandingPage: React.FC = () => {
                 AgentVC
               </h3>
               <p className="text-white">
-                The world's first AI investor that helps founders raise capital faster through real feedback and unlimited practice.
+                AI-powered pitch training with professional investor feedback to help founders raise capital faster.
               </p>
             </div>
             <div>
@@ -742,7 +764,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           <div className="border-t border-slate-700/30 mt-8 pt-8 text-center text-white">
-            <p>&copy; 2025 AgentVC. The world's first AI investor. All rights reserved.</p>
+            <p>&copy; 2025 AgentVC. Professional AI investor training platform. All rights reserved.</p>
           </div>
         </div>
       </footer>
