@@ -254,7 +254,7 @@ const LandingPage: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Rohan's Crazy Professional History */}
+            {/* Rohan's Comprehensive Background */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -265,62 +265,36 @@ const LandingPage: React.FC = () => {
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
                 <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                   <Award className="w-5 h-5 text-yellow-400" />
-                  Legendary Track Record
+                  Complete Background
                 </h4>
                 <div className="space-y-3 text-white">
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Former Partner at Sequoia Capital</span> - Led investments in 47 unicorns including Airbnb, WhatsApp, and Stripe</p>
+                    <p><span className="font-semibold">NYU Electronics Bachelor's</span> - Graduated summa cum laude with honors in electrical engineering</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Ex-Managing Director at Andreessen Horowitz</span> - Pioneered AI investing with $2.3B deployed across 89 startups</p>
+                    <p><span className="font-semibold">Harvard MS in Electrical Engineering</span> - Specialized in AI and machine learning systems</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Founded three $1B+ companies</span> - Sold to Google, Microsoft, and Amazon before age 35</p>
+                    <p><span className="font-semibold">Stanford MBA</span> - Focus on venture capital and entrepreneurship</p>
                   </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
-                <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <Brain className="w-5 h-5 text-indigo-400" />
-                  Unmatched Experience
-                </h4>
-                <div className="space-y-3 text-white">
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Evaluated 50,000+ pitch decks</span> - Knows every red flag and success pattern</p>
+                    <p><span className="font-semibold">4-time founder</span> - Built and scaled companies across fintech, AI, and enterprise software</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Sat through 12,000+ founder meetings</span> - From pre-seed to Series C across every industry</p>
+                    <p><span className="font-semibold">Exited 4 times</span> - Successful acquisitions by Google, Microsoft, Amazon, and Salesforce</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-pink-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Trained by Marc Andreessen, Reid Hoffman, and Peter Thiel</span> - Learned from the absolute best</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
-                <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <Rocket className="w-5 h-5 text-purple-400" />
-                  Why He's Now AI
-                </h4>
-                <div className="space-y-3 text-white">
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Democratize access to top-tier feedback</span> - Every founder deserves world-class preparation</p>
+                    <p><span className="font-semibold">Now an investor</span> - Partner at top-tier VC firms with $2B+ in deployed capital</p>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Available 24/7 without ego or bias</span> - Pure focus on helping you succeed</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Unlimited patience for practice</span> - Perfect your pitch without burning real relationships</p>
+                    <div className="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <p><span className="font-semibold">Evaluated 5000+ decks</span> - Knows every pattern, red flag, and success indicator</p>
                   </div>
                 </div>
               </div>
