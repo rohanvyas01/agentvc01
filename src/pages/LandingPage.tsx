@@ -50,6 +50,41 @@ const LandingPage: React.FC = () => {
     window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
   };
 
+  // Reusable glass button component
+  const GlassButton = ({ children, onClick, className = "", ...props }: any) => (
+    <motion.button
+      whileHover={{ scale: 1.02, y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className={`bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden ${className}`}
+      {...props}
+    >
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      />
+      <div className="relative z-10 flex items-center gap-2">
+        {children}
+      </div>
+    </motion.button>
+  );
+
+  // Reusable glass text box component
+  const GlassTextBox = ({ children, className = "", delay = 0, ...props }: any) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay }}
+      viewport={{ once: true }}
+      whileHover={{ y: -2, scale: 1.01 }}
+      className={`glass rounded-2xl p-8 transition-all duration-300 hover:shadow-xl ${className}`}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
       {/* Animated background elements */}
@@ -65,12 +100,7 @@ const LandingPage: React.FC = () => {
         />
         
         <div className="relative max-w-7xl mx-auto container-padding section-spacing">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center max-w-4xl mx-auto"
-          >
+          <GlassTextBox className="text-center max-w-4xl mx-auto">
             <motion.h1 
               className="text-display mb-6 text-white text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -98,25 +128,13 @@ const LandingPage: React.FC = () => {
               transition={{ delay: 0.6, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
             >
-              <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleJoinWaitlist}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <div className="relative z-10 flex items-center gap-2">
-                  <Rocket className="w-5 h-5" />
-                  Join Waitlist
-                  <ExternalLink className="w-4 h-4" />
-                </div>
-              </motion.button>
+              <GlassButton onClick={handleJoinWaitlist}>
+                <Rocket className="w-5 h-5" />
+                Join Waitlist
+                <ExternalLink className="w-4 h-4" />
+              </GlassButton>
             </motion.div>
-          </motion.div>
+          </GlassTextBox>
         </div>
       </section>
 
@@ -128,13 +146,7 @@ const LandingPage: React.FC = () => {
         />
         
         <div className="relative max-w-7xl mx-auto container-padding">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <GlassTextBox className="text-center mb-16">
             <h2 className="text-headline mb-6 text-white">
               Why Founders <span className="text-red-400">Struggle</span> to Raise Capital
             </h2>
@@ -142,7 +154,7 @@ const LandingPage: React.FC = () => {
               Most founders practice with the wrong people and get the wrong feedback. 
               Rohan asks tough questions you've never heard before.
             </p>
-          </motion.div>
+          </GlassTextBox>
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -162,14 +174,10 @@ const LandingPage: React.FC = () => {
                 description: "Hearing 'sounds good' doesn't help you improve. You need specific insights on what investors actually care about.",
               }
             ].map((item, index) => (
-              <motion.div
+              <GlassTextBox
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
+                delay={index * 0.2}
                 className="text-center group"
-                whileHover={{ y: -4 }}
               >
                 <motion.div 
                   className="flex justify-center mb-6"
@@ -180,7 +188,7 @@ const LandingPage: React.FC = () => {
                 </motion.div>
                 <h3 className="text-xl font-semibold text-white mb-4">{item.title}</h3>
                 <p className="text-white mb-4">{item.description}</p>
-              </motion.div>
+              </GlassTextBox>
             ))}
           </div>
         </div>
@@ -189,13 +197,7 @@ const LandingPage: React.FC = () => {
       {/* Meet Rohan Section */}
       <section className="relative section-spacing">
         <div className="max-w-7xl mx-auto container-padding">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <GlassTextBox className="text-center mb-16">
             <motion.div 
               className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-4 py-2 mb-6"
               whileHover={{ scale: 1.05 }}
@@ -211,17 +213,11 @@ const LandingPage: React.FC = () => {
               The world's first AI investor with a legendary track record. 
               Rohan has seen it all, invested in everything, and knows exactly what makes VCs say yes.
             </p>
-          </motion.div>
+          </GlassTextBox>
 
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Rohan's Photo and Basic Info */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="text-center lg:text-left"
-            >
+            <GlassTextBox className="text-center lg:text-left">
               <div className="relative inline-block mb-8">
                 <motion.div
                   className="relative"
@@ -256,93 +252,61 @@ const LandingPage: React.FC = () => {
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </GlassTextBox>
 
             {/* Rohan's Comprehensive Background */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-600/30 rounded-xl p-6">
-                <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <Award className="w-5 h-5 text-yellow-400" />
-                  Complete Background
-                </h4>
-                <div className="space-y-3 text-white">
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">NYU Electronics Bachelor's</span> - Graduated summa cum laude with honors in electrical engineering</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Harvard MS in Electrical Engineering</span> - Specialized in AI and machine learning systems</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Stanford MBA</span> - Focus on venture capital and entrepreneurship</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">4-time founder</span> - Built and scaled companies across fintech, AI, and enterprise software</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Exited 4 times</span> - Successful acquisitions by Google, Microsoft, Amazon, and Salesforce</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-pink-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Now an investor</span> - Partner at top-tier VC firms with $2B+ in deployed capital</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <p><span className="font-semibold">Evaluated 5000+ decks</span> - Knows every pattern, red flag, and success indicator</p>
-                  </div>
+            <GlassTextBox>
+              <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Award className="w-5 h-5 text-yellow-400" />
+                Complete Background
+              </h4>
+              <div className="space-y-3 text-white">
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p><span className="font-semibold">NYU Electronics Bachelor's</span> - Graduated summa cum laude with honors in electrical engineering</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p><span className="font-semibold">Harvard MS in Electrical Engineering</span> - Specialized in AI and machine learning systems</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p><span className="font-semibold">Stanford MBA</span> - Focus on venture capital and entrepreneurship</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p><span className="font-semibold">4-time founder</span> - Built and scaled companies across fintech, AI, and enterprise software</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p><span className="font-semibold">Exited 4 times</span> - Successful acquisitions by Google, Microsoft, Amazon, and Salesforce</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-pink-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p><span className="font-semibold">Now an investor</span> - Partner at top-tier VC firms with $2B+ in deployed capital</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-2 h-2 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                  <p><span className="font-semibold">Evaluated 5000+ decks</span> - Knows every pattern, red flag, and success indicator</p>
                 </div>
               </div>
-            </motion.div>
+            </GlassTextBox>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mt-16"
-          >
-            <motion.button
-              onClick={handleJoinWaitlist}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-              <div className="relative z-10 flex items-center gap-2">
-                <Bot className="w-5 h-5" />
-                Meet Rohan Vyas
-                <ExternalLink className="w-4 h-4" />
-              </div>
-            </motion.button>
-          </motion.div>
+          <GlassTextBox className="text-center mt-16">
+            <GlassButton onClick={handleJoinWaitlist}>
+              <Bot className="w-5 h-5" />
+              Meet Rohan Vyas
+              <ExternalLink className="w-4 h-4" />
+            </GlassButton>
+          </GlassTextBox>
         </div>
       </section>
 
       {/* Without Rohan vs With Rohan Comparison */}
       <section className="relative section-spacing">
         <div className="max-w-7xl mx-auto container-padding">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <GlassTextBox className="text-center mb-16">
             <h2 className="text-headline mb-6 text-white">
               Practice smart, not hard.
             </h2>
@@ -356,27 +320,16 @@ const LandingPage: React.FC = () => {
               viewport={{ once: true }}
               className="mt-8"
             >
-              <motion.button
-                onClick={handleJoinWaitlist}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <GlassButton onClick={handleJoinWaitlist}>
                 Meet Rohan Vyas
                 <ArrowRight className="w-4 h-4" />
-              </motion.button>
+              </GlassButton>
             </motion.div>
-          </motion.div>
+          </GlassTextBox>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Without Rohan */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-red-900/20 to-red-800/20 border border-red-500/30 rounded-2xl p-8"
-            >
+            <GlassTextBox className="bg-gradient-to-br from-red-900/20 to-red-800/20 border border-red-500/30">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
                   <X className="w-5 h-5 text-red-400" />
@@ -424,16 +377,10 @@ const LandingPage: React.FC = () => {
                   </motion.div>
                 ))}
               </div>
-            </motion.div>
+            </GlassTextBox>
 
             {/* With Rohan */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-green-900/20 to-emerald-800/20 border border-green-500/30 rounded-2xl p-8"
-            >
+            <GlassTextBox className="bg-gradient-to-br from-green-900/20 to-emerald-800/20 border border-green-500/30">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <Check className="w-5 h-5 text-green-400" />
@@ -481,52 +428,28 @@ const LandingPage: React.FC = () => {
                   </motion.div>
                 ))}
               </div>
-            </motion.div>
+            </GlassTextBox>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <motion.button
-              onClick={handleJoinWaitlist}
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-              <div className="relative z-10 flex items-center gap-2">
-                Get started for free
-                <ExternalLink className="w-4 h-4" />
-              </div>
-            </motion.button>
-          </motion.div>
+          <GlassTextBox className="text-center mt-12">
+            <GlassButton onClick={handleJoinWaitlist}>
+              Get started for free
+              <ExternalLink className="w-4 h-4" />
+            </GlassButton>
+          </GlassTextBox>
         </div>
       </section>
 
       {/* Features */}
       <section id="features" className="relative section-spacing">
         <div className="max-w-7xl mx-auto container-padding">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <GlassTextBox className="text-center mb-16">
             <h2 className="text-headline mb-6 text-white">
               How can Rohan help you raise your round?
             </h2>
             <p className="text-subtitle max-w-3xl mx-auto text-white">
             </p>
-          </motion.div>
+          </GlassTextBox>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
@@ -561,14 +484,10 @@ const LandingPage: React.FC = () => {
                 description: "Founders using AI training raise capital 3x faster"
               }
             ].map((feature, index) => (
-              <motion.div
+              <GlassTextBox
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="group text-center"
-                whileHover={{ y: -2 }}
+                delay={index * 0.1}
+                className="text-center group"
               >
                 <div className="flex flex-col items-center mb-4">
                   <motion.div 
@@ -583,7 +502,7 @@ const LandingPage: React.FC = () => {
                   </h3>
                 </div>
                 <p className="text-white">{feature.description}</p>
-              </motion.div>
+              </GlassTextBox>
             ))}
           </div>
         </div>
@@ -592,13 +511,7 @@ const LandingPage: React.FC = () => {
       {/* Final CTA */}
       <section className="relative section-spacing">
         <div className="max-w-4xl mx-auto container-padding text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-xl"
-          >
+          <GlassTextBox className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
             <h2 className="text-headline mb-8 text-white">
               Stop Practicing with Friends.
               <br />
@@ -611,36 +524,24 @@ const LandingPage: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <motion.button
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleJoinWaitlist}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold text-lg px-8 py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0"
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <div className="relative z-10 flex items-center gap-2">
-                  <Rocket className="w-5 h-5" />
-                  Join Waitlist
-                  <ExternalLink className="w-4 h-4" />
-                </div>
-              </motion.button>
+              <GlassButton onClick={handleJoinWaitlist}>
+                <Rocket className="w-5 h-5" />
+                Join Waitlist
+                <ExternalLink className="w-4 h-4" />
+              </GlassButton>
               
               <div className="text-white text-sm">
                 <p>✓ No credit card required</p>
                 <p>✓ Unlimited practice sessions</p>
               </div>
             </div>
-          </motion.div>
+          </GlassTextBox>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="relative border-t border-slate-700/30 py-12 container-padding">
-        <div className="max-w-7xl mx-auto text-center">
+        <GlassTextBox className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 justify-items-center">
             <div>
               <h3 className="text-lg font-semibold text-white mb-4 flex items-center justify-center gap-2">
@@ -669,7 +570,7 @@ const LandingPage: React.FC = () => {
           <div className="border-t border-slate-700/30 mt-8 pt-8 text-center text-white">
             <p>&copy; 2025 AgentVC. The world's first AI investor. All rights reserved.</p>
           </div>
-        </div>
+        </GlassTextBox>
       </footer>
     </div>
   );
