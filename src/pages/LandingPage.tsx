@@ -94,7 +94,7 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
-              Meet Your AI Investor
+              Meet the World's First AI Investor
               <br />
               <span className="text-gradient-accent">Who Never Says No</span>
             </motion.h1>
@@ -128,7 +128,7 @@ const LandingPage: React.FC = () => {
                 />
                 <div className="relative z-10 flex items-center gap-2">
                   <Rocket className="w-5 h-5" />
-                  Start Training with AI Investor
+                  Join Waitlist
                   <ExternalLink className="w-4 h-4" />
                 </div>
               </motion.button>
@@ -229,108 +229,6 @@ const LandingPage: React.FC = () => {
                 </motion.div>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Solution Section - Two Column Comparison */}
-      <section className="relative section-spacing">
-        <div className="max-w-7xl mx-auto container-padding">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-headline mb-6 text-white">
-              Your AI Investor <span className="text-gradient-accent">Changes Everything</span>
-            </h2>
-            <p className="text-subtitle max-w-3xl mx-auto text-white">
-              Train with an AI that thinks like Sequoia, a16z, and other top VCs. 
-              Get the real feedback you need to raise capital faster.
-            </p>
-          </motion.div>
-
-          {/* Two Column Comparison Layout */}
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {/* Without AI Investor - Red */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-red-900/20 to-red-800/10 border border-red-500/30 rounded-2xl p-8"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
-                  <X className="w-5 h-5 text-red-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white">Without AI Investor</h3>
-              </div>
-              
-              <div className="space-y-4">
-                {[
-                  "Practice with friends who ask easy questions",
-                  "Get vague feedback like 'sounds interesting'",
-                  "Face real investors completely unprepared",
-                  "Struggle with tough due diligence questions",
-                  "Miss funding opportunities due to poor performance",
-                  "Spend months preparing the wrong way"
-                ].map((item, index) => (
-                  <motion.div 
-                    key={index}
-                    className="flex items-start gap-3"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <X className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-white">{item}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* With AI Investor - Green */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-green-900/20 to-green-800/10 border border-green-500/30 rounded-2xl p-8"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Check className="w-5 h-5 text-green-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white">With AI Investor</h3>
-              </div>
-              
-              <div className="space-y-4">
-                {[
-                  "Practice with AI that asks real VC questions",
-                  "Get detailed, actionable feedback on every answer",
-                  "Face real investors with complete confidence",
-                  "Handle tough questions like a seasoned entrepreneur",
-                  "Increase your funding success rate dramatically",
-                  "Perfect your pitch in days, not months"
-                ].map((item, index) => (
-                  <motion.div 
-                    key={index}
-                    className="flex items-start gap-3"
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-white">{item}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
@@ -545,7 +443,7 @@ const LandingPage: React.FC = () => {
                 />
                 <div className="relative z-10 flex items-center gap-2">
                   <Rocket className="w-5 h-5" />
-                  Meet Your AI Investor Now
+                  Join Waitlist
                   <ExternalLink className="w-4 h-4" />
                 </div>
               </motion.button>
