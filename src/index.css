@@ -279,10 +279,12 @@ body::before {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
 }
 
-/* Header with intelligent backdrop */
+/* Enhanced Header with intelligent backdrop */
 .header-glass {
-  @apply glass-dark;
+  background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Intelligent grid patterns */
@@ -453,4 +455,25 @@ select option {
 
 select {
   color: white;
+}
+
+/* Enhanced scrolling experience */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure content doesn't hide behind fixed header */
+section {
+  scroll-margin-top: 80px;
+}
+
+/* Enhanced mobile touch interactions */
+@media (hover: none) and (pointer: coarse) {
+  .glass:hover {
+    transform: none;
+  }
+  
+  .hover-lift:hover {
+    transform: none;
+  }
 }
