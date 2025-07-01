@@ -38,7 +38,12 @@ import {
   Mic,
   Video,
   TrendingUp as Growth,
-  Play
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  RotateCcw
 } from 'lucide-react';
 import Header from '../components/Header';
 
@@ -48,12 +53,21 @@ const LandingPage: React.FC = () => {
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
   const y3 = useTransform(scrollY, [0, 500], [0, -150]);
 
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+
   const handleJoinWaitlist = () => {
     window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
   };
 
-  const handleWatchVideo = () => {
-    window.open('https://www.youtube.com/watch?v=fV7PBk95La8', '_blank');
+  const handlePlayVideo = () => {
+    setShowVideoPlayer(true);
+    setIsVideoPlaying(true);
+  };
+
+  const handleCloseVideo = () => {
+    setShowVideoPlayer(false);
+    setIsVideoPlaying(false);
   };
 
   // Reusable glass button component
@@ -88,6 +102,97 @@ const LandingPage: React.FC = () => {
       {...props}
     >
       {children}
+    </motion.div>
+  );
+
+  // Custom Video Player Component
+  const CustomVideoPlayer = () => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={handleCloseVideo}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Custom Video Player Interface */}
+        <div className="relative w-full h-full">
+          {/* YouTube Embed (hidden behind custom controls) */}
+          <iframe
+            src="https://www.youtube.com/embed/fV7PBk95La8?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1"
+            className="w-full h-full"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            style={{ border: 'none' }}
+          />
+          
+          {/* Custom Control Overlay */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Top Bar */}
+            <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent p-4 pointer-events-auto">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <Video className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold">Meet Rohan Vyas</h3>
+                    <p className="text-white/70 text-sm">Your AI Investor Introduction</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCloseVideo}
+                  className="text-white/70 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Bottom Controls */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pointer-events-auto">
+              <div className="flex items-center gap-4">
+                {/* Play/Pause Button */}
+                <button className="text-white hover:text-indigo-400 transition-colors">
+                  {isVideoPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                </button>
+                
+                {/* Progress Bar */}
+                <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 w-1/3 rounded-full"></div>
+                </div>
+                
+                {/* Time */}
+                <span className="text-white/70 text-sm font-mono">0:55 / 2:30</span>
+                
+                {/* Volume */}
+                <button className="text-white hover:text-indigo-400 transition-colors">
+                  <Volume2 className="w-5 h-5" />
+                </button>
+                
+                {/* Fullscreen */}
+                <button className="text-white hover:text-indigo-400 transition-colors">
+                  <Maximize className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Live Indicator */}
+            <div className="absolute top-4 right-4 pointer-events-auto">
+              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                LIVE
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </motion.div>
   );
 
@@ -134,6 +239,9 @@ const LandingPage: React.FC = () => {
       
       <Header />
       
+      {/* Custom Video Player Modal */}
+      {showVideoPlayer && <CustomVideoPlayer />}
+      
       {/* Hero Section with Video Intro */}
       <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
@@ -170,13 +278,13 @@ const LandingPage: React.FC = () => {
                   </p>
                 </motion.div>
 
-                {/* Video Thumbnail with Play Button */}
+                {/* Custom Video Thumbnail */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
                   className="relative cursor-pointer group"
-                  onClick={handleWatchVideo}
+                  onClick={handlePlayVideo}
                 >
                   <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30 hover:border-indigo-500/30 transition-all duration-300">
                     <div className="relative w-full h-64 sm:h-80 lg:h-96 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900">
@@ -187,31 +295,50 @@ const LandingPage: React.FC = () => {
                         className="w-full h-full object-cover object-center"
                       />
                       
-                      {/* Play Button Overlay */}
-                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-all duration-300">
-                        <motion.div
-                          className="bg-white/90 backdrop-blur-sm rounded-full p-6 group-hover:bg-white transition-all duration-300"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <Play className="w-8 h-8 text-slate-900 ml-1" />
-                        </motion.div>
-                      </div>
-                      
-                      {/* Video Info Overlay */}
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <div className="glass rounded-lg p-3 bg-slate-900/80 backdrop-blur-xl">
-                          <div className="flex items-center gap-2 text-white">
-                            <Video className="w-4 h-4 text-indigo-400" />
-                            <span className="text-sm font-medium">Watch Rohan's Introduction</span>
-                            <span className="ml-auto text-xs bg-red-500 px-2 py-1 rounded-full">LIVE</span>
+                      {/* Professional Video Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30">
+                        {/* Play Button */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <motion.div
+                            className="bg-white/95 backdrop-blur-sm rounded-full p-6 group-hover:bg-white transition-all duration-300 shadow-2xl"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                          >
+                            <Play className="w-8 h-8 text-slate-900 ml-1" />
+                          </motion.div>
+                        </div>
+                        
+                        {/* Video Duration */}
+                        <div className="absolute top-4 right-4">
+                          <div className="bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded text-sm font-mono">
+                            2:30
+                          </div>
+                        </div>
+                        
+                        {/* Video Title Overlay */}
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <div className="glass rounded-lg p-3 bg-slate-900/80 backdrop-blur-xl">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2 text-white">
+                                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                <span className="text-sm font-medium">Watch Rohan's Introduction</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs bg-gradient-to-r from-indigo-500 to-purple-600 px-2 py-1 rounded-full text-white">
+                                  HD
+                                </span>
+                                <span className="text-xs bg-red-500 px-2 py-1 rounded-full text-white">
+                                  LIVE
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                   
-                  {/* Video overlay with Rohan's info */}
+                  {/* Rohan's info card below video */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -234,7 +361,7 @@ const LandingPage: React.FC = () => {
                         </div>
                         <div className="flex gap-1">
                           <span className="bg-green-500/20 border border-green-500/30 rounded-full px-2 py-1 text-xs text-green-300">
-                            Live
+                            Online
                           </span>
                         </div>
                       </div>
