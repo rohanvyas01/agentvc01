@@ -40,6 +40,7 @@ import {
   TrendingUp as Growth
 } from 'lucide-react';
 import Header from '../components/Header';
+import VideoPlayer from '../components/VideoPlayer';
 
 const LandingPage: React.FC = () => {
   const { scrollY } = useScroll();
@@ -49,6 +50,14 @@ const LandingPage: React.FC = () => {
 
   const handleJoinWaitlist = () => {
     window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
+  };
+
+  const handleVideoEnd = () => {
+    console.log('Rohan intro video ended');
+  };
+
+  const handleVideoStart = () => {
+    console.log('Rohan intro video started');
   };
 
   // Reusable glass button component
@@ -129,7 +138,7 @@ const LandingPage: React.FC = () => {
       
       <Header />
       
-      {/* Hero Section */}
+      {/* Hero Section with Video Intro */}
       <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
           <motion.div
@@ -138,39 +147,94 @@ const LandingPage: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             className="text-center max-w-5xl mx-auto"
           >
-            {/* Main Headline */}
-            <motion.h1 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 sm:mb-10 text-white text-center leading-tight"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              Perfect Your Pitch
-              <br />
-              Before It's Too Late
-            </motion.h1>
-
-            {/* Subtitle */}
+            {/* Video Introduction */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl sm:text-2xl lg:text-3xl mb-12 sm:mb-16 max-w-4xl mx-auto text-white text-center leading-relaxed"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="mb-8 sm:mb-12"
             >
-              Get real feedback from an AI that thinks like top VCs. Practice unlimited times, 
-              perfect your pitch, and <span className="font-bold text-gradient-accent">raise capital faster</span> than ever before.
+              <div className="relative max-w-4xl mx-auto">
+                {/* Video Title */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
+                  className="mb-6 sm:mb-8"
+                >
+                  <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-4 py-2 mb-4">
+                    <Video className="w-4 h-4 text-indigo-400" />
+                    <span className="text-sm font-medium text-white">Meet Your AI Investor</span>
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-4">
+                    Meet <span className="text-gradient-accent">Rohan Vyas</span>
+                  </h1>
+                  <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto">
+                    The world's first AI investor who gives you real feedback and helps you raise capital faster
+                  </p>
+                </div>
+
+                {/* Video Player */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                  className="relative"
+                >
+                  <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30">
+                    <VideoPlayer
+                      videoUrl="https://videos.pexels.com/video-files/3196284/3196284-uhd_2560_1440_25fps.mp4"
+                      autoPlay={true}
+                      showControls={true}
+                      onVideoEnd={handleVideoEnd}
+                      onVideoStart={handleVideoStart}
+                      className="w-full h-64 sm:h-80 lg:h-96 rounded-xl"
+                    />
+                  </div>
+                  
+                  {/* Video overlay with Rohan's info */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.8 }}
+                    className="absolute -bottom-4 sm:-bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-md"
+                  >
+                    <div className="glass rounded-xl p-4 border border-slate-700/30 bg-slate-900/80 backdrop-blur-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <img
+                            src="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
+                            alt="Rohan Vyas"
+                            className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30"
+                          />
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-white">Rohan Vyas</h3>
+                          <p className="text-sm text-indigo-400">Your AI Investor • Available 24/7</p>
+                        </div>
+                        <div className="flex gap-1">
+                          <span className="bg-green-500/20 border border-green-500/30 rounded-full px-2 py-1 text-xs text-green-300">
+                            Live
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </div>
             </motion.div>
 
             {/* CTA Button */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 sm:mb-20"
+              transition={{ delay: 0.9, duration: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 sm:mb-16"
             >
               <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto text-xl px-10 py-5">
                 <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
-                Join Waitlist
+                Start Training with Rohan
                 <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
               </GlassButton>
             </motion.div>
@@ -179,7 +243,7 @@ const LandingPage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
+              transition={{ delay: 1.1, duration: 0.8 }}
               className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-12"
             >
               <div className="text-center">
