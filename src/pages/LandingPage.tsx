@@ -37,7 +37,8 @@ import {
   Bot,
   Mic,
   Video,
-  TrendingUp as Growth
+  TrendingUp as Growth,
+  Play
 } from 'lucide-react';
 import Header from '../components/Header';
 
@@ -49,6 +50,10 @@ const LandingPage: React.FC = () => {
 
   const handleJoinWaitlist = () => {
     window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
+  };
+
+  const handleWatchVideo = () => {
+    window.open('https://www.youtube.com/watch?v=fV7PBk95La8', '_blank');
   };
 
   // Reusable glass button component
@@ -129,7 +134,7 @@ const LandingPage: React.FC = () => {
       
       <Header />
       
-      {/* Hero Section with Auto-Playing Video */}
+      {/* Hero Section with Video Intro */}
       <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
           <motion.div
@@ -165,28 +170,48 @@ const LandingPage: React.FC = () => {
                   </p>
                 </motion.div>
 
-                {/* Simple Auto-Playing Video */}
+                {/* Video Thumbnail with Play Button */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
-                  className="relative"
+                  className="relative cursor-pointer group"
+                  onClick={handleWatchVideo}
                 >
-                  <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30">
-                    <video
-                      className="w-full h-64 sm:h-80 lg:h-96 rounded-xl object-cover"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      controls
-                    >
-                      <source src="/Introduction.mp4" type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
+                  <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30 hover:border-indigo-500/30 transition-all duration-300">
+                    <div className="relative w-full h-64 sm:h-80 lg:h-96 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900">
+                      {/* Video Thumbnail */}
+                      <img
+                        src="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
+                        alt="Rohan Vyas Video Introduction"
+                        className="w-full h-full object-cover object-center"
+                      />
+                      
+                      {/* Play Button Overlay */}
+                      <div className="absolute inset-0 bg-black/30 flex items-center justify-center group-hover:bg-black/20 transition-all duration-300">
+                        <motion.div
+                          className="bg-white/90 backdrop-blur-sm rounded-full p-6 group-hover:bg-white transition-all duration-300"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Play className="w-8 h-8 text-slate-900 ml-1" />
+                        </motion.div>
+                      </div>
+                      
+                      {/* Video Info Overlay */}
+                      <div className="absolute bottom-4 left-4 right-4">
+                        <div className="glass rounded-lg p-3 bg-slate-900/80 backdrop-blur-xl">
+                          <div className="flex items-center gap-2 text-white">
+                            <Video className="w-4 h-4 text-indigo-400" />
+                            <span className="text-sm font-medium">Watch Rohan's Introduction</span>
+                            <span className="ml-auto text-xs bg-red-500 px-2 py-1 rounded-full">LIVE</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   
-                  {/* Rohan's info card below video */}
+                  {/* Video overlay with Rohan's info */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -209,7 +234,7 @@ const LandingPage: React.FC = () => {
                         </div>
                         <div className="flex gap-1">
                           <span className="bg-green-500/20 border border-green-500/30 rounded-full px-2 py-1 text-xs text-green-300">
-                            Online
+                            Live
                           </span>
                         </div>
                       </div>
