@@ -185,28 +185,28 @@ const LandingPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  {/* Video overlay with Rohan's info - Properly centered */}
+                  {/* Video overlay with Rohan's info - Fixed Mobile Alignment */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8, duration: 0.8 }}
-                    className="absolute -bottom-4 sm:-bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-sm px-4"
+                    className="absolute -bottom-3 sm:-bottom-6 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] sm:w-full max-w-sm"
                   >
-                    <div className="glass rounded-xl p-4 border border-slate-700/30 bg-slate-900/80 backdrop-blur-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
+                    <div className="glass rounded-xl p-3 sm:p-4 border border-slate-700/30 bg-slate-900/90 backdrop-blur-xl mx-auto">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="relative flex-shrink-0">
                           <img
                             src="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
                             alt="Rohan Vyas"
-                            className="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/30"
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-indigo-500/30"
                           />
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+                          <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
                         </div>
-                        <div className="flex-1 text-center sm:text-left">
-                          <h3 className="font-semibold text-white">Rohan Vyas</h3>
-                          <p className="text-sm text-indigo-400">Your AI Investor • Available 24/7</p>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-white text-sm sm:text-base truncate">Rohan Vyas</h3>
+                          <p className="text-xs sm:text-sm text-indigo-400 truncate">Your AI Investor • Available 24/7</p>
                         </div>
-                        <div className="flex gap-1">
+                        <div className="flex-shrink-0">
                           <span className="bg-green-500/20 border border-green-500/30 rounded-full px-2 py-1 text-xs text-green-300">
                             Live
                           </span>
