@@ -227,7 +227,8 @@ const LandingPage: React.FC = () => {
             >
               <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto text-xl px-10 py-5">
                 <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
-                Start Training with Rohan
+                <span className="hidden sm:inline">Start Training with Rohan</span>
+                <span className="sm:hidden">Start Training</span>
                 <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
               </GlassButton>
             </motion.div>
@@ -427,7 +428,8 @@ const LandingPage: React.FC = () => {
           >
             <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
               <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
-              Meet Rohan Vyas
+              <span className="hidden sm:inline">Meet Rohan Vyas</span>
+              <span className="sm:hidden">Meet Rohan</span>
               <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
             </GlassButton>
           </motion.div>
@@ -458,7 +460,8 @@ const LandingPage: React.FC = () => {
               className="mt-6 sm:mt-8"
             >
               <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
-                Meet Rohan Vyas
+                <span className="hidden sm:inline">Meet Rohan Vyas</span>
+                <span className="sm:hidden">Meet Rohan</span>
                 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </GlassButton>
             </motion.div>
@@ -576,7 +579,8 @@ const LandingPage: React.FC = () => {
             className="text-center mt-8 sm:mt-12"
           >
             <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
-              Get started for free
+              <span className="hidden sm:inline">Get started for free</span>
+              <span className="sm:hidden">Get Started</span>
               <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
             </GlassButton>
           </motion.div>
@@ -764,7 +768,8 @@ const LandingPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
               <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
                 <Rocket className="w-4 h-4 sm:w-5 sm:h-5" />
-                Join Waitlist
+                <span className="hidden sm:inline">Join Waitlist</span>
+                <span className="sm:hidden">Join Now</span>
                 <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </GlassButton>
               
