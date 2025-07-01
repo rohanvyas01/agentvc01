@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { 
   Target, 
   Users, 
@@ -53,8 +53,12 @@ const LandingPage: React.FC = () => {
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
   const y3 = useTransform(scrollY, [0, 500], [0, -150]);
 
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleJoinWaitlist = () => {
     window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
@@ -62,12 +66,59 @@ const LandingPage: React.FC = () => {
 
   const handlePlayVideo = () => {
     setShowVideoPlayer(true);
-    setIsVideoPlaying(true);
   };
 
   const handleCloseVideo = () => {
     setShowVideoPlayer(false);
-    setIsVideoPlaying(false);
+    setIsPlaying(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (videoRef.current && duration) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const newTime = (clickX / rect.width) * duration;
+      videoRef.current.currentTime = newTime;
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   // Reusable glass button component
@@ -105,95 +156,133 @@ const LandingPage: React.FC = () => {
     </motion.div>
   );
 
-  // Custom Video Player Component
-  const CustomVideoPlayer = () => (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      onClick={handleCloseVideo}
-    >
+  // Native Video Player Component
+  const NativeVideoPlayer = () => (
+    <AnimatePresence>
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={handleCloseVideo}
       >
-        {/* Custom Video Player Interface */}
-        <div className="relative w-full h-full">
-          {/* YouTube Embed (hidden behind custom controls) */}
-          <iframe
-            src="https://www.youtube.com/embed/fV7PBk95La8?autoplay=1&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1"
-            className="w-full h-full"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-            style={{ border: 'none' }}
-          />
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Native Video Element */}
+          <video
+            ref={videoRef}
+            className="w-full h-full object-cover"
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onEnded={() => setIsPlaying(false)}
+            autoPlay
+            playsInline
+          >
+            <source src="/Introduction.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
           
           {/* Custom Control Overlay */}
-          <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300">
             {/* Top Bar */}
-            <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent p-4 pointer-events-auto">
+            <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                    <Video className="w-4 h-4 text-white" />
+                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <Video className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">Meet Rohan Vyas</h3>
-                    <p className="text-white/70 text-sm">Your AI Investor Introduction</p>
+                    <h3 className="text-white font-bold text-lg">Meet Rohan Vyas</h3>
+                    <p className="text-white/80 text-sm">Your AI Investor Introduction</p>
                   </div>
                 </div>
                 <button
                   onClick={handleCloseVideo}
                   className="text-white/70 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
+            </div>
+
+            {/* Center Play/Pause Button */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <motion.button
+                onClick={togglePlay}
+                className="bg-white/20 backdrop-blur-sm rounded-full p-6 hover:bg-white/30 transition-all duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                {isPlaying ? (
+                  <Pause className="w-8 h-8 text-white" />
+                ) : (
+                  <Play className="w-8 h-8 text-white ml-1" />
+                )}
+              </motion.button>
             </div>
 
             {/* Bottom Controls */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pointer-events-auto">
-              <div className="flex items-center gap-4">
-                {/* Play/Pause Button */}
-                <button className="text-white hover:text-indigo-400 transition-colors">
-                  {isVideoPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-                </button>
-                
-                {/* Progress Bar */}
-                <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 w-1/3 rounded-full"></div>
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+              {/* Progress Bar */}
+              <div 
+                className="w-full h-2 bg-white/20 rounded-full mb-4 cursor-pointer"
+                onClick={handleSeek}
+              >
+                <div 
+                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-300"
+                  style={{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }}
+                ></div>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  {/* Play/Pause */}
+                  <button
+                    onClick={togglePlay}
+                    className="text-white hover:text-indigo-400 transition-colors"
+                  >
+                    {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+                  </button>
+                  
+                  {/* Volume */}
+                  <button
+                    onClick={toggleMute}
+                    className="text-white hover:text-indigo-400 transition-colors"
+                  >
+                    {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+                  </button>
+                  
+                  {/* Time Display */}
+                  <span className="text-white/80 text-sm font-mono">
+                    {formatTime(currentTime)} / {formatTime(duration)}
+                  </span>
                 </div>
                 
-                {/* Time */}
-                <span className="text-white/70 text-sm font-mono">0:55 / 2:30</span>
-                
-                {/* Volume */}
-                <button className="text-white hover:text-indigo-400 transition-colors">
-                  <Volume2 className="w-5 h-5" />
-                </button>
-                
-                {/* Fullscreen */}
-                <button className="text-white hover:text-indigo-400 transition-colors">
-                  <Maximize className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Live Indicator */}
-            <div className="absolute top-4 right-4 pointer-events-auto">
-              <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                LIVE
+                <div className="flex items-center gap-3">
+                  {/* Live Indicator */}
+                  <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                    LIVE
+                  </div>
+                  
+                  {/* Quality Badge */}
+                  <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    HD
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </AnimatePresence>
   );
 
   return (
@@ -239,8 +328,8 @@ const LandingPage: React.FC = () => {
       
       <Header />
       
-      {/* Custom Video Player Modal */}
-      {showVideoPlayer && <CustomVideoPlayer />}
+      {/* Native Video Player Modal */}
+      {showVideoPlayer && <NativeVideoPlayer />}
       
       {/* Hero Section with Video Intro */}
       <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
@@ -286,22 +375,22 @@ const LandingPage: React.FC = () => {
                   className="relative cursor-pointer group"
                   onClick={handlePlayVideo}
                 >
-                  <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30 hover:border-indigo-500/30 transition-all duration-300">
+                  <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30 hover:border-indigo-500/30 transition-all duration-300 group-hover:shadow-2xl">
                     <div className="relative w-full h-64 sm:h-80 lg:h-96 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900">
                       {/* Video Thumbnail */}
                       <img
                         src="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
                         alt="Rohan Vyas Video Introduction"
-                        className="w-full h-full object-cover object-center"
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                       />
                       
                       {/* Professional Video Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30 group-hover:from-black/50 transition-all duration-300">
                         {/* Play Button */}
                         <div className="absolute inset-0 flex items-center justify-center">
                           <motion.div
-                            className="bg-white/95 backdrop-blur-sm rounded-full p-6 group-hover:bg-white transition-all duration-300 shadow-2xl"
-                            whileHover={{ scale: 1.1 }}
+                            className="bg-white/95 backdrop-blur-sm rounded-full p-6 group-hover:bg-white group-hover:scale-110 transition-all duration-300 shadow-2xl"
+                            whileHover={{ scale: 1.2 }}
                             whileTap={{ scale: 0.95 }}
                           >
                             <Play className="w-8 h-8 text-slate-900 ml-1" />
@@ -310,24 +399,24 @@ const LandingPage: React.FC = () => {
                         
                         {/* Video Duration */}
                         <div className="absolute top-4 right-4">
-                          <div className="bg-black/70 backdrop-blur-sm text-white px-2 py-1 rounded text-sm font-mono">
+                          <div className="bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-sm font-mono">
                             2:30
                           </div>
                         </div>
                         
                         {/* Video Title Overlay */}
                         <div className="absolute bottom-4 left-4 right-4">
-                          <div className="glass rounded-lg p-3 bg-slate-900/80 backdrop-blur-xl">
+                          <div className="glass rounded-lg p-4 bg-slate-900/90 backdrop-blur-xl border border-slate-700/30">
                             <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2 text-white">
-                                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                                <span className="text-sm font-medium">Watch Rohan's Introduction</span>
+                              <div className="flex items-center gap-3 text-white">
+                                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                                <span className="font-medium">Watch Rohan's Introduction</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs bg-gradient-to-r from-indigo-500 to-purple-600 px-2 py-1 rounded-full text-white">
+                                <span className="text-xs bg-gradient-to-r from-indigo-500 to-purple-600 px-2 py-1 rounded-full text-white font-medium">
                                   HD
                                 </span>
-                                <span className="text-xs bg-red-500 px-2 py-1 rounded-full text-white">
+                                <span className="text-xs bg-red-500 px-2 py-1 rounded-full text-white font-medium">
                                   LIVE
                                 </span>
                               </div>
