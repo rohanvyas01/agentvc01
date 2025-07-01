@@ -172,7 +172,7 @@ const LandingPage: React.FC = () => {
                   <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto">
                     The world's first AI investor who gives you real feedback and helps you raise capital faster
                   </p>
-                </div>
+                </motion.div>
 
                 {/* Video Player */}
                 <motion.div
