@@ -40,7 +40,6 @@ import {
   TrendingUp as Growth
 } from 'lucide-react';
 import Header from '../components/Header';
-import VideoPlayer from '../components/VideoPlayer';
 
 const LandingPage: React.FC = () => {
   const { scrollY } = useScroll();
@@ -50,14 +49,6 @@ const LandingPage: React.FC = () => {
 
   const handleJoinWaitlist = () => {
     window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
-  };
-
-  const handleVideoEnd = () => {
-    console.log('Rohan intro video ended');
-  };
-
-  const handleVideoStart = () => {
-    console.log('Rohan intro video started');
   };
 
   // Reusable glass button component
@@ -174,7 +165,7 @@ const LandingPage: React.FC = () => {
                   </p>
                 </motion.div>
 
-                {/* Video Player */}
+                {/* YouTube Video Player */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -182,14 +173,16 @@ const LandingPage: React.FC = () => {
                   className="relative"
                 >
                   <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30">
-                    <VideoPlayer
-                      videoUrl="https://www.youtube.com/watch?v=fV7PBk95La8"
-                      autoPlay={true}
-                      showControls={true}
-                      onVideoEnd={handleVideoEnd}
-                      onVideoStart={handleVideoStart}
-                      className="w-full h-64 sm:h-80 lg:h-96 rounded-xl"
-                    />
+                    <div className="relative w-full h-64 sm:h-80 lg:h-96 rounded-xl overflow-hidden">
+                      <iframe
+                        src="https://www.youtube.com/embed/fV7PBk95La8?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1"
+                        title="Meet Rohan Vyas - Your AI Investor"
+                        className="w-full h-full rounded-xl"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
                   </div>
                   
                   {/* Video overlay with Rohan's info */}
