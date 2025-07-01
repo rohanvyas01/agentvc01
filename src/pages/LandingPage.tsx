@@ -183,7 +183,7 @@ const LandingPage: React.FC = () => {
                 >
                   <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30">
                     <VideoPlayer
-                      videoUrl="https://videos.pexels.com/video-files/3196284/3196284-uhd_2560_1440_25fps.mp4"
+                      videoUrl="C:\\Workplace\\agentvc01-main\\Introduction.mp4"
                       autoPlay={true}
                       showControls={true}
                       onVideoEnd={handleVideoEnd}
