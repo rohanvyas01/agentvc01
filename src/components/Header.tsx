@@ -24,7 +24,7 @@ const Header: React.FC = () => {
               whileTap={{ scale: 0.95 }}
             >
               <img 
-                src="/Gemini_Generated_Image_20nfzq20nfzq20nf.jpeg" 
+                src="/AVC logo.png" 
                 alt="AgentVC Logo" 
                 className="w-full h-full object-contain"
               />
