@@ -15,11 +15,11 @@ const Header: React.FC = () => {
       className="fixed top-0 left-0 right-0 z-50 header-glass border-b border-slate-700/30 backdrop-blur-xl"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14 sm:h-16">
-          {/* Left-aligned Logo - Mobile Optimized */}
+        <div className="flex justify-between items-center h-16 sm:h-18">
+          {/* Left-aligned Logo - Increased Size */}
           <div className="flex items-center gap-2 sm:gap-3 group">
             <motion.div 
-              className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center overflow-hidden"
+              className="relative w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -30,7 +30,7 @@ const Header: React.FC = () => {
               />
             </motion.div>
             <motion.span 
-              className="text-lg sm:text-xl font-bold text-white"
+              className="text-xl sm:text-2xl lg:text-2xl font-bold text-white"
               whileHover={{ x: 2 }}
               transition={{ duration: 0.2 }}
             >
