@@ -79,7 +79,7 @@ const LandingPage: React.FC = () => {
       transition={{ duration: 0.8, delay }}
       viewport={{ once: true }}
       whileHover={{ y: -2, scale: 1.01 }}
-      className={`glass rounded-2xl p-4 sm:p-6 lg:p-8 transition-all duration-300 hover:shadow-xl ${className}`}
+      className={`glass rounded-2xl p-4 sm:p-6 lg:p-8 transition-all duration-300 hover:shadow-xl text-center ${className}`}
       {...props}
     >
       {children}
@@ -151,7 +151,7 @@ const LandingPage: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.8 }}
-                  className="mb-6 sm:mb-8"
+                  className="mb-6 sm:mb-8 text-center"
                 >
                   <div className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-4 py-2 mb-4">
                     <Video className="w-4 h-4 text-indigo-400" />
@@ -185,12 +185,12 @@ const LandingPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  {/* Video overlay with Rohan's info */}
+                  {/* Video overlay with Rohan's info - Properly centered */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8, duration: 0.8 }}
-                    className="absolute -bottom-4 sm:-bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-md"
+                    className="absolute -bottom-4 sm:-bottom-6 left-1/2 transform -translate-x-1/2 w-full max-w-sm px-4"
                   >
                     <div className="glass rounded-xl p-4 border border-slate-700/30 bg-slate-900/80 backdrop-blur-xl">
                       <div className="flex items-center gap-3">
@@ -202,7 +202,7 @@ const LandingPage: React.FC = () => {
                           />
                           <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 text-center sm:text-left">
                           <h3 className="font-semibold text-white">Rohan Vyas</h3>
                           <p className="text-sm text-indigo-400">Your AI Investor • Available 24/7</p>
                         </div>
@@ -297,7 +297,7 @@ const LandingPage: React.FC = () => {
               <GlassTextBox
                 key={index}
                 delay={index * 0.2}
-                className="text-center group"
+                className="group"
               >
                 <motion.div 
                   className="flex justify-center mb-4 sm:mb-6"
@@ -343,7 +343,7 @@ const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             {/* Rohan's Photo and Basic Info */}
-            <GlassTextBox className="text-center lg:text-left">
+            <GlassTextBox>
               <div className="relative inline-block mb-6 sm:mb-8">
                 <motion.div
                   className="relative"
@@ -353,7 +353,7 @@ const LandingPage: React.FC = () => {
                   <img
                     src="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
                     alt="Rohan Vyas - Your AI Investor"
-                    className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 object-cover object-center rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl mx-auto lg:mx-0"
+                    className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 object-cover object-center rounded-2xl border-4 border-gradient-to-br from-indigo-500/30 to-purple-600/30 shadow-2xl mx-auto"
                     style={{
                       objectPosition: 'center top',
                       filter: 'brightness(1.1) contrast(1.1)'
@@ -366,7 +366,7 @@ const LandingPage: React.FC = () => {
               <div className="space-y-3 sm:space-y-4">
                 <h3 className="text-2xl sm:text-3xl font-bold text-white">Rohan Vyas</h3>
                 <p className="text-lg sm:text-xl text-indigo-400 font-medium">Your AI Investor</p>
-                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+                <div className="flex flex-wrap gap-2 justify-center">
                   <span className="bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-white">
                     Available 24/7
                   </span>
@@ -382,11 +382,11 @@ const LandingPage: React.FC = () => {
 
             {/* Rohan's Background */}
             <GlassTextBox>
-              <h4 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
+              <h4 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4 flex items-center justify-center gap-2">
                 <Award className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
                 Complete Background
               </h4>
-              <div className="space-y-2 sm:space-y-3 text-white text-sm sm:text-base">
+              <div className="space-y-2 sm:space-y-3 text-white text-sm sm:text-base text-left">
                 <div className="flex items-start gap-2 sm:gap-3">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
                   <p><span className="font-semibold">NYU Electronics Bachelor's</span> - Graduated summa cum laude with honors in electrical engineering</p>
@@ -470,7 +470,7 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Without Rohan */}
             <GlassTextBox className="bg-gradient-to-br from-red-900/20 to-red-800/20 border border-red-500/30">
-              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-red-500/20 rounded-lg flex items-center justify-center">
                   <X className="w-3 h-3 sm:w-5 sm:h-5 text-red-400" />
                 </div>
@@ -513,7 +513,7 @@ const LandingPage: React.FC = () => {
                     className="flex items-center gap-2 sm:gap-3 text-red-300 text-sm sm:text-base"
                   >
                     <span className="text-lg flex-shrink-0">{item.emoji}</span>
-                    <span>{item.text}</span>
+                    <span className="text-left">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
@@ -521,7 +521,7 @@ const LandingPage: React.FC = () => {
 
             {/* With Rohan */}
             <GlassTextBox className="bg-gradient-to-br from-green-900/20 to-emerald-800/20 border border-green-500/30">
-              <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <Check className="w-3 h-3 sm:w-5 sm:h-5 text-green-400" />
                 </div>
@@ -564,7 +564,7 @@ const LandingPage: React.FC = () => {
                     className="flex items-center gap-2 sm:gap-3 text-green-300 text-sm sm:text-base"
                   >
                     <span className="text-lg flex-shrink-0">{item.emoji}</span>
-                    <span>{item.text}</span>
+                    <span className="text-left">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
@@ -632,7 +632,7 @@ const LandingPage: React.FC = () => {
               <GlassTextBox
                 key={index}
                 delay={index * 0.2}
-                className="relative group text-center"
+                className="relative group"
               >
                 <motion.div 
                   className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 sm:px-3 py-1 rounded-full font-semibold text-xs sm:text-sm"
@@ -723,7 +723,7 @@ const LandingPage: React.FC = () => {
               <GlassTextBox
                 key={index}
                 delay={index * 0.1}
-                className="text-center group"
+                className="group"
               >
                 <div className="flex flex-col items-center mb-3 sm:mb-4">
                   <motion.div 
@@ -773,7 +773,7 @@ const LandingPage: React.FC = () => {
                 <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </GlassButton>
               
-              <div className="text-white text-sm sm:text-base text-center sm:text-left">
+              <div className="text-white text-sm sm:text-base text-center">
                 <p>✓ No credit card required</p>
                 <p>✓ Unlimited practice sessions</p>
               </div>
@@ -786,8 +786,8 @@ const LandingPage: React.FC = () => {
       <footer className="relative border-t border-slate-700/30 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
         <GlassTextBox className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 text-center sm:text-left">
-            <div className="sm:col-span-2 lg:col-span-1">
-              <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center justify-center sm:justify-start gap-2">
+            <div className="sm:col-span-2 lg:col-span-1 text-center lg:text-left">
+              <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center justify-center lg:justify-start gap-2">
                 <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
                 AgentVC
               </h3>
@@ -795,14 +795,14 @@ const LandingPage: React.FC = () => {
                 The world's first AI investor that helps founders raise capital faster through real feedback and unlimited practice.
               </p>
             </div>
-            <div>
+            <div className="text-center lg:text-left">
               <h4 className="font-semibold text-white mb-3 sm:mb-4 text-sm sm:text-base">Product</h4>
               <ul className="space-y-2 text-white text-sm sm:text-base">
                 <li><a href="#features" className="hover:text-indigo-400 transition-colors">AI Investor Features</a></li>
                 <li><a href="#" className="hover:text-indigo-400 transition-colors">How It Works</a></li>
               </ul>
             </div>
-            <div>
+            <div className="text-center lg:text-left">
               <h4 className="font-semibold text-white mb-3 sm:mb-4 text-sm sm:text-base">Support</h4>
               <ul className="space-y-2 text-white text-sm sm:text-base">
                 <li><a href="#" className="hover:text-indigo-400 transition-colors">Help Center</a></li>
