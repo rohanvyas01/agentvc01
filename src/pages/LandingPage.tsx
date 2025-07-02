@@ -65,7 +65,7 @@ const LandingPage: React.FC = () => {
         whileHover={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       />
-      <div className="relative z-10 flex items-center gap-2">
+      <div className="relative z-10 flex items-center justify-center gap-2">
         {children}
       </div>
     </motion.button>
