@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { AuthProvider } from '../contexts/AuthContext';
 import AuthModal from '../components/AuthModal';
-import { 
-  Target, 
-  Users, 
-  TrendingUp, 
-  CheckCircle, 
-  ArrowRight, 
+import {
+  Target,
+  Users,
+  TrendingUp,
+  CheckCircle,
+  ArrowRight,
   Star,
   Zap,
   Shield,
@@ -112,7 +112,7 @@ const LandingPage: React.FC = () => {
           </div>
           
           {/* Minimal grid overlay */}
-          <div 
+          <div
             className="absolute inset-0 opacity-[0.02]"
             style={{
               backgroundImage: `
@@ -323,7 +323,7 @@ const LandingPage: React.FC = () => {
                   delay={index * 0.2}
                   className="group"
                 >
-                  <motion.div 
+                  <motion.div
                     className="flex justify-center mb-4 sm:mb-6"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.3 }}
@@ -348,7 +348,7 @@ const LandingPage: React.FC = () => {
               viewport={{ once: true }}
               className="text-center mb-12 sm:mb-16"
             >
-              <motion.div 
+              <motion.div
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-3 sm:px-4 py-2 mb-4 sm:mb-6"
                 whileHover={{ scale: 1.05 }}
               >
@@ -658,7 +658,7 @@ const LandingPage: React.FC = () => {
                   delay={index * 0.2}
                   className="relative group"
                 >
-                  <motion.div 
+                  <motion.div
                     className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 sm:px-3 py-1 rounded-full font-semibold text-xs sm:text-sm"
                     whileHover={{ scale: 1.1 }}
                   >
@@ -666,7 +666,7 @@ const LandingPage: React.FC = () => {
                   </motion.div>
                   
                   <div className="mt-6 sm:mt-8 mb-4 sm:mb-6 flex justify-center">
-                    <motion.div 
+                    <motion.div
                       className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border border-slate-600/30"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ duration: 0.3 }}
@@ -683,7 +683,7 @@ const LandingPage: React.FC = () => {
                   </p>
                   
                   <div className="text-center">
-                    <motion.span 
+                    <motion.span
                       className="bg-gradient-to-r from-slate-800 to-slate-700 border border-slate-600/30 rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm text-white font-medium"
                       whileHover={{ scale: 1.05 }}
                     >
@@ -750,7 +750,7 @@ const LandingPage: React.FC = () => {
                   className="group"
                 >
                   <div className="flex flex-col items-center mb-3 sm:mb-4">
-                    <motion.div 
+                    <motion.div
                       className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border border-slate-600/30 mb-3 sm:mb-4"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ duration: 0.3 }}
@@ -776,7 +776,6 @@ const LandingPage: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="text-center"
             >
               <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold tracking-tight mb-6 sm:mb-8 text-white leading-tight">
                 Stop Practicing with Friends.
@@ -802,15 +801,14 @@ const LandingPage: React.FC = () => {
                   <p>✓ Unlimited practice sessions</p>
                 </div>
               </div>
-            </div>
             </motion.div>
-          </motion.div>
+          </div>
         </section>
 
         {/* Footer */}
         <footer className="relative border-t border-slate-700/30 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
-          <GlassTextBox className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 text-center sm:text-left">
+          <div className="max-w-7xl mx-auto">
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 text-center sm:text-left">
               <div className="sm:col-span-2 lg:col-span-1 text-center lg:text-left">
                 <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center justify-center lg:justify-start gap-2">
                   <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
@@ -836,9 +834,9 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
             <div className="border-t border-slate-700/30 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-white text-xs sm:text-sm">
-              <p>&copy; 2025 AgentVC. The world's first AI investor. All rights reserved.</p>
+              <p>© 2025 AgentVC. The world's first AI investor. All rights reserved.</p>
             </div>
-          </GlassTextBox>
+          </div>
         </footer>
 
         {/* Auth Modal */}
