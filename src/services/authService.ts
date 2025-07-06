@@ -122,13 +122,9 @@ class AuthService {
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        if (error.code === 'PGRST116') {
-          // No profile found
-          return null;
-        }
         throw new Error(error.message);
       }
 
