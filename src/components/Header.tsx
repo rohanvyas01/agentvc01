@@ -1,10 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ExternalLink, LogIn } from 'lucide-react';
 
 const Header: React.FC = () => {
-  const handleJoinWaitlist = () => {
-    window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
+  const navigate = useNavigate();
+
+  const handleSignUp = () => {
+    navigate('/signup');
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
   };
 
   return (
@@ -58,7 +65,17 @@ const Header: React.FC = () => {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleJoinWaitlist}
+              onClick={handleLogin}
+              className="hidden sm:flex items-center gap-2 text-white hover:text-indigo-400 transition-all duration-300 font-medium px-3 py-2 rounded-lg hover:bg-white/5"
+            >
+              <LogIn className="w-4 h-4" />
+              Sign In
+            </motion.button>
+            
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleSignUp}
               className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium px-3 sm:px-6 py-2 sm:py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group text-sm sm:text-base"
             >
               <motion.div
@@ -67,8 +84,8 @@ const Header: React.FC = () => {
                 transition={{ duration: 0.3 }}
               />
               <div className="relative z-10 flex items-center gap-1 sm:gap-2">
-                <span className="hidden sm:inline">Join Waitlist</span>
-                <span className="sm:hidden">Join</span>
+                <span className="hidden sm:inline">Get Started</span>
+                <span className="sm:hidden">Start</span>
                 <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </div>
             </motion.button>
