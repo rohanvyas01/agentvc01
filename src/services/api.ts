@@ -1,6 +1,4 @@
 import { pdfParserService, PDFParseResult } from './pdfParser';
-import { supabaseService } from './supabaseService';
-import { isSupabaseConfigured } from '../lib/supabase';
 
 interface PitchDeck {
   id: string;
@@ -14,16 +12,12 @@ interface PitchDeck {
 
 class ApiService {
   private getCurrentUser() {
-    if (!isSupabaseConfigured()) {
-      // For demo purposes when Supabase is not configured
-      return {
-        id: 'demo-user-id',
-        email: 'demo@example.com'
-      };
-    }
-    
-    // This will be handled by Supabase RLS automatically
-    throw new Error('Use Supabase service for authenticated operations');
+    // For demo purposes, return a mock user
+    // In production, this would get the actual authenticated user
+    return {
+      id: 'demo-user-id',
+      email: 'demo@example.com'
+    };
   }
 
   async uploadPitchDeck(file: File): Promise<{ 
@@ -33,29 +27,6 @@ class ApiService {
     extractedData: PDFParseResult;
   }> {
     try {
-      // If Supabase is configured, use the secure backend
-      if (isSupabaseConfigured()) {
-        console.log('🚀 Using Supabase backend for pitch deck upload...');
-        
-        // Parse PDF first
-        console.log('📄 Parsing PDF content...');
-        const extractedData = await pdfParserService.parsePDF(file);
-        
-        // Upload to Supabase with extracted data
-        const deckData = await supabaseService.uploadPitchDeck(file, extractedData);
-        
-        // Clean up OCR resources
-        await pdfParserService.cleanup();
-        
-        return {
-          deckId: deckData.id,
-          fileName: deckData.file_name,
-          storagePath: deckData.storage_path,
-          extractedData: extractedData
-        };
-      }
-      
-      // Fallback to localStorage for demo when Supabase is not configured
       const user = this.getCurrentUser();
 
       // Validate file type
