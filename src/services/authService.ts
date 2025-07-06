@@ -109,9 +109,6 @@ class AuthService {
   async getCurrentUser() {
     try {
       const { data: { user }, error } = await supabase.auth.getUser();
-      if (error) {
-        throw new Error(error.message);
-      }
       return user;
     } catch (error) {
       console.error('Get current user error:', error);
