@@ -78,9 +78,15 @@ const SignUpPage: React.FC = () => {
 
       setLoading(true);
       try {
+        console.log('Submitting signup form...');
         await signup(formData);
-        navigate('/dashboard');
+        console.log('Signup successful, navigating to dashboard...');
+        // Add a small delay to ensure auth state is updated
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
       } catch (error: any) {
+        console.error('Signup form error:', error);
         setError(error.message || 'Sign up failed');
       } finally {
         setLoading(false);

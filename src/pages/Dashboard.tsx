@@ -34,13 +34,23 @@ const Dashboard: React.FC = () => {
   const { user, profile, logout } = useAuth();
   const [pitchDecks, setPitchDecks] = useState<PitchDeck[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
   const [error, setError] = useState('');
 
+  // Wait for auth to be ready
   useEffect(() => {
-    loadPitchDecks();
-  }, [user]);
+    if (user !== null || profile !== null) {
+      setAuthLoading(false);
+    }
+  }, [user, profile]);
+
+  useEffect(() => {
+    if (user && !authLoading) {
+      loadPitchDecks();
+    }
+  }, [user, authLoading]);
 
   const loadPitchDecks = async () => {
     if (!user) return;
@@ -121,12 +131,14 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  if (!user || !profile) {
+  if (authLoading || !user || !profile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto mb-4"></div>
-          <p className="text-white">Loading your dashboard...</p>
+          <p className="text-white">
+            {authLoading ? 'Setting up your account...' : 'Loading your dashboard...'}
+          </p>
         </div>
       </div>
     );
