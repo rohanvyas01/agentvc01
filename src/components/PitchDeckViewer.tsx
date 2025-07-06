@@ -14,7 +14,7 @@ import {
   Brain,
   Target
 } from 'lucide-react';
-import { pitchDeckService } from '../services/pitchDeckService';
+import { apiService } from '../services/api';
 
 interface PitchDeckViewerProps {
   deckId: string;
@@ -36,24 +36,7 @@ const PitchDeckViewer: React.FC<PitchDeckViewerProps> = ({ deckId, onClose }) =>
   const loadDeckContent = async () => {
     try {
       setLoading(true);
-      // Get deck data from pitchDeckService
-      const decks = await pitchDeckService.getPitchDecks('current-user-id'); // This should use actual user ID
-      const deckData = decks.find(d => d.id === deckId);
-      
-      if (!deckData) {
-        throw new Error('Pitch deck not found');
-      }
-      
-      let extractedContent = null;
-      if (deckData.extracted_text) {
-        try {
-          extractedContent = JSON.parse(deckData.extracted_text);
-        } catch (parseError) {
-          console.warn('Failed to parse extracted text:', parseError);
-          extractedContent = { fullText: deckData.extracted_text };
-        }
-      }
-      
+      const { deck: deckData, extractedData: extractedContent } = await apiService.getPitchDeckContent(deckId);
       setDeck(deckData);
       setExtractedData(extractedContent);
     } catch (error: any) {
@@ -68,7 +51,7 @@ const PitchDeckViewer: React.FC<PitchDeckViewerProps> = ({ deckId, onClose }) =>
     if (!deck) return;
     
     try {
-      const downloadUrl = await pitchDeckService.getDownloadUrl(deck.storage_path);
+      const downloadUrl = await apiService.getDownloadUrl(deck.storage_path);
       const link = document.createElement('a');
       link.href = downloadUrl;
       link.download = deck.file_name;
