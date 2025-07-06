@@ -99,35 +99,6 @@ VITE_SUPABASE_ANON_KEY=your-anon-key-here`}
   }
 
   const industries = [
-interface AuthModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  mode: 'login' | 'signup';
-  onSwitchMode: (mode: 'login' | 'signup') => void;
-}
-
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMode }) => {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    founder_name: '',
-    startup_name: '',
-    website: '',
-    linkedin_profile: '',
-    one_liner_pitch: '',
-    industry: '',
-    business_model: '',
-    funding_round: '',
-    raise_amount: '',
-    use_of_funds: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const { login, signup, updateProfile } = useAuth();
-  const navigate = useNavigate();
-
-  const industries = [
     'FinTech', 'HealthTech', 'EdTech', 'SaaS', 'E-commerce', 'Marketplace',
     'AI/ML', 'Blockchain', 'IoT', 'Cybersecurity', 'CleanTech', 'FoodTech',
     'PropTech', 'RetailTech', 'TravelTech', 'Gaming', 'Media', 'Other'
