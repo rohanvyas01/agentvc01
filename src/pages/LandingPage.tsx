@@ -803,6 +803,7 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
             </motion.div>
+          </div>
         </section>
 
         {/* Footer */}
