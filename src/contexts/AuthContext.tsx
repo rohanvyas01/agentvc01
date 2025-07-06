@@ -60,15 +60,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Listen for auth state changes
     const { data: { subscription } } = authService.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
+        console.log('User signed in, updating state:', session.user.id);
         setUser({
           id: session.user.id,
           email: session.user.email!,
           created_at: session.user.created_at!
         });
         
-        const userProfile = await authService.getProfile(session.user.id);
-        setProfile(userProfile);
+        try {
+          const userProfile = await authService.getProfile(session.user.id);
+          setProfile(userProfile);
+          console.log('Profile loaded:', userProfile);
+        } catch (error) {
+          console.error('Error loading profile:', error);
+        }
       } else if (event === 'SIGNED_OUT') {
+        console.log('User signed out');
         setUser(null);
         setProfile(null);
       }
@@ -94,9 +101,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signup = async (data: SignUpData) => {
     try {
       setLoading(true);
-      const result = await authService.signUp(data);
-      // User state will be updated by the auth state change listener
+      console.log('Starting signup process...');
+      await authService.signUp(data);
+      console.log('Signup completed successfully');
+      // Note: User state will be updated by the auth state change listener
+      // But we need to ensure the component waits for the profile to load
     } catch (error) {
+      console.error('Signup error:', error);
       throw error;
     } finally {
       setLoading(false);

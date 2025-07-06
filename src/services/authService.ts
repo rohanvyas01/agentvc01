@@ -24,6 +24,7 @@ export interface LoginData {
 class AuthService {
   async signUp(data: SignUpData) {
     try {
+      console.log('Creating user account...');
       // Create user in Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
@@ -31,6 +32,7 @@ class AuthService {
       });
 
       if (authError) {
+        console.error('Auth error:', authError);
         throw new Error(authError.message);
       }
 
@@ -38,6 +40,7 @@ class AuthService {
         throw new Error('Failed to create user account');
       }
 
+      console.log('User created, creating profile...');
       // Create profile record
       const profileData = {
         user_id: authData.user.id,
@@ -58,11 +61,14 @@ class AuthService {
         .insert([profileData]);
 
       if (profileError) {
+        console.error('Profile creation error:', profileError);
         // If profile creation fails, we should clean up the auth user
-        await supabase.auth.admin.deleteUser(authData.user.id);
+        // Note: We can't use admin.deleteUser from client side
+        console.warn('Profile creation failed, but user account was created');
         throw new Error(`Failed to create profile: ${profileError.message}`);
       }
 
+      console.log('Profile created successfully');
       return {
         user: authData.user,
         session: authData.session,
