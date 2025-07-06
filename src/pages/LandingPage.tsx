@@ -802,9 +802,7 @@ const LandingPage: React.FC = () => {
                   <p>✓ Unlimited practice sessions</p>
                 </div>
               </div>
-            </div>
             </motion.div>
-          </motion.div>
         </section>
 
         {/* Footer */}
