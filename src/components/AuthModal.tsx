@@ -63,9 +63,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         onClose();
       } else {
         if (step === 1) {
-          // Basic auth step - create account
-          console.log('Step 1: Creating account with:', { email: formData.email });
-          await signup(formData.email, formData.password);
+          // Basic auth step - validate required fields
+          if (!formData.email || !formData.password) {
+            setError('Please fill in all required fields');
+            return;
+          }
+          console.log('Step 1: Moving to step 2');
           setStep(2);
         } else if (step === 2) {
           // Company & founder info step - validate required fields
@@ -90,24 +93,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             return;
           }
           
-          console.log('Step 4: Saving profile data:', formData);
+          console.log('Step 4: Creating account with complete data');
           
-          await updateProfile({
+          // Create account with all data atomically
+          await signup({
+            email: formData.email,
+            password: formData.password,
             founder_name: formData.founder_name,
-            website: formData.website,
+            startup_name: formData.startup_name,
+            one_liner_pitch: formData.one_liner_pitch,
+            industry: formData.industry,
+            business_model: formData.business_model,
+            funding_round: formData.funding_round,
+            raise_amount: formData.raise_amount,
+            use_of_funds: formData.use_of_funds,
             linkedin_profile: formData.linkedin_profile,
-            startup_info: {
-              startup_name: formData.startup_name,
-              one_liner_pitch: formData.one_liner_pitch,
-              industry: formData.industry,
-              business_model: formData.business_model,
-              funding_round: formData.funding_round,
-              raise_amount: formData.raise_amount,
-              use_of_funds: formData.use_of_funds
-            }
+            website: formData.website
           });
           
-          console.log('Profile updated successfully');
+          console.log('Account created successfully');
           navigate('/dashboard');
           onClose();
         }
