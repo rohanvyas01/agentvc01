@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   Target, 
   Users, 
@@ -43,12 +44,17 @@ import Header from '../components/Header';
 
 const LandingPage: React.FC = () => {
   const { scrollY } = useScroll();
+  const navigate = useNavigate();
   const y1 = useTransform(scrollY, [0, 300], [0, -50]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
   const y3 = useTransform(scrollY, [0, 500], [0, -150]);
 
-  const handleJoinWaitlist = () => {
-    window.open('https://docs.google.com/forms/d/1tTsmTy3NZqoOw6cgRpzGWdRdNflcvHgQlarPLZ_k2R8/viewform', '_blank');
+  const handleSignUp = () => {
+    navigate('/signup');
+  };
+
+  const handleLogin = () => {
+    navigate('/login');
   };
 
   // Reusable glass button component
@@ -225,11 +231,10 @@ const LandingPage: React.FC = () => {
               transition={{ delay: 0.9, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 sm:mb-16"
             >
-              <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto text-xl px-10 py-5">
+              <GlassButton onClick={handleSignUp} className="w-full sm:w-auto text-xl px-10 py-5">
                 <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
                 <span className="hidden sm:inline">Start Training with Rohan</span>
                 <span className="sm:hidden">Start Training</span>
-                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
               </GlassButton>
             </motion.div>
 
@@ -426,11 +431,10 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mt-12 sm:mt-16"
           >
-            <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
+            <GlassButton onClick={handleSignUp} className="w-full sm:w-auto">
               <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="hidden sm:inline">Meet Rohan Vyas</span>
               <span className="sm:hidden">Meet Rohan</span>
-              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
             </GlassButton>
           </motion.div>
         </div>
@@ -459,7 +463,7 @@ const LandingPage: React.FC = () => {
               viewport={{ once: true }}
               className="mt-6 sm:mt-8"
             >
-              <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
+              <GlassButton onClick={handleSignUp} className="w-full sm:w-auto">
                 <span className="hidden sm:inline">Meet Rohan Vyas</span>
                 <span className="sm:hidden">Meet Rohan</span>
                 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -578,10 +582,9 @@ const LandingPage: React.FC = () => {
             viewport={{ once: true }}
             className="text-center mt-8 sm:mt-12"
           >
-            <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
+            <GlassButton onClick={handleSignUp} className="w-full sm:w-auto">
               <span className="hidden sm:inline">Get started for free</span>
               <span className="sm:hidden">Get Started</span>
-              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
             </GlassButton>
           </motion.div>
         </div>
@@ -766,11 +769,10 @@ const LandingPage: React.FC = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
-              <GlassButton onClick={handleJoinWaitlist} className="w-full sm:w-auto">
+              <GlassButton onClick={handleSignUp} className="w-full sm:w-auto">
                 <Rocket className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Join Waitlist</span>
-                <span className="sm:hidden">Join Now</span>
-                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Get Started</span>
+                <span className="sm:hidden">Start Now</span>
               </GlassButton>
               
               <div className="text-white text-sm sm:text-base text-center">
