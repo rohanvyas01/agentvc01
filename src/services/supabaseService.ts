@@ -136,8 +136,27 @@ export class SupabaseService {
     }
 
     const { data: { session }, error } = await supabase!.auth.getSession();
-    if (error) throw error;
-    return session;
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        // If there's an error getting the session (like invalid refresh token),
+        // clear the session and return null
+        if (error.message.includes('Invalid Refresh Token') || error.message.includes('refresh_token_not_found')) {
+          console.log('Invalid session detected, clearing...');
+          await supabase.auth.signOut();
+          return null;
+        }
+        throw error;
+      }
+      
+      return session;
+    } catch (error) {
+      console.error('Error getting session:', error);
+      // Clear session on any auth error
+      await supabase.auth.signOut();
+      return null;
+    }
   }
 
   /**

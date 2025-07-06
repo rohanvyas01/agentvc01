@@ -76,6 +76,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       } catch (error) {
         console.error('Error loading session:', error);
+        
+        // If we get a refresh token error, clear the session to force fresh login
+        if (error instanceof Error && error.message.includes('Invalid Refresh Token')) {
+          console.log('Clearing invalid session data');
+          try {
+            await supabaseService.signOut();
+          } catch (signOutError) {
+            console.error('Error during cleanup signout:', signOutError);
+          }
+          // Clear any stale session data
+          setUser(null);
+          setUserProfile(null);
+        }
       } finally {
         setLoading(false);
       }
