@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { supabaseService } from '../services/supabaseService';
 import { Profile } from '../lib/supabase';
 
 interface UserProfile {
@@ -70,42 +69,10 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any | null>(null);
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Check for existing Supabase session
-    const checkExistingSession = async () => {
-      try {
-        const session = await supabaseService.getSession();
-        if (session?.user) {
-          const currentUser = await supabaseService.getCurrentUser();
-          if (currentUser) {
-            setUser(currentUser.user);
-            setUserProfile(currentUser.profile);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading session:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkExistingSession();
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const login = async (email: string, password: string) => {
-    try {
-      setLoading(true);
-
-      const result = await supabaseService.signIn(email, password);
-      setUser(result.user);
-      setUserProfile(result.profile);
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    throw new Error('Backend not implemented yet. Authentication will be available when backend is ready.');
   };
 
   const signup = async (userData: {
@@ -122,31 +89,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     linkedin_profile?: string;
     website?: string;
   }) => {
-    try {
-      setLoading(true);
-
-      const result = await supabaseService.signUp(userData);
-      setUser(result.user);
-      setUserProfile(result.profile);
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    throw new Error('Backend not implemented yet. Authentication will be available when backend is ready.');
   };
 
   const logout = async () => {
-    try {
-      setLoading(true);
-
-      await supabaseService.signOut();
-      setUser(null);
-      setUserProfile(null);
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    throw new Error('Backend not implemented yet. Authentication will be available when backend is ready.');
   };
 
   const updateProfile = async (profileData: {
@@ -161,25 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     linkedin_profile?: string;
     website?: string;
   }) => {
-    if (!user) {
-      throw new Error('No user logged in to update profile');
-    }
-    
-    try {
-      setLoading(true);
-
-      await supabaseService.updateProfile(profileData);
-      
-      // Refresh profile data
-      const currentUser = await supabaseService.getCurrentUser();
-      if (currentUser) {
-        setUserProfile(currentUser.profile);
-      }
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+    throw new Error('Backend not implemented yet. Profile management will be available when backend is ready.');
   };
 
   const value = {

@@ -12,11 +12,12 @@ interface PitchDeck {
 
 class ApiService {
   private getCurrentUser() {
-    const user = localStorage.getItem('agentvc_user');
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
-    return JSON.parse(user);
+    // For demo purposes, return a mock user
+    // In production, this would get the actual authenticated user
+    return {
+      id: 'demo-user-id',
+      email: 'demo@example.com'
+    };
   }
 
   async uploadPitchDeck(file: File): Promise<{ 
