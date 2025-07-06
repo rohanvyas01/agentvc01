@@ -33,6 +33,97 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { login, signup, updateProfile, isSupabaseReady } = useAuth();
+  const navigate = useNavigate();
+
+  // Show configuration message if Supabase is not ready
+  if (!isSupabaseReady) {
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-2xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Backend Configuration Required
+                  </h2>
+                  <p className="text-gray-600 text-sm">
+                    Supabase backend is not configured
+                  </p>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="space-y-4 text-gray-700">
+                <p>To enable authentication and backend features, please:</p>
+                <ol className="list-decimal list-inside space-y-2 ml-4">
+                  <li>Create a Supabase project at <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">supabase.com</a></li>
+                  <li>Run the migration file: <code className="bg-gray-100 px-2 py-1 rounded text-sm">supabase/migrations/create_secure_backend.sql</code></li>
+                  <li>Create a storage bucket named "pitch-decks" (private)</li>
+                  <li>Add your Supabase URL and anon key to your environment variables</li>
+                </ol>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm font-medium mb-2">Environment Variables:</p>
+                  <pre className="text-xs bg-gray-100 p-2 rounded overflow-x-auto">
+{`VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here`}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <button
+                  onClick={onClose}
+                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200"
+                >
+                  Got it
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    );
+  }
+
+  const industries = [
+interface AuthModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  mode: 'login' | 'signup';
+  onSwitchMode: (mode: 'login' | 'signup') => void;
+}
+
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMode }) => {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    founder_name: '',
+    startup_name: '',
+    website: '',
+    linkedin_profile: '',
+    one_liner_pitch: '',
+    industry: '',
+    business_model: '',
+    funding_round: '',
+    raise_amount: '',
+    use_of_funds: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const { login, signup, updateProfile } = useAuth();
   const navigate = useNavigate();
 

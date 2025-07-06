@@ -1,5 +1,16 @@
-// Placeholder types for future Supabase integration
-// These types are kept for structure but Supabase client is not initialized
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('Supabase environment variables not found. Backend features will be disabled.');
+}
+
+// Create Supabase client (will be null if env vars not provided)
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 // Database types
 export interface Profile {
@@ -26,31 +37,22 @@ export interface PitchDeck {
   file_name: string;
   storage_path: string;
   file_size: number;
+  mime_type: string;
   extracted_text?: string;
+  page_count?: number;
+  word_count?: number;
+  processing_status: 'pending' | 'processing' | 'completed' | 'failed';
+  processing_error?: string;
   created_at: string;
+  updated_at: string;
 }
 
-// Placeholder for future Supabase client
-export const supabase = {
-  auth: {
-    signUp: () => Promise.reject(new Error('Backend not implemented yet')),
-    signInWithPassword: () => Promise.reject(new Error('Backend not implemented yet')),
-    signOut: () => Promise.reject(new Error('Backend not implemented yet')),
-    getSession: () => Promise.reject(new Error('Backend not implemented yet')),
-    getUser: () => Promise.reject(new Error('Backend not implemented yet'))
-  },
-  from: () => ({
-    select: () => Promise.reject(new Error('Backend not implemented yet')),
-    insert: () => Promise.reject(new Error('Backend not implemented yet')),
-    update: () => Promise.reject(new Error('Backend not implemented yet')),
-    delete: () => Promise.reject(new Error('Backend not implemented yet'))
-  }),
-  storage: {
-    from: () => ({
-      upload: () => Promise.reject(new Error('Backend not implemented yet')),
-      remove: () => Promise.reject(new Error('Backend not implemented yet')),
-      createSignedUrl: () => Promise.reject(new Error('Backend not implemented yet'))
-    })
-  },
-  rpc: () => Promise.reject(new Error('Backend not implemented yet'))
+// Helper function to check if Supabase is configured
+export const isSupabaseConfigured = () => {
+  return supabase !== null;
+};
+
+// Helper function to get error message for unconfigured Supabase
+export const getSupabaseError = () => {
+  return 'Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment variables.';
 };
