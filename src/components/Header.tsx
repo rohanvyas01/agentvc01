@@ -1,12 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, LogIn } from 'lucide-react';
+import { LogIn, LogOut } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext'; // Import useAuth
+import { useNavigate } from 'react-router-dom';
 
-interface HeaderProps {
-  onSignIn: () => void;
-}
+const Header: React.FC = () => {
+  // Use the auth context to get user and signOut function
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
-const Header: React.FC<HeaderProps> = ({ onSignIn }) => {
+  const handleSignIn = () => {
+    navigate('/signin');
+  };
 
   return (
     <motion.header
@@ -17,36 +22,29 @@ const Header: React.FC<HeaderProps> = ({ onSignIn }) => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-18">
-          {/* Left-aligned Logo - Increased Size */}
+          {/* Left-aligned Logo */}
           <div className="flex items-center gap-2 sm:gap-3 group">
-            <motion.div 
+             <motion.div
               className="relative w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <img 
-                src="/AVC logo.png" 
-                alt="AgentVC Logo" 
+              <img
+                src="/AVC logo.png"
+                alt="AgentVC Logo"
                 className="w-full h-full object-contain"
               />
             </motion.div>
-            <motion.span 
+            <motion.span
               className="text-xl sm:text-2xl lg:text-2xl font-bold text-white"
               whileHover={{ x: 2 }}
               transition={{ duration: 0.2 }}
             >
               AgentVC
             </motion.span>
-            <motion.span 
-              className="hidden sm:inline text-xs bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 py-1 rounded-full font-medium"
-              animate={{ scale: [1, 1.05, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              AI Investor
-            </motion.span>
           </div>
 
-          {/* Right-aligned Navigation - Mobile Optimized */}
+          {/* Right-aligned Navigation */}
           <div className="flex items-center gap-3 sm:gap-6">
             <motion.a
               href="#features"
@@ -55,24 +53,33 @@ const Header: React.FC<HeaderProps> = ({ onSignIn }) => {
             >
               Features
             </motion.a>
-            
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onSignIn}
-              className="bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-medium px-3 sm:px-6 py-2 sm:py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border border-slate-600/30 backdrop-blur-sm text-sm sm:text-base"
-            >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-slate-600/60 to-slate-500/60 opacity-0"
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-              <div className="relative z-10 flex items-center gap-1 sm:gap-2">
-                <span className="hidden sm:inline">Sign In</span>
-                <span className="sm:hidden">Sign In</span>
-                <LogIn className="w-3 h-3 sm:w-4 sm:h-4" />
-              </div>
-            </motion.button>
+
+            {/* Conditional rendering based on user state */}
+            {user ? (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={signOut}
+                className="bg-gradient-to-r from-red-500/50 to-pink-500/50 hover:from-red-600/60 hover:to-pink-600/60 text-white font-medium px-3 sm:px-6 py-2 sm:py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border border-slate-600/30 backdrop-blur-sm text-sm sm:text-base"
+              >
+                <div className="relative z-10 flex items-center gap-1 sm:gap-2">
+                  <span>Sign Out</span>
+                  <LogOut className="w-3 h-3 sm:w-4 sm:h-4" />
+                </div>
+              </motion.button>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleSignIn}
+                className="bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-medium px-3 sm:px-6 py-2 sm:py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border border-slate-600/30 backdrop-blur-sm text-sm sm:text-base"
+              >
+                <div className="relative z-10 flex items-center gap-1 sm:gap-2">
+                  <span>Sign In</span>
+                  <LogIn className="w-3 h-3 sm:w-4 sm:h-4" />
+                </div>
+              </motion.button>
+            )}
           </div>
         </div>
       </div>

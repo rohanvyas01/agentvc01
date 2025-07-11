@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { AuthProvider } from '../contexts/AuthContext';
 import AuthModal from '../components/AuthModal';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
   Target,
   Users,
@@ -50,15 +50,14 @@ const LandingPage: React.FC = () => {
   const y1 = useTransform(scrollY, [0, 300], [0, -50]);
   const y2 = useTransform(scrollY, [0, 300], [0, -100]);
   const y3 = useTransform(scrollY, [0, 500], [0, -150]);
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const handleSignUp = () => {
-    setAuthMode('signup');
-    setAuthModalOpen(true);
+    navigate('/signup');
   };
 
   const handleSignIn = () => {
-    setAuthMode('login');
-    setAuthModalOpen(true);
+    navigate('/signin');
   };
 
   // Reusable glass button component
@@ -97,7 +96,6 @@ const LandingPage: React.FC = () => {
   );
 
   return (
-    <AuthProvider>
       <div className="min-h-screen relative overflow-hidden">
         {/* Clean Minimal Background */}
         <div className="fixed inset-0 pointer-events-none">
@@ -138,7 +136,7 @@ const LandingPage: React.FC = () => {
           />
         </div>
         
-        <Header onSignIn={handleSignIn} />
+        <Header />
         
         {/* Hero Section with Video Intro */}
         <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
@@ -839,15 +837,15 @@ const LandingPage: React.FC = () => {
           </div>
         </footer>
 
-        {/* Auth Modal */}
-        <AuthModal
+        {/* We are temporarily commenting out the AuthModal */}
+        {/* <AuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           mode={authMode}
           onSwitchMode={setAuthMode}
-        />
+        /> */}
       </div>
-    </AuthProvider>
+    // </AuthProvider>
   );
 };
 
