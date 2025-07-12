@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, PitchDeck } from '../lib/supabase';
+import { ClipLoader } from 'react-spinners';
 import { 
   Video, 
   FileText, 
@@ -182,7 +183,7 @@ const SetupSessionPage: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto mb-4"></div>
+          <ClipLoader color="#6366f1" size={32} className="mx-auto mb-4" />
           <p className="text-white">Loading your pitch decks...</p>
         </motion.div>
       </div>
@@ -385,7 +386,7 @@ const SetupSessionPage: React.FC = () => {
             >
               {starting ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <ClipLoader color="#ffffff" size={16} />
                   <span>Starting Session...</span>
                 </>
               ) : (

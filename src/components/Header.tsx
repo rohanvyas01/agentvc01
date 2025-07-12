@@ -13,6 +13,9 @@ const Header: React.FC = () => {
     navigate('/signin');
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -23,7 +26,12 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-18">
           {/* Left-aligned Logo */}
-          <div className="flex items-center gap-2 sm:gap-3 group">
+          <motion.div 
+            className="flex items-center gap-2 sm:gap-3 group cursor-pointer"
+            onClick={handleLogoClick}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
              <motion.div
               className="relative w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-lg flex items-center justify-center overflow-hidden"
               whileHover={{ scale: 1.05 }}
@@ -42,7 +50,7 @@ const Header: React.FC = () => {
             >
               AgentVC
             </motion.span>
-          </div>
+          </motion.div>
 
           {/* Right-aligned Navigation */}
           <div className="flex items-center gap-3 sm:gap-6">
