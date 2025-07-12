@@ -23,7 +23,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showConfirmationMessage, setShowConfirmationMessage] = useState(false); // New state for success message
-  const { signInWithPassword, signUp } = useAuth();
+  const { signIn, signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,20 +33,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
 
     try {
       if (mode === 'login') {
-        const { error } = await signInWithPassword({
-          email: formData.email,
-          password: formData.password,
-        });
+        const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
         onClose();
       } else {
         // In a real multi-step form, you'd advance steps.
         // For now, we assume it's the final step.
-        const { data, error } = await signUp({
-          email: formData.email,
-          password: formData.password,
-          fullName: formData.founder_name,
-        });
+        const { data, error } = await signUp(formData.email, formData.password, formData.founder_name);
 
         if (error) throw error;
 
