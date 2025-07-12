@@ -40,7 +40,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         
         // Close modal and redirect to dashboard after successful login
         onClose();
-        navigate('/dashboard');
+        // Let the auth state change handler in AuthContext handle routing
       } else {
         // In a real multi-step form, you'd advance steps.
         // For now, we assume it's the final step.
@@ -54,6 +54,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         } else {
           // If email confirmation is off, the user is logged in, so close the modal.
           onClose();
+          // Redirect to onboarding for new users
+          navigate('/onboarding');
         }
       }
     } catch (error: any) {

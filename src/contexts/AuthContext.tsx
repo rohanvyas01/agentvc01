@@ -41,10 +41,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Handle post-authentication routing
+      if (session?.user && !user) {
+        // User just signed in, check if they need onboarding
+        checkUserOnboardingStatus(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkUserOnboardingStatus = async (userId: string) => {
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      const { data: company } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      // If user doesn't have complete profile/company, redirect to onboarding
+      if (!profile || !company) {
+        window.location.href = '/onboarding';
+      }
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+    }
+  };
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const { data, error } = await supabase.auth.signUp({
