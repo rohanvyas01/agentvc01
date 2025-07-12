@@ -42,8 +42,10 @@ import {
   TrendingUp as Growth
 } from 'lucide-react';
 import Header from '../components/Header';
+import { useAuth } from '../contexts/AuthContext';
 
 const LandingPage: React.FC = () => {
+  const { user } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
   const { scrollY } = useScroll();
@@ -53,11 +55,19 @@ const LandingPage: React.FC = () => {
   const navigate = useNavigate(); // Initialize the navigate function
 
   const handleSignUp = () => {
-    navigate('/signup');
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signup');
+    }
   };
 
   const handleSignIn = () => {
-    navigate('/signin');
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signin');
+    }
   };
 
   // Reusable glass button component
@@ -260,8 +270,12 @@ const LandingPage: React.FC = () => {
               >
                 <GlassButton onClick={handleSignUp} className="w-full sm:w-auto text-xl px-10 py-5">
                   <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />
-                  <span className="hidden sm:inline">Start Training with Rohan</span>
-                  <span className="sm:hidden">Start Training</span>
+                  <span className="hidden sm:inline">
+                    {user ? 'Go to Dashboard' : 'Start Training with Rohan'}
+                  </span>
+                  <span className="sm:hidden">
+                    {user ? 'Dashboard' : 'Start Training'}
+                  </span>
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </GlassButton>
                 
@@ -272,8 +286,12 @@ const LandingPage: React.FC = () => {
                   className="bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border border-slate-600/30 backdrop-blur-sm w-full sm:w-auto"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <span className="hidden sm:inline">Already have an account? Sign In</span>
-                    <span className="sm:hidden">Sign In</span>
+                    <span className="hidden sm:inline">
+                      {user ? 'Go to Dashboard' : 'Already have an account? Sign In'}
+                    </span>
+                    <span className="sm:hidden">
+                      {user ? 'Dashboard' : 'Sign In'}
+                    </span>
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </motion.button>
