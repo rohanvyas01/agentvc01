@@ -24,6 +24,8 @@ const Dashboard: React.FC = () => {
     if (!user) return;
     
     setLoading(true);
+    let pitchData: any[] = [];
+    
     try {
       const [companyRes, profileRes] = await Promise.all([
         supabase.from('companies').select('*').eq('user_id', user.id).maybeSingle(),
@@ -47,7 +49,7 @@ const Dashboard: React.FC = () => {
       
       // Fetch pitch decks after we have company data
       if (companyRes.data) {
-        const { data: pitchData, error: pitchError } = await supabase
+        const { data: fetchedPitchData, error: pitchError } = await supabase
           .from('pitches')
           .select('*')
           .eq('company_id', companyRes.data.id)
@@ -56,7 +58,8 @@ const Dashboard: React.FC = () => {
         if (pitchError) {
           console.error('Error fetching pitch decks:', pitchError);
         } else {
-          setPitchDecks(pitchData || []);
+          pitchData = fetchedPitchData || [];
+          setPitchDecks(pitchData);
         }
       }
 
