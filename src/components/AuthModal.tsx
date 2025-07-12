@@ -4,6 +4,7 @@ import {
   X, Mail, Lock, User, CheckCircle,
   ArrowRight, ArrowLeft, Zap
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 interface AuthModalProps {
@@ -14,6 +15,7 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMode }) => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: '',
@@ -35,7 +37,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
       if (mode === 'login') {
         const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
+        
+        // Close modal and redirect to dashboard after successful login
         onClose();
+        navigate('/dashboard');
       } else {
         // In a real multi-step form, you'd advance steps.
         // For now, we assume it's the final step.

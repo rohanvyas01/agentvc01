@@ -23,7 +23,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/');
+    // Navigate to landing page after sign out
+    navigate('/', { replace: true });
   };
 
   const navigation = [
