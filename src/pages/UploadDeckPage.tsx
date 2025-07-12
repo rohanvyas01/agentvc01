@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useDropzone, FileRejection } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.tsx';
@@ -11,6 +12,7 @@ import {
   AlertCircle,
   Loader,
   Building,
+  ArrowLeft,
 } from 'lucide-react';
 
 const UploadDeckPage: React.FC = () => {
@@ -131,102 +133,174 @@ const UploadDeckPage: React.FC = () => {
   if (isFetchingCompany) {
     return (
       <div className="flex justify-center items-center h-96">
-        <Loader className="w-8 h-8 animate-spin text-gray-500" />
+        <motion.div
+          className="glass rounded-2xl p-8 text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <Loader className="w-8 h-8 animate-spin text-indigo-400 mx-auto mb-4" />
+          <p className="text-white">Loading company details...</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Upload Your Pitch Deck</h1>
-        <p className="text-xl text-gray-600">
+    <div className="max-w-4xl mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-3xl font-bold text-white mb-4">Upload Your Pitch Deck</h1>
+        <p className="text-xl text-white/80">
           Present your deck for AI-powered analysis and practice.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="glass rounded-2xl border border-slate-700/30 p-8"
+      >
         {!companyId && !isFetchingCompany && (
-            <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
-                <Building className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                <h4 className="font-semibold text-yellow-800">Onboarding Incomplete</h4>
-                <p className="text-sm text-yellow-700">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-center"
+            >
+                <Building className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
+                <h4 className="font-semibold text-yellow-300">Onboarding Incomplete</h4>
+                <p className="text-sm text-yellow-200">
                     Please complete your company profile before uploading a pitch deck.
                 </p>
-                <button onClick={() => navigate('/onboarding')} className="mt-3 text-sm font-bold text-yellow-800 hover:underline">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/onboarding')}
+                  className="mt-3 btn-secondary text-sm"
+                >
                     Go to Onboarding
-                </button>
-            </div>
+                </motion.button>
+            </motion.div>
         )}
 
         <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
-            isDragActive ? 'border-indigo-400 bg-indigo-50' :
-            !companyId ? 'border-gray-300 bg-gray-100 cursor-not-allowed' :
-            'border-gray-300 hover:border-indigo-400 hover:bg-indigo-50 cursor-pointer'
+            isDragActive ? 'border-indigo-400 bg-indigo-500/10' :
+            !companyId ? 'border-slate-600 bg-slate-800/30 cursor-not-allowed' :
+            'border-slate-600 hover:border-indigo-400 hover:bg-indigo-500/10 cursor-pointer'
           }`}
         >
           <input {...getInputProps()} />
           <div className="space-y-3">
             {uploading ? (
-              <Loader className="w-12 h-12 text-indigo-600 mx-auto animate-spin" />
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              >
+                <Loader className="w-12 h-12 text-indigo-400 mx-auto" />
+              </motion.div>
             ) : (
-              <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+              <Upload className="w-12 h-12 text-slate-400 mx-auto" />
             )}
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-white">
               {uploading ? 'Analyzing Deck...' : 'Drag & drop your PDF here'}
             </h3>
-            {!uploading && <p className="text-gray-600">or <button type="button" onClick={open} disabled={!companyId} className="text-indigo-600 font-medium hover:underline disabled:text-gray-400 disabled:no-underline">browse files</button> to upload</p>}
+            {!uploading && (
+              <p className="text-slate-400">
+                or{' '}
+                <button
+                  type="button"
+                  onClick={open}
+                  disabled={!companyId}
+                  className="text-indigo-400 font-medium hover:underline disabled:text-slate-500 disabled:no-underline"
+                >
+                  browse files
+                </button>{' '}
+                to upload
+              </p>
+            )}
           </div>
         </div>
         
         {acceptedFile && !success && (
-            <div className="mt-6 bg-gray-50 p-3 rounded-lg flex items-center justify-between animate-fade-in">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 glass-dark p-4 rounded-lg flex items-center justify-between"
+            >
                 <div className="flex items-center gap-3 overflow-hidden">
-                    <FileText className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                    <p className="text-sm text-gray-800 truncate">{acceptedFile.name}</p>
+                    <FileText className="w-5 h-5 text-indigo-400 flex-shrink-0" />
+                    <p className="text-sm text-white truncate">{acceptedFile.name}</p>
                 </div>
                 {!uploading && (
-                    <button onClick={removeFile} className="text-slate-400 hover:text-slate-600 p-1 rounded-full">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={removeFile}
+                      className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-700"
+                    >
                         <X className="h-5 w-5" />
-                    </button>
+                    </motion.button>
                 )}
-            </div>
+            </motion.div>
         )}
 
         {error && (
-          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-fade-in">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
+          >
             <div className="flex items-center space-x-3">
-              <AlertCircle className="w-5 h-5 text-red-500" />
-              <p className="text-sm text-red-700">{error}</p>
+              <AlertCircle className="w-5 h-5 text-red-400" />
+              <p className="text-sm text-red-300">{error}</p>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {success && (
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg animate-fade-in">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg"
+          >
             <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <p className="text-sm text-green-700">{success}</p>
+              <CheckCircle className="w-5 h-5 text-green-400" />
+              <p className="text-sm text-green-300">{success}</p>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {acceptedFile && !success && (
             <div className="mt-8">
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={handleUpload}
                     disabled={uploading}
-                    className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full btn-primary py-4 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                    {uploading ? <Loader className="animate-spin h-5 w-5" /> : <Upload className="h-5 w-5" />}
-                    {uploading ? 'Uploading & Analyzing...' : 'Upload and Analyze'}
-                </button>
+                    {uploading ? (
+                      <>
+                        <Loader className="animate-spin h-5 w-5" />
+                        <span>Uploading & Analyzing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-5 w-5" />
+                        <span>Upload and Analyze</span>
+                      </>
+                    )}
+                </motion.button>
             </div>
         )}
 
-      </div>
+      </motion.div>
     </div>
   );
 };

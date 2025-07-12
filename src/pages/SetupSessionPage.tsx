@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, PitchDeck } from '../lib/supabase';
@@ -165,10 +166,10 @@ const SetupSessionPage: React.FC = () => {
 
   const getPersonaColorClasses = (color: string) => {
     const colors = {
-      blue: 'border-blue-200 bg-blue-50 text-blue-700',
-      purple: 'border-purple-200 bg-purple-50 text-purple-700',
-      green: 'border-green-200 bg-green-50 text-green-700',
-      orange: 'border-orange-200 bg-orange-50 text-orange-700'
+      blue: 'border-blue-500/30 bg-blue-500/10 text-blue-300',
+      purple: 'border-purple-500/30 bg-purple-500/10 text-purple-300',
+      green: 'border-green-500/30 bg-green-500/10 text-green-300',
+      orange: 'border-orange-500/30 bg-orange-500/10 text-orange-300'
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
@@ -176,63 +177,85 @@ const SetupSessionPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <motion.div
+          className="glass rounded-2xl p-8 text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto mb-4"></div>
+          <p className="text-white">Loading your pitch decks...</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Setup Your Practice Session</h1>
-        <p className="text-xl text-gray-600">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-3xl font-bold text-white mb-4">Setup Your Practice Session</h1>
+        <p className="text-xl text-white/80">
           Choose your pitch deck and select an AI investor persona to practice with
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Pitch Deck Selection */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="glass rounded-xl border border-slate-700/30 p-6"
+        >
           <div className="flex items-center space-x-3 mb-6">
-            <FileText className="w-6 h-6 text-primary-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Select Pitch Deck</h2>
+            <FileText className="w-6 h-6 text-indigo-400" />
+            <h2 className="text-xl font-semibold text-white">Select Pitch Deck</h2>
           </div>
 
           {decks.length === 0 ? (
             <div className="text-center py-8">
-              <Upload className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No pitch decks uploaded</h3>
-              <p className="text-gray-600 mb-4">
+              <Upload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-white mb-2">No pitch decks uploaded</h3>
+              <p className="text-slate-400 mb-4">
                 You need to upload a pitch deck before starting a practice session.
               </p>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/upload')}
-                className="bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors inline-flex items-center space-x-2"
+                className="btn-primary inline-flex items-center space-x-2"
               >
                 <Upload className="w-4 h-4" />
                 <span>Upload Deck</span>
-              </button>
+              </motion.button>
             </div>
           ) : (
             <div className="space-y-3">
               {decks.map((deck) => (
-                <div
+                <motion.div
                   key={deck.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedDeck(deck.id)}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
                     selectedDeck === deck.id
-                      ? 'border-primary-500 bg-primary-50'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      ? 'border-indigo-500 bg-indigo-500/10'
+                      : 'border-slate-600 hover:border-slate-500 hover:bg-slate-800/30'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <FileText className={`w-5 h-5 ${
-                        selectedDeck === deck.id ? 'text-primary-600' : 'text-gray-400'
+                        selectedDeck === deck.id ? 'text-indigo-400' : 'text-slate-400'
                       }`} />
                       <div>
-                        <h3 className="font-medium text-gray-900">{deck.deck_name}</h3>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <h3 className="font-medium text-white">{deck.deck_name}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-slate-400">
                           <div className="flex items-center space-x-1">
                             <Calendar className="w-3 h-3" />
                             <span>{formatDate(deck.created_at)}</span>
@@ -244,33 +267,41 @@ const SetupSessionPage: React.FC = () => {
                       </div>
                     </div>
                     {selectedDeck === deck.id && (
-                      <CheckCircle className="w-5 h-5 text-primary-600" />
+                      <CheckCircle className="w-5 h-5 text-indigo-400" />
                     )}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* Investor Persona Selection */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="glass rounded-xl border border-slate-700/30 p-6"
+        >
           <div className="flex items-center space-x-3 mb-6">
-            <User className="w-6 h-6 text-primary-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Choose AI Investor</h2>
+            <User className="w-6 h-6 text-indigo-400" />
+            <h2 className="text-xl font-semibold text-white">Choose AI Investor</h2>
           </div>
 
           <div className="space-y-4">
             {investorPersonas.map((persona) => {
               const Icon = persona.icon;
               return (
-                <div
+                <motion.div
                   key={persona.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedPersona(persona.id)}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
                     selectedPersona === persona.id
-                      ? 'border-primary-500 bg-primary-50'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      ? 'border-indigo-500 bg-indigo-500/10'
+                      : 'border-slate-600 hover:border-slate-500 hover:bg-slate-800/30'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -279,9 +310,9 @@ const SetupSessionPage: React.FC = () => {
                         <Icon className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900">{persona.name}</h3>
-                        <p className="text-sm text-gray-600 mb-2">{persona.description}</p>
-                        <div className="space-y-1 text-xs text-gray-500">
+                        <h3 className="font-semibold text-white">{persona.name}</h3>
+                        <p className="text-sm text-slate-400 mb-2">{persona.description}</p>
+                        <div className="space-y-1 text-xs text-slate-400">
                           <p><span className="font-medium">Specialty:</span> {persona.specialty}</p>
                           <p><span className="font-medium">Experience:</span> {persona.experience}</p>
                           <p><span className="font-medium">Style:</span> {persona.style}</p>
@@ -290,7 +321,7 @@ const SetupSessionPage: React.FC = () => {
                           {persona.focus.map((focus, index) => (
                             <span
                               key={index}
-                              className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+                              className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-full"
                             >
                               {focus}
                             </span>
@@ -299,22 +330,27 @@ const SetupSessionPage: React.FC = () => {
                       </div>
                     </div>
                     {selectedPersona === persona.id && (
-                      <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0" />
+                      <CheckCircle className="w-5 h-5 text-indigo-400 flex-shrink-0" />
                     )}
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Start Session Button */}
-      <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="mt-8 glass rounded-xl border border-slate-700/30 p-6"
+      >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to start your session?</h3>
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
+            <h3 className="text-lg font-semibold text-white mb-2">Ready to start your session?</h3>
+            <div className="flex items-center space-x-4 text-sm text-slate-400">
               <div className="flex items-center space-x-1">
                 <Clock className="w-4 h-4" />
                 <span>Duration: 15-30 minutes</span>
@@ -325,8 +361,8 @@ const SetupSessionPage: React.FC = () => {
               </div>
             </div>
             {selectedDeck && selectedPersona && (
-              <div className="mt-3 p-3 bg-success-50 border border-success-200 rounded-lg">
-                <div className="flex items-center space-x-2 text-success-700">
+              <div className="mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                <div className="flex items-center space-x-2 text-green-300">
                   <CheckCircle className="w-4 h-4" />
                   <span className="text-sm font-medium">
                     Ready to practice with {investorPersonas.find(p => p.id === selectedPersona)?.name}
@@ -338,12 +374,14 @@ const SetupSessionPage: React.FC = () => {
 
           <div className="flex flex-col space-y-2">
             {error && (
-              <div className="text-error-600 text-sm">{error}</div>
+              <div className="text-red-400 text-sm">{error}</div>
             )}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={startSession}
               disabled={!selectedDeck || !selectedPersona || starting}
-              className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              className="btn-primary px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
             >
               {starting ? (
                 <>
@@ -357,10 +395,10 @@ const SetupSessionPage: React.FC = () => {
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
