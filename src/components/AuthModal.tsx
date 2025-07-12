@@ -40,6 +40,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         
         // Close modal - auth context will handle navigation
         onClose();
+        navigate('/dashboard');
       } else {
         const { data, error } = await signUp(formData.email, formData.password, formData.founder_name);
 

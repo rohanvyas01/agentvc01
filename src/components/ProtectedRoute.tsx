@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
@@ -9,12 +9,19 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
   const [checkingOnboarding, setCheckingOnboarding] = React.useState(true);
   const [needsOnboarding, setNeedsOnboarding] = React.useState(false);
 
   React.useEffect(() => {
     const checkOnboardingStatus = async () => {
       if (!user) {
+        setCheckingOnboarding(false);
+        return;
+      }
+
+      // Skip onboarding check if user is already on onboarding page
+      if (location.pathname === '/onboarding') {
         setCheckingOnboarding(false);
         return;
       }
@@ -28,22 +35,25 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         // If either profile or company is missing, user needs onboarding
         if (!profileRes.data || !companyRes.data) {
           setNeedsOnboarding(true);
+        } else {
+          setNeedsOnboarding(false);
         }
       } catch (error) {
         console.error('Error checking onboarding status:', error);
-        setNeedsOnboarding(true);
+        // On error, allow access but log the issue
+        setNeedsOnboarding(false);
       } finally {
         setCheckingOnboarding(false);
       }
     };
 
     checkOnboardingStatus();
-  }, [user]);
+  }, [user, location.pathname]);
 
   if (loading || checkingOnboarding) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
       </div>
     );
   }
@@ -52,7 +62,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     return <Navigate to="/" replace />;
   }
 
-  if (needsOnboarding) {
+  if (needsOnboarding && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />;
   }
 
