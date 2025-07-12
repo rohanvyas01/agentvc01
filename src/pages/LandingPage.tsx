@@ -214,7 +214,7 @@ const LandingPage: React.FC = () => {
                           onCanPlay={() => console.log('Video can play')}
                           onError={(e) => console.error('Video error:', e)}
                         >
-                          <source src="/Introduction.mp4" type="video/mp4" />
+                          <source src="https://your-video-host.com/Introduction.mp4" type="video/mp4" />
                           <div className="absolute inset-0 bg-slate-800 rounded-xl flex items-center justify-center">
                             <div className="text-center">
                               <div className="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mb-4 mx-auto">
