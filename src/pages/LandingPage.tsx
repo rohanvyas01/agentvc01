@@ -183,14 +183,38 @@ const LandingPage: React.FC = () => {
                   >
                     <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30">
                       <div className="relative w-full h-64 sm:h-80 lg:h-96 rounded-xl overflow-hidden">
-                        <iframe
-                          src="https://www.youtube.com/embed/fV7PBk95La8?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1"
-                          title="Meet Rohan Vyas - Your AI Investor"
-                          className="w-full h-full rounded-xl"
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
+                        {/* Video Loading State */}
+                        <div className="absolute inset-0 bg-slate-800 rounded-xl flex items-center justify-center">
+                          <div className="text-center">
+                            <motion.div
+                              className="w-12 h-12 border-2 border-indigo-500 border-t-transparent rounded-full mx-auto mb-4"
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            />
+                            <p className="text-white text-sm">Loading video...</p>
+                          </div>
+                        </div>
+                        
+                        {/* Fallback Video Player */}
+                        <video
+                          className="w-full h-full rounded-xl object-cover"
+                          controls
+                          poster="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
+                          onLoadStart={() => console.log('Video loading started')}
+                          onCanPlay={() => console.log('Video can play')}
+                          onError={(e) => console.error('Video error:', e)}
+                        >
+                          <source src="/Introduction.mp4" type="video/mp4" />
+                          <div className="absolute inset-0 bg-slate-800 rounded-xl flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                <Video className="w-8 h-8 text-indigo-400" />
+                              </div>
+                              <p className="text-white font-medium">Video Unavailable</p>
+                              <p className="text-slate-400 text-sm">Please check your connection</p>
+                            </div>
+                          </div>
+                        </video>
                       </div>
                     </div>
                     
