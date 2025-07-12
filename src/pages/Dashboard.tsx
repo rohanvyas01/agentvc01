@@ -23,13 +23,12 @@ const Dashboard: React.FC = () => {
     
     setLoading(true);
     try {
-      const [companyRes, profileRes, pitchDecksRes] = await Promise.all([
-        supabase.from('companies').select('*').eq('user_id', user.id).single(),
-        supabase.from('profiles').select('*').eq('id', user.id).single(),
-        supabase.from('pitches').select('*').eq('company_id', company?.id || '').order('created_at', { ascending: false })
+      const [companyRes, profileRes] = await Promise.all([
+        supabase.from('companies').select('*').eq('user_id', user.id).maybeSingle(),
+        supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
       ]);
 
-      if (companyRes.error && companyRes.error.code !== 'PGRST116') throw companyRes.error;
+      if (companyRes.error) throw companyRes.error;
       if (profileRes.error) throw profileRes.error;
 
       if (!companyRes.data) {
