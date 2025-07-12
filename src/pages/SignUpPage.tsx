@@ -10,7 +10,8 @@ const SignUpPage: React.FC = () => {
   
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    fullName: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,7 +20,7 @@ const SignUpPage: React.FC = () => {
     setError('');
 
     try {
-      const { error } = await signUp(formData.email, formData.password, '');
+      const { error } = await signUp(formData.email, formData.password, formData.fullName);
       if (error) throw error;
       navigate('/onboarding');
     } catch (err: any) {
@@ -38,6 +39,19 @@ const SignUpPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              required
+              value={formData.fullName}
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              className="w-full px-4 py-3 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-slate-900 text-white placeholder-slate-500"
+              placeholder="Enter your full name"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2">
               Email Address

@@ -12,7 +12,7 @@ const OnboardingPage: React.FC = () => {
   
   const [formData, setFormData] = useState({
     fullName: '',
-    startupName: '', // Added startupName to the form state
+    startupName: '',
     website: '',
     linkedin: '',
     industry: '',
@@ -30,40 +30,54 @@ const OnboardingPage: React.FC = () => {
     setLoading(true);
     setError('');
 
+    // Prepare data for the 'profiles' table update.
     const profileData = {
+      id: user.id, // This correctly identifies the row to update.
+      // user_id: user.id, // THIS LINE WAS THE PROBLEM AND HAS BEEN REMOVED.
       full_name: formData.fullName || 'Demo User',
       website: formData.website || 'https://example.com',
       linkedin_url: formData.linkedin || 'https://linkedin.com/in/demouser',
       industry: formData.industry || 'AI & SaaS',
       fundraise_stage: formData.fundraiseStage || 'Seed Round, $500k',
       one_liner: formData.oneLiner || 'The best demo company for testing app flows.',
-      immediate_goals: formData.immediateGoals || 'To test the application flow quickly and efficiently.'
+      immediate_goals: formData.immediateGoals || 'To test the application flow quickly and efficiently.',
+      startup_name: formData.startupName || 'Demo Startup'
     };
     
-    const companyName = formData.startupName || 'Demo Startup';
+    // Prepare data for the 'companies' table insert
+    const companyData = {
+      name: formData.startupName || 'Demo Startup',
+      user_id: user.id,
+    };
 
     try {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update(profileData)
-        .eq('id', user.id);
+      console.log("Submitting onboarding data for user:", user);
+      console.log("Profile data:", profileData);
+      console.log("Company data:", companyData);
 
+      // Use 'upsert' to create or update the profile row.
+      const { data: profileUpsertData, error: profileError } = await supabase
+        .from('profiles')
+        .upsert(profileData, { onConflict: 'id' });
+
+      console.log("Profile upsert response:", { data: profileUpsertData, error: profileError });
       if (profileError) throw profileError;
 
-      const { error: companyError } = await supabase
+      // Upsert a company record for the user (1 user : 1 company)
+      const { data: companyUpsertData, error: companyError } = await supabase
         .from('companies')
-        .insert({
-            name: companyName,
-            user_id: user.id,
-        });
+        .upsert(companyData, { onConflict: 'user_id' });
 
+      console.log("Company upsert response:", { data: companyUpsertData, error: companyError });
       if (companyError) throw companyError;
 
+      // Navigate to the dashboard on success
+      console.log("Onboarding successful, navigating to dashboard.");
       navigate('/dashboard');
 
     } catch (err: any) {
+      console.error("Onboarding error:", err);
       setError(err.message || "An unexpected error occurred.");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -88,7 +102,7 @@ const OnboardingPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
               <input
                 name="fullName" value={formData.fullName} onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="e.g., Jane Doe"
               />
             </div>
@@ -96,7 +110,7 @@ const OnboardingPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Startup Name</label>
               <input
                 name="startupName" value={formData.startupName} onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="e.g., AgentVC Inc."
               />
             </div>
@@ -104,7 +118,7 @@ const OnboardingPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Website</label>
               <input
                 name="website" type="url" value={formData.website} onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="https://yourstartup.com"
               />
             </div>
@@ -112,16 +126,15 @@ const OnboardingPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">LinkedIn</label>
               <input
                 name="linkedin" type="url" value={formData.linkedin} onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="https://linkedin.com/in/yourname"
               />
             </div>
-             {/* --- MISSING FIELDS ADDED BACK --- */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Industry</label>
               <input
                 name="industry" value={formData.industry} onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="e.g., SaaS, Fintech, AI"
               />
             </div>
@@ -129,7 +142,7 @@ const OnboardingPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Fundraise Stage/Amount</label>
               <input
                 name="fundraiseStage" value={formData.fundraiseStage} onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="e.g., Pre-seed, $500k"
               />
             </div>
@@ -137,7 +150,7 @@ const OnboardingPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">One Liner</label>
               <input
                 name="oneLiner" value={formData.oneLiner} onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="A short, catchy description of your startup"
               />
             </div>
@@ -146,7 +159,7 @@ const OnboardingPage: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Immediate Goals</label>
             <textarea
               name="immediateGoals" value={formData.immediateGoals} onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900"
               placeholder="What are you hoping to achieve in the next 3-6 months?"
               rows={3}
             />

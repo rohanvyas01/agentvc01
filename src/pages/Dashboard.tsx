@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import PitchDeckUploader from '../components/PitchDeckUploader';
+import React, { useEffect, useState, useCallback } from 'react';
+import { supabase } from '../lib/supabase.ts';
+import { useAuth } from '../contexts/AuthContext.tsx';
+import PitchDeckUploader from '../components/PitchDeckUploader.tsx';
 import { Loader } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,49 +14,56 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (authLoading) {
-      return; // Wait for AuthProvider to be ready
-    }
-    if (!user) {
-      navigate('/'); // If no user, go to landing page
-      return;
-    }
+  // Using useCallback to memoize the fetch function
+  const fetchData = useCallback(async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const [companyRes, profileRes] = await Promise.all([
+        supabase.from('companies').select('*').eq('user_id', user.id).single(),
+        supabase.from('profiles').select('*').eq('id', user.id).single()
+      ]);
 
-    const fetchData = async () => {
-      try {
-        // Fetch both company and profile data at the same time
-        const [companyRes, profileRes] = await Promise.all([
-          supabase.from('companies').select('*').eq('user_id', user.id).single(),
-          supabase.from('profiles').select('*').eq('id', user.id).single()
-        ]);
+      if (companyRes.error && companyRes.error.code !== 'PGRST116') throw companyRes.error;
+      if (profileRes.error) throw profileRes.error;
 
-        if (companyRes.error && companyRes.error.code !== 'PGRST116') {
-          throw companyRes.error;
-        }
-        if (profileRes.error) {
-          throw profileRes.error;
-        }
-
-        // If no company data is found, user needs to onboard
-        if (!companyRes.data) {
-          navigate('/onboarding');
-          return;
-        }
-        
-        setCompany(companyRes.data);
-        setProfile(profileRes.data);
-
-      } catch (err: any) {
-        setError(err.message);
-        console.error("Error fetching dashboard data:", err);
-      } finally {
-        setLoading(false);
+      if (!companyRes.data) {
+        navigate('/onboarding');
+        return;
       }
-    };
+      if (!profileRes.data) {
+        navigate('/onboarding');
+        return;
+      }
+      
+      setCompany(companyRes.data);
+      setProfile(profileRes.data);
 
-    fetchData();
-  }, [user, authLoading, navigate]);
+    } catch (err: any) {
+      setError(err.message);
+      console.error("Error fetching dashboard data:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (!authLoading) {
+      fetchData();
+    }
+  }, [authLoading, fetchData]);
+
+  /**
+   * THIS IS THE FIX: A handler function to pass to the uploader.
+   * In the future, this function can be used to refresh the list of pitch decks
+   * on the dashboard after a new one is uploaded.
+   */
+  const handleUploadSuccess = () => {
+    console.log('Upload successful, refreshing data...');
+    // You could add a toast notification here for better UX
+    fetchData(); // Refetch data to show the new pitch deck status
+  };
 
   if (loading || authLoading) {
     return (
@@ -85,7 +92,12 @@ const Dashboard: React.FC = () => {
           Let's analyze the pitch for <span className="font-semibold text-gray-800">{company?.name}</span>.
         </p>
         
-        {company && <PitchDeckUploader companyId={company.id} onUploadSuccess={() => { /* Handle success if needed */ }} />}
+        {/* Provide PitchDeckUploader for the single company */}
+        {company && (
+          <PitchDeckUploader companyId={company.id} onUploadSuccess={handleUploadSuccess} />
+        )}
+
+        {/* You can add a component here to list and show the status of uploaded decks */}
       </div>
     </div>
   );
