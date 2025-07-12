@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase.ts';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   user: User | null;
@@ -37,15 +38,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Handle navigation after auth state changes
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Check if user has completed onboarding
+        checkUserOnboardingStatus(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
+  const checkUserOnboardingStatus = async (userId: string) => {
+    try {
+      const [profileRes, companyRes] = await Promise.all([
+        supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+        supabase.from('companies').select('*').eq('user_id', userId).maybeSingle()
+      ]);
+
+      // If both profile and company exist, user has completed onboarding
+      if (profileRes.data && companyRes.data) {
+        // User has completed onboarding, can go to dashboard
+        window.location.href = '/dashboard';
+      } else {
+        // User needs to complete onboarding
+        window.location.href = '/onboarding';
+      }
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+      // Default to onboarding if there's an error
+      window.location.href = '/onboarding';
+    }
+  };
   const signUp = async (email: string, password: string, fullName: string) => {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -65,13 +93,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       password,
     });
     
-    // If sign in is successful, we'll let the auth state change handler
-    // in the component handle the redirect
     return { error };
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    window.location.href = '/';
   };
 
   const value = {

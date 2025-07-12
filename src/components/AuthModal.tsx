@@ -38,24 +38,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         const { error } = await signIn(formData.email, formData.password);
         if (error) throw error;
         
-        // Close modal and redirect to dashboard after successful login
+        // Close modal - auth context will handle navigation
         onClose();
-        // Let the auth state change handler in AuthContext handle routing
       } else {
-        // In a real multi-step form, you'd advance steps.
-        // For now, we assume it's the final step.
         const { data, error } = await signUp(formData.email, formData.password, formData.founder_name);
 
         if (error) throw error;
 
-        // If signup is successful and email confirmation is required by Supabase
         if (data.user && !data.session) {
+          // Email confirmation required
           setShowConfirmationMessage(true);
         } else {
-          // If email confirmation is off, the user is logged in, so close the modal.
+          // User is logged in immediately, close modal
           onClose();
-          // Redirect to onboarding for new users
-          navigate('/onboarding');
+          // Auth context will handle navigation to onboarding
         }
       }
     } catch (error: any) {

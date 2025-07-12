@@ -40,11 +40,11 @@ const Dashboard: React.FC = () => {
       if (profileRes.error) throw profileRes.error;
 
       if (!companyRes.data) {
-        navigate('/onboarding');
+        window.location.href = '/onboarding';
         return;
       }
       if (!profileRes.data) {
-        navigate('/onboarding');
+        window.location.href = '/onboarding';
         return;
       }
       
