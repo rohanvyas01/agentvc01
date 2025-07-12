@@ -86,21 +86,39 @@ const UploadDeckPage: React.FC = () => {
     setSuccess('');
 
     try {
-      const { data, error: functionError } = await supabase.functions.invoke('pdf-text-extractor', {
-        body: acceptedFile,
-        headers: {
-          'x-file-name': acceptedFile.name,
-          'x-file-type': acceptedFile.type,
-          'x-company-id': companyId,
-        },
+      const fileName = `${user.id}/${companyId}/${Date.now()}_${acceptedFile.name}`;
+
+      // 1. Upload file to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('pitchdecks') // Your storage bucket name
+        .upload(fileName, acceptedFile, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      // 2. Create a record in the 'pitches' table AND get it back
+      const { data: newPitchRecord, error: dbError } = await supabase
+        .from('pitches')
+        .insert({
+          company_id: companyId,
+          pitch_deck_storage_path: uploadData.path,
+          status: 'processing', // Set initial status
+        })
+        .select() // Ask Supabase to return the newly created row
+        .single(); // Expect only one row
+
+      if (dbError) throw dbError;
+      if (!newPitchRecord) throw new Error("Failed to create pitch record in database.");
+
+      // 3. Invoke the Edge Function for processing
+      console.log('Invoking pdf-text-extractor function with record:', newPitchRecord);
+      const { error: invokeError } = await supabase.functions.invoke('pdf-text-extractor', {
+        body: { record: newPitchRecord },
       });
 
-      if (functionError) {
-        throw new Error(functionError.message || 'An unknown error occurred during processing.');
-      }
-      
-      if (data.error) {
-         throw new Error(data.error);
+      if (invokeError) {
+        // If invoking fails, we should try to update the status to 'failed'
+        await supabase.from('pitches').update({ status: 'failed' }).eq('id', newPitchRecord.id);
+        throw new Error(`Processing failed to start: ${invokeError.message}`);
       }
 
       setSuccess('Pitch deck uploaded and processed successfully!');
