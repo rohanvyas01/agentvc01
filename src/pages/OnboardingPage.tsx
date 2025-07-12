@@ -82,8 +82,8 @@ const OnboardingPage: React.FC = () => {
         localStorage.setItem(`just_completed_onboarding_${user.id}`, 'true');
       }
       
-      // Use window.location for reliable navigation
-      window.location.href = '/dashboard';
+      // Navigate to dashboard
+      navigate('/dashboard');
 
     } catch (err: any) {
       console.error("Onboarding error:", err);
