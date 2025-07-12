@@ -260,9 +260,6 @@ const OnboardingPage: React.FC = () => {
         </motion.div>
       </div>
     </div>
-        </motion.div>
-      </div>
-    </div>
   );
 };
 
