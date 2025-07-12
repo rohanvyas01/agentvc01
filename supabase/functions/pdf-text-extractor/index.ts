@@ -47,7 +47,10 @@ serve(async (req) => {
     console.log("Step 2: Parsing PDF content...");
     const buffer = await fileData.arrayBuffer();
     const parsedPdf = await pdf(buffer);
-    const extractedText = parsedPdf.text ? parsedPdf.text.trim() : '';
+    let extractedText = parsedPdf.text ? parsedPdf.text.trim() : '';
+    
+    // Sanitize the extracted text to prevent Unicode escape sequence errors
+    extractedText = extractedText.replace(/\\/g, '\\\\');
     
     if (!extractedText) {
       console.warn(`PDF parsing for ${recordId} resulted in empty text. The PDF might be image-based.`);
