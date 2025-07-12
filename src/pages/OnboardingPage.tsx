@@ -127,7 +127,6 @@ const OnboardingPage: React.FC = () => {
             <h2 className="text-3xl font-bold text-white mb-2">Tell us about yourself</h2>
             <p className="text-slate-400">This will help us tailor the experience for you.</p>
           </motion.div>
-        </div>
 
           <motion.form
             initial={{ opacity: 0 }}
@@ -258,6 +257,9 @@ const OnboardingPage: React.FC = () => {
               )}
             </motion.button>
           </motion.form>
+        </motion.div>
+      </div>
+    </div>
         </motion.div>
       </div>
     </div>
