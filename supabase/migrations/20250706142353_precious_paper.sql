@@ -98,9 +98,32 @@ BEGIN
   END IF;
 END $$;
 
+-- Add user_id column to profiles if it doesn't exist, making the script idempotent
+-- Add user_id column to profiles if it doesn't exist, making the script idempotent
+DO $add_user_id_column_safely$
+BEGIN
+  -- Step 1: Add the column, but allow NULLs for now
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'profiles' AND column_name = 'user_id'
+  ) THEN
+    ALTER TABLE profiles ADD COLUMN user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE;
+  END IF;
+
+  -- Step 2: Populate the new user_id column from the existing id column for any rows that have a NULL user_id.
+  -- This assumes that profiles.id is the correct user identifier.
+  UPDATE profiles SET user_id = id WHERE user_id IS NULL;
+
+  -- Step 3: Now that all rows are populated, enforce the NOT NULL constraint.
+  ALTER TABLE profiles ALTER COLUMN user_id SET NOT NULL;
+END $add_user_id_column_safely$;
+
 -- Enable RLS on both tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pitch_decks ENABLE ROW LEVEL SECURITY;
+
+-- Set default value for user_id
+ALTER TABLE profiles ALTER COLUMN user_id SET DEFAULT auth.uid();
 
 -- Create profiles policies
 CREATE POLICY "Users can read own profile"

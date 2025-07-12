@@ -1,14 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { UploadCloud, FileText, X, Loader, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-// We no longer need useAuth here, simplifying the component.
+import { supabase } from '../lib/supabase.ts'; // Using path alias for robustness
 
 interface PitchDeckUploaderProps {
   companyId: string;
+  onUploadSuccess: () => void; // Callback to notify the parent component
 }
 
-const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId }) => {
+const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId, onUploadSuccess }) => {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,36 +59,48 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId }) => {
     setUploadSuccess(false);
 
     try {
-      // THE DEFINITIVE FIX: Get the session directly from Supabase at the moment of upload.
-      // This eliminates any possibility of using a stale session from React state.
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
       if (sessionError || !session) {
         throw new Error('Could not get user session. Please refresh and try again.');
       }
-
       const user = session.user;
       const fileName = `${user.id}/${companyId}/${Date.now()}_${file.name}`;
 
       // 1. Upload file to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('pitchdecks') // Corrected bucket name to match SQL schema
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false,
-        });
+        .from('pitchdecks') // Your storage bucket name
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
       if (uploadError) throw uploadError;
 
-      // 2. Create a record in the 'pitches' database table
-      const { error: dbError } = await supabase.from('pitches').insert({
-        company_id: companyId,
-        pitch_deck_storage_path: uploadData.path,
-      });
+      // 2. Create a record in the 'pitches' table AND get it back
+      const { data: newPitchRecord, error: dbError } = await supabase
+        .from('pitches')
+        .insert({
+          company_id: companyId,
+          pitch_deck_storage_path: uploadData.path,
+          status: 'processing', // Set initial status
+        })
+        .select() // Ask Supabase to return the newly created row
+        .single(); // Expect only one row
 
       if (dbError) throw dbError;
+      if (!newPitchRecord) throw new Error("Failed to create pitch record in database.");
+
+      // *** THIS IS THE FIX: Invoke the Edge Function ***
+      console.log('Invoking pitch-deck-processor function with record:', newPitchRecord);
+      const { error: invokeError } = await supabase.functions.invoke('pdf-text-extractor', {
+        body: { record: newPitchRecord },
+      });
+
+      if (invokeError) {
+        // If invoking fails, we should try to update the status to 'failed'
+        await supabase.from('pitches').update({ status: 'failed' }).eq('id', newPitchRecord.id);
+        throw new Error(`Processing failed to start: ${invokeError.message}`);
+      }
       
       setUploadSuccess(true);
+      onUploadSuccess(); // Notify parent component
 
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
@@ -148,7 +160,7 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId }) => {
             <CheckCircle className="h-6 w-6 flex-shrink-0" />
             <div className="overflow-hidden">
                 <p className="font-semibold">Upload Successful!</p>
-                <p className="text-sm truncate">Ready for the next step.</p>
+                <p className="text-sm truncate">Analysis has started. You can check the status on your dashboard.</p>
             </div>
          </div>
       )}
@@ -162,7 +174,7 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId }) => {
             flex items-center justify-center gap-2"
         >
           {isUploading ? <Loader className="animate-spin h-5 w-5" /> : <UploadCloud className="h-5 w-5" />}
-          {isUploading ? 'Uploading...' : uploadSuccess ? 'Ready!' : 'Start Analysis'}
+          {isUploading ? 'Uploading...' : uploadSuccess ? 'Done!' : 'Upload & Analyze'}
         </button>
       </div>
     </div>
