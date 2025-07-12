@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import PitchDeckUploader from '../components/PitchDeckUploader.tsx';
-import { Loader, FileText, Clock, CheckCircle, AlertCircle, Eye } from 'lucide-react';
+import { Loader, FileText, Clock, CheckCircle, AlertCircle, Eye, BarChart3 } from 'lucide-react';
+import { ClipLoader } from 'react-spinners';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
@@ -86,7 +87,7 @@ const Dashboard: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'processing':
-        return <Loader className="w-4 h-4 animate-spin text-yellow-400" />;
+        return <ClipLoader color="#facc15" size={16} />;
       case 'processed':
         return <CheckCircle className="w-4 h-4 text-green-400" />;
       case 'failed':
@@ -112,11 +113,11 @@ const Dashboard: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'processing':
-        return 'bg-yellow-500/20 border-yellow-500/30 text-yellow-300';
+        return 'status-processing';
       case 'processed':
-        return 'bg-green-500/20 border-green-500/30 text-green-300';
+        return 'status-completed';
       case 'failed':
-        return 'bg-red-500/20 border-red-500/30 text-red-300';
+        return 'status-failed';
       default:
         return 'bg-slate-500/20 border-slate-500/30 text-slate-300';
     }
@@ -129,7 +130,7 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <Loader className="animate-spin h-8 w-8 text-indigo-400 mx-auto mb-4" />
+          <ClipLoader color="#6366f1" size={32} className="mx-auto mb-4" />
           <p className="text-white">Loading your dashboard...</p>
         </motion.div>
       </div>
@@ -188,9 +189,9 @@ const Dashboard: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-12"
           >
-            <div className="glass rounded-2xl p-6 border border-slate-700/30">
+            <div className="glass rounded-2xl p-6 md:p-8 border border-slate-700/30">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <FileText className="w-6 h-6 text-indigo-400" />
+                <BarChart3 className="w-6 h-6 text-indigo-400" />
                 Your Pitch Decks
               </h2>
               
@@ -201,7 +202,7 @@ const Dashboard: React.FC = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="glass-dark rounded-xl p-4 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
+                    className="glass-dark rounded-xl p-4 md:p-6 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300 hover:shadow-lg"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
@@ -219,7 +220,7 @@ const Dashboard: React.FC = () => {
                       </div>
                       
                       <div className="flex items-center gap-4">
-                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${getStatusColor(deck.status)}`}>
+                        <div className={`flex items-center gap-2 px-3 py-2 rounded-full border ${getStatusColor(deck.status)}`}>
                           {getStatusIcon(deck.status)}
                           <span className="text-sm font-medium">
                             {getStatusText(deck.status)}
@@ -247,7 +248,7 @@ const Dashboard: React.FC = () => {
                         </div>
                         <div className="w-full bg-slate-800 rounded-full h-2">
                           <motion.div
-                            className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full"
+                            className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full loading-spinner"
                             initial={{ width: "0%" }}
                             animate={{ width: "100%" }}
                             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}

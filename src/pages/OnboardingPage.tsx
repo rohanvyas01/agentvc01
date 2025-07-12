@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { supabase } from '../lib/supabase.ts';
+import { ClipLoader } from 'react-spinners';
 import { Loader, User, Building, Globe, Linkedin, Briefcase, DollarSign, Target, MessageSquare } from 'lucide-react';
 
 const OnboardingPage: React.FC = () => {
@@ -246,7 +247,7 @@ const OnboardingPage: React.FC = () => {
           >
               {loading ? (
                 <>
-                  <Loader className="animate-spin h-5 w-5" />
+                  <ClipLoader color="#ffffff" size={20} />
                   <span>Setting up your profile...</span>
                 </>
               ) : (

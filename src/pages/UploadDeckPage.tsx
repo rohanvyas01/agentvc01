@@ -4,6 +4,7 @@ import { useDropzone, FileRejection } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { supabase } from '../lib/supabase.ts';
+import { ClipLoader } from 'react-spinners';
 import {
   Upload,
   FileText,
@@ -138,7 +139,7 @@ const UploadDeckPage: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
         >
-          <Loader className="w-8 h-8 animate-spin text-indigo-400 mx-auto mb-4" />
+          <ClipLoader color="#6366f1" size={32} className="mx-auto mb-4" />
           <p className="text-white">Loading company details...</p>
         </motion.div>
       </div>
@@ -180,7 +181,7 @@ const UploadDeckPage: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/onboarding')}
-                  className="mt-3 btn-secondary text-sm"
+                  className="mt-3 btn-primary text-sm"
                 >
                     Go to Onboarding
                 </motion.button>
@@ -199,10 +200,9 @@ const UploadDeckPage: React.FC = () => {
           <div className="space-y-3">
             {uploading ? (
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="mx-auto"
               >
-                <Loader className="w-12 h-12 text-indigo-400 mx-auto" />
+                <ClipLoader color="#6366f1" size={48} />
               </motion.div>
             ) : (
               <Upload className="w-12 h-12 text-slate-400 mx-auto" />
@@ -283,11 +283,11 @@ const UploadDeckPage: React.FC = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleUpload}
                     disabled={uploading}
-                    className="w-full btn-primary py-4 disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full btn-primary py-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                     {uploading ? (
                       <>
-                        <Loader className="animate-spin h-5 w-5" />
+                        <ClipLoader color="#ffffff" size={20} />
                         <span>Uploading & Analyzing...</span>
                       </>
                     ) : (

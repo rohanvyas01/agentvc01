@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { UploadCloud, FileText, X, Loader, CheckCircle } from 'lucide-react';
+import { ClipLoader } from 'react-spinners';
 import { supabase } from '../lib/supabase.ts'; // Using path alias for robustness
 
 interface PitchDeckUploaderProps {
@@ -117,7 +118,7 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId, onUplo
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto bg-slate-800 border border-slate-700 rounded-xl p-6 md:p-8">
+    <div className="w-full max-w-2xl mx-auto glass rounded-2xl border border-slate-700/30 p-6 md:p-8">
       <h2 className="text-2xl font-bold text-white mb-2">Upload Your Pitch Deck</h2>
       <p className="text-slate-400 mb-6">Upload your deck as a PDF to begin the analysis.</p>
 
@@ -129,7 +130,17 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId, onUplo
         className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-300
           ${isDragging ? 'border-indigo-500 bg-slate-700/50' : 'border-slate-600 hover:border-slate-500'}`}
       >
-        <UploadCloud className="mx-auto h-12 w-12 text-slate-500 mb-4" />
+        {isUploading ? (
+          <motion.div
+            className="mx-auto mb-4"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          >
+            <ClipLoader color="#6366f1" size={48} />
+          </motion.div>
+        ) : (
+          <UploadCloud className="mx-auto h-12 w-12 text-slate-500 mb-4" />
+        )}
         <p className="text-white font-semibold">Drag & drop your PDF here</p>
         <p className="text-slate-400 text-sm mt-1">or</p>
         <label htmlFor="file-upload" className="relative cursor-pointer text-indigo-400 hover:text-indigo-300 font-medium mt-2 inline-block">
@@ -142,7 +153,7 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId, onUplo
       {error && <p className="text-red-400 text-sm mt-4 text-center">{error}</p>}
 
       {file && !uploadSuccess && (
-        <div className="mt-6 bg-slate-700/50 p-4 rounded-lg flex items-center justify-between">
+        <div className="mt-6 glass-dark p-4 rounded-lg flex items-center justify-between border border-slate-700/30">
           <div className="flex items-center gap-3 overflow-hidden">
             <FileText className="h-6 w-6 text-indigo-400 flex-shrink-0" />
             <span className="text-white text-sm font-medium truncate">{file.name}</span>
@@ -169,11 +180,13 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId, onUplo
         <button
           onClick={handleUpload}
           disabled={!file || isUploading || uploadSuccess}
-          className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg font-semibold 
-            hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-            flex items-center justify-center gap-2"
+          className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {isUploading ? <Loader className="animate-spin h-5 w-5" /> : <UploadCloud className="h-5 w-5" />}
+          {isUploading ? (
+            <ClipLoader color="#ffffff" size={20} />
+          ) : (
+            <UploadCloud className="h-5 w-5" />
+          )}
           {isUploading ? 'Uploading...' : uploadSuccess ? 'Done!' : 'Upload & Analyze'}
         </button>
       </div>
