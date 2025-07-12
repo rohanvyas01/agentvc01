@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { supabase } from '../lib/supabase.ts';
 import { ClipLoader } from 'react-spinners';
@@ -92,6 +93,8 @@ const OnboardingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <Header />
+      
       {/* Background matching landing page */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
@@ -112,7 +115,7 @@ const OnboardingPage: React.FC = () => {
         />
       </div>
 
-      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4 pt-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

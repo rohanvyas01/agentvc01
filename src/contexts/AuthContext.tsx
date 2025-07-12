@@ -64,6 +64,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email,
       password,
     });
+    
+    // If sign in is successful, we'll let the auth state change handler
+    // in the component handle the redirect
     return { error };
   };
 

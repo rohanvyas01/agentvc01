@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
 import AuthModal from '../components/AuthModal';
 
 const SignUpPage: React.FC = () => {
@@ -16,12 +17,15 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <AuthModal
-      isOpen={isOpen}
-      onClose={handleClose}
-      mode="signup"
-      onSwitchMode={handleSwitchMode}
-    />
+    <div className="min-h-screen relative overflow-hidden">
+      <Header />
+      <AuthModal
+        isOpen={isOpen}
+        onClose={handleClose}
+        mode="signup"
+        onSwitchMode={handleSwitchMode}
+      />
+    </div>
   );
 };
 

@@ -20,9 +20,7 @@ function App() {
         <Route
           path="/onboarding"
           element={
-            <ProtectedRoute>
-              <OnboardingPage />
-            </ProtectedRoute>
+            <OnboardingPage />
           }
         />
         <Route
