@@ -76,6 +76,12 @@ const OnboardingPage: React.FC = () => {
 
       // Navigate to the dashboard on success
       console.log("Onboarding successful, navigating to dashboard.");
+      
+      // Mark that user just completed onboarding for first-time flow
+      if (user) {
+        localStorage.setItem(`just_completed_onboarding_${user.id}`, 'true');
+      }
+      
       navigate('/dashboard');
 
     } catch (err: any) {
