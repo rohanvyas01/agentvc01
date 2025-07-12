@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import PitchDeckUploader from '../components/PitchDeckUploader.tsx';
+import TavusIntroduction from '../components/TavusIntroduction.tsx';
 import { Loader, FileText, Clock, CheckCircle, AlertCircle, Eye, BarChart3 } from 'lucide-react';
 import { ClipLoader } from 'react-spinners';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +17,7 @@ const Dashboard: React.FC = () => {
   const [pitchDecks, setPitchDecks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showTavusIntro, setShowTavusIntro] = useState(false);
 
   // Using useCallback to memoize the fetch function
   const fetchData = useCallback(async () => {
@@ -58,6 +60,11 @@ const Dashboard: React.FC = () => {
         }
       }
 
+      // Show Tavus introduction for new users or users without processed decks
+      const hasProcessedDecks = pitchData?.some(deck => deck.status === 'processed');
+      if (profileRes.data && !hasProcessedDecks) {
+        setShowTavusIntro(true);
+      }
     } catch (err: any) {
       setError(err.message);
       console.error("Error fetching dashboard data:", err);
@@ -83,6 +90,10 @@ const Dashboard: React.FC = () => {
     fetchData(); // Refetch data to show the new pitch deck status
   };
 
+  const handleTavusIntroComplete = () => {
+    setShowTavusIntro(false);
+    // Could navigate to practice session setup or stay on dashboard
+  };
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'processing':
@@ -154,6 +165,16 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* Tavus Introduction Modal */}
+      {showTavusIntro && profile && (
+        <TavusIntroduction
+          userName={profile.full_name || 'Founder'}
+          companyName={company?.name}
+          onProceed={handleTavusIntroComplete}
+          onClose={() => setShowTavusIntro(false)}
+        />
+      )}
+
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -222,7 +243,7 @@ const Dashboard: React.FC = () => {
                         <div className={`flex items-center gap-2 px-3 py-2 rounded-full border ${getStatusColor(deck.status)}`}>
                           {getStatusIcon(deck.status)}
                           <span className="text-sm font-medium">
-                            {getStatusText(deck.status)}
+                            {deck.status === 'processed' ? 'Analyzing' : getStatusText(deck.status)}
                           </span>
                         </div>
                         
