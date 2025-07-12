@@ -49,9 +49,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
           // Email confirmation required
           setShowConfirmationMessage(true);
         } else {
-          // User is logged in immediately, close modal
+          // User is logged in immediately, navigate to onboarding
           onClose();
-          // Auth context will handle navigation to onboarding
+          navigate('/onboarding');
         }
       }
     } catch (error: any) {
