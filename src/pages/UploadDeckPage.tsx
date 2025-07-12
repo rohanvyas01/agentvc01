@@ -86,7 +86,7 @@ const UploadDeckPage: React.FC = () => {
     setSuccess('');
 
     try {
-      const { data, error: functionError } = await supabase.functions.invoke('pitch-deck-processor', {
+      const { data, error: functionError } = await supabase.functions.invoke('pdf-text-extractor', {
         body: acceptedFile,
         headers: {
           'x-file-name': acceptedFile.name,
