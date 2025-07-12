@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { UserFlowProvider } from './contexts/UserFlowContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
@@ -13,47 +14,49 @@ import OnboardingPage from './pages/OnboardingPage';
 function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route
-          path="/onboarding"
-          element={
-            <OnboardingPage />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/upload"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <UploadDeckPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/setup"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <SetupSessionPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <UserFlowProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route
+            path="/onboarding"
+            element={
+              <OnboardingPage />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <UploadDeckPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/setup"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <SetupSessionPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </UserFlowProvider>
     </AuthProvider>
   );
 }
