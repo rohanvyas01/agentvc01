@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import AuthModal from '../components/AuthModal';
+import AuthModal from '../components/AuthModal.tsx';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
   Target,
@@ -41,8 +41,8 @@ import {
   Video,
   TrendingUp as Growth
 } from 'lucide-react';
-import Header from '../components/Header';
-import { useAuth } from '../contexts/AuthContext';
+import Header from '../components/Header.tsx';
+import { useAuth } from '../contexts/AuthContext.tsx';
 
 const LandingPage: React.FC = () => {
   const { user } = useAuth();

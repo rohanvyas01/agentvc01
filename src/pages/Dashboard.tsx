@@ -3,34 +3,41 @@ import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { useUserFlow } from '../contexts/UserFlowContext.tsx';
-import PitchDeckUploader from '../components/PitchDeckUploader.tsx';
 import TavusAgentIntro from '../components/TavusAgentIntro.tsx';
-import UserFlowProgress from '../components/UserFlowProgress.tsx';
-import { Loader, FileText, Clock, CheckCircle, AlertCircle, Eye, BarChart3 } from 'lucide-react';
+import WelcomeSection from '../components/dashboard/WelcomeSection.tsx';
+import UploadedDecksSection from '../components/dashboard/UploadedDecksSection.tsx';
+import CompanyDetailsSection from '../components/dashboard/CompanyDetailsSection.tsx';
+import SessionHistorySection from '../components/dashboard/SessionHistorySection.tsx';
+import { AlertCircle, Zap, Plus, MessageSquare } from 'lucide-react';
 import { ClipLoader } from 'react-spinners';
 import { useNavigate } from 'react-router-dom';
+import { DashboardState, Session } from '../types/dashboard';
 
 const Dashboard: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
-  const { steps, refreshSteps, markStepComplete, getNextIncompleteStep, isFlowComplete } = useUserFlow();
+  const { refreshSteps, markStepComplete, getNextIncompleteStep } = useUserFlow();
   const navigate = useNavigate();
 
-  const [company, setCompany] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [pitchDecks, setPitchDecks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [dashboardState, setDashboardState] = useState<DashboardState>({
+    user: null,
+    profile: null,
+    company: null,
+    pitchDecks: [],
+    sessions: [],
+    loading: true,
+    error: null,
+    isFirstTimeUser: false
+  });
   const [showAgentIntro, setShowAgentIntro] = useState(false);
-  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
 
-  // Using useCallback to memoize the fetch function
+  // Fetch all dashboard data
   const fetchData = useCallback(async () => {
     if (!user) return;
     
-    setLoading(true);
-    let pitchData: any[] = [];
+    setDashboardState(prev => ({ ...prev, loading: true }));
     
     try {
+      // Fetch user profile and company data
       const [companyRes, profileRes] = await Promise.all([
         supabase.from('companies').select('*').eq('user_id', user.id).maybeSingle(),
         supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
@@ -39,126 +46,100 @@ const Dashboard: React.FC = () => {
       if (companyRes.error) throw companyRes.error;
       if (profileRes.error) throw profileRes.error;
 
-      if (!companyRes.data) {
-        window.location.href = '/onboarding';
+      if (!companyRes.data || !profileRes.data) {
+        navigate('/onboarding');
         return;
-      }
-      if (!profileRes.data) {
-        window.location.href = '/onboarding';
-        return;
-      }
-      
-      setCompany(companyRes.data);
-      setProfile(profileRes.data);
-      
-      // Fetch pitch decks after we have company data
-      if (companyRes.data) {
-        const { data: fetchedPitchData, error: pitchError } = await supabase
-          .from('pitches')
-          .select('*')
-          .eq('company_id', companyRes.data.id)
-          .order('created_at', { ascending: false });
-        
-        if (pitchError) {
-          console.error('Error fetching pitch decks:', pitchError);
-        } else {
-          pitchData = fetchedPitchData || [];
-          setPitchDecks(pitchData);
-        }
       }
 
-      // Check if this is a first-time user (just completed onboarding)
+      // Fetch pitch decks
+      const { data: pitchDecks, error: pitchError } = await supabase
+        .from('pitches')
+        .select('*')
+        .eq('company_id', companyRes.data.id)
+        .order('created_at', { ascending: false });
+
+      if (pitchError) {
+        console.error('Error fetching pitch decks:', pitchError);
+      }
+
+      // Fetch sessions (mock data for now since sessions table might not exist yet)
+      const sessions: Session[] = [];
+
+      // Check if this is a first-time user
       const justCompletedOnboarding = localStorage.getItem(`just_completed_onboarding_${user.id}`) === 'true';
+      const isFirstTime = justCompletedOnboarding || sessions.length === 0;
+      
       if (justCompletedOnboarding) {
-        setIsFirstTimeUser(true);
         setShowAgentIntro(true);
         localStorage.removeItem(`just_completed_onboarding_${user.id}`);
       }
+
+      setDashboardState({
+        user,
+        profile: profileRes.data,
+        company: companyRes.data,
+        pitchDecks: pitchDecks || [],
+        sessions,
+        loading: false,
+        error: null,
+        isFirstTimeUser: isFirstTime
+      });
       
-      // Refresh user flow steps
       await refreshSteps();
     } catch (err: any) {
-      setError(err.message);
+      setDashboardState(prev => ({
+        ...prev,
+        loading: false,
+        error: err.message
+      }));
       console.error("Error fetching dashboard data:", err);
-    } finally {
-      setLoading(false);
     }
-  }, [user, navigate]);
+  }, [user, navigate, refreshSteps]);
 
   useEffect(() => {
     if (!authLoading) {
       fetchData();
     }
-  }, [authLoading, fetchData, refreshSteps]);
+  }, [authLoading, fetchData]);
 
-  /**
-   * THIS IS THE FIX: A handler function to pass to the uploader.
-   * In the future, this function can be used to refresh the list of pitch decks
-   * on the dashboard after a new one is uploaded.
-   */
-  const handleUploadSuccess = () => {
-    console.log('Upload successful, refreshing data...');
-    // You could add a toast notification here for better UX
-    fetchData(); // Refetch data to show the new pitch deck status
-    refreshSteps(); // Update flow progress
-  };
-
+  // Event handlers
   const handleAgentIntroComplete = async () => {
     setShowAgentIntro(false);
     await markStepComplete('agent_intro');
-    
-    // If this was first time, focus on upload
-    if (isFirstTimeUser) {
-      // Scroll to upload section or highlight it
-      const uploadSection = document.getElementById('upload-section');
-      uploadSection?.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   const handleShowAgentIntro = () => {
-    setIsFirstTimeUser(false);
     setShowAgentIntro(true);
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'processing':
-        return <ClipLoader color="#facc15" size={16} />;
-      case 'processed':
-        return <CheckCircle className="w-4 h-4 text-green-400" />;
-      case 'failed':
-        return <AlertCircle className="w-4 h-4 text-red-400" />;
-      default:
-        return <Clock className="w-4 h-4 text-slate-400" />;
-    }
+  const handleViewDeck = (deckId: string) => {
+    console.log('View deck:', deckId);
+    // TODO: Navigate to deck view page
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'processing':
-        return 'In Analysis';
-      case 'processed':
-        return 'Ready';
-      case 'failed':
-        return 'Failed';
-      default:
-        return 'Pending';
-    }
+  const handleUploadNew = () => {
+    navigate('/upload');
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'processing':
-        return 'status-processing';
-      case 'processed':
-        return 'status-completed';
-      case 'failed':
-        return 'status-failed';
-      default:
-        return 'bg-slate-500/20 border-slate-500/30 text-slate-300';
-    }
+  const handleEditCompany = () => {
+    navigate('/onboarding');
   };
-  if (loading || authLoading) {
+
+  const handleViewSession = (sessionId: string) => {
+    console.log('View session:', sessionId);
+    // TODO: Navigate to session view page
+  };
+
+  const handleStartNewSession = () => {
+    navigate('/setup');
+  };
+
+  const handleStartConversation = () => {
+    navigate('/setup');
+  };
+
+  // Loading state
+  if (dashboardState.loading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <motion.div
@@ -173,15 +154,8 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  // Check if user should see agent intro based on flow
-  const nextStep = getNextIncompleteStep();
-  const shouldShowAgentIntroPrompt = nextStep?.id === 'agent_intro' && !showAgentIntro;
-  const shouldShowUploadPrompt = nextStep?.id === 'upload_deck';
-  const shouldShowQAPrompt = nextStep?.id === 'qa_session' || isFlowComplete();
-  
-  const hasProcessedDecks = pitchDecks.some(deck => deck.status === 'processed');
-
-  if (error) {
+  // Error state
+  if (dashboardState.error) {
     return (
       <div className="min-h-screen flex items-center justify-center text-center p-4">
         <motion.div
@@ -191,14 +165,19 @@ const Dashboard: React.FC = () => {
         >
           <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
           <p className="text-red-400 font-semibold text-lg mb-2">An Error Occurred</p>
-          <p className="text-slate-400 text-sm">{error}</p>
+          <p className="text-slate-400 text-sm">{dashboardState.error}</p>
         </motion.div>
       </div>
     );
   }
 
+  const { profile, company, pitchDecks, sessions, isFirstTimeUser } = dashboardState;
+  const nextStep = getNextIncompleteStep();
+  const shouldShowAgentIntroPrompt = nextStep?.id === 'agent_intro' && !showAgentIntro;
+  const hasProcessedDecks = pitchDecks.some(deck => deck.status === 'processed');
+
   return (
-    <div className="space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Tavus Introduction Modal */}
       {showAgentIntro && profile && (
         <TavusAgentIntro
@@ -210,206 +189,141 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Welcome, {profile?.full_name || 'Founder'}!
-          </h1>
-          <p className="text-xl text-white/80">
-            Let's analyze the pitch for <span className="font-semibold text-indigo-400">{company?.name}</span>.
-          </p>
-        </motion.div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <WelcomeSection
+          userName={profile?.full_name || 'Founder'}
+          companyName={company?.name || 'Your Company'}
+          isFirstTime={isFirstTimeUser}
+        />
 
-        {/* User Flow Progress */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          <UserFlowProgress />
-        </motion.div>
-
-        {/* Agent Introduction Prompt */}
+        {/* Agent Introduction Prompt for First-Time Users */}
         {shouldShowAgentIntroPrompt && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass rounded-2xl p-6 border border-indigo-500/30 bg-indigo-500/5"
+            className="mb-8"
           >
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-white mb-3">Meet Your AI Investor</h3>
-              <p className="text-slate-300 mb-6">
-                Before we begin, let Rohan introduce himself and explain how he can help you raise capital faster.
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleShowAgentIntro}
-                className="btn-primary"
-              >
-                Meet Rohan Vyas
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
-        
-        {/* Upload Section */}
-        {company && shouldShowUploadPrompt && (
-          <motion.div
-            id="upload-section"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <PitchDeckUploader companyId={company.id} onUploadSuccess={handleUploadSuccess} />
-          </motion.div>
-        )}
-
-        {/* Q&A Session Prompt */}
-        {shouldShowQAPrompt && hasProcessedDecks && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="glass rounded-2xl p-6 border border-green-500/30 bg-green-500/5"
-          >
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-white mb-3">Ready for Investor Q&A?</h3>
-              <p className="text-slate-300 mb-6">
-                Your pitch deck has been analyzed. Now it's time to practice with Rohan and get real investor feedback.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/setup')}
-                  className="btn-primary"
-                >
-                  Start Q&A Session
-                </motion.button>
+            <div className="glass rounded-2xl p-6 border border-indigo-500/30 bg-indigo-500/5">
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-white mb-3">Meet Your AI Investor</h3>
+                <p className="text-slate-300 mb-6">
+                  Before we begin, let Rohan introduce himself and explain how he can help you raise capital faster.
+                </p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleShowAgentIntro}
-                  className="btn-secondary"
+                  className="btn-primary"
                 >
-                  Meet Rohan Again
+                  Meet Rohan Vyas
                 </motion.button>
               </div>
             </div>
           </motion.div>
         )}
 
-        {/* Uploaded Pitch Decks Section */}
-        {pitchDecks.length > 0 && (
+        {/* Talk to AI Section for First-Time Users */}
+        {isFirstTimeUser && hasProcessedDecks && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mb-8"
           >
-            <div className="glass rounded-2xl p-6 md:p-8 border border-slate-700/30">
-              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <BarChart3 className="w-6 h-6 text-indigo-400" />
-                Your Pitch Decks
-              </h2>
-              
-              <div className="space-y-4">
-                {pitchDecks.map((deck, index) => (
-                  <motion.div
-                    key={deck.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="glass-dark rounded-xl p-4 md:p-6 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300 hover:shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 rounded-lg flex items-center justify-center border border-indigo-500/30">
-                          <FileText className="w-6 h-6 text-indigo-400" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-white">
-                            Pitch Deck #{deck.id.slice(-8)}
-                          </h3>
-                          <p className="text-sm text-slate-400">
-                            Uploaded {new Date(deck.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4">
-                        <div className={`flex items-center gap-2 px-3 py-2 rounded-full border ${getStatusColor(deck.status)}`}>
-                          {getStatusIcon(deck.status)}
-                          <span className="text-sm font-medium">
-                            {deck.status === 'processed' ? 'Analyzing' : getStatusText(deck.status)}
-                          </span>
-                        </div>
-                        
-                        {deck.status === 'processed' && (
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="btn-secondary flex items-center gap-2 text-sm"
-                          >
-                            <Eye className="w-4 h-4" />
-                            View Analysis
-                          </motion.button>
-                        )}
-                      </div>
-                    </div>
-                    
-                    {deck.status === 'processing' && (
-                      <div className="mt-4">
-                        <div className="flex items-center gap-2 text-sm text-yellow-300 mb-2">
-                          <Clock className="w-4 h-4" />
-                          <span>Analyzing your pitch deck...</span>
-                        </div>
-                        <div className="w-full bg-slate-800 rounded-full h-2">
-                          <motion.div
-                            className="bg-gradient-to-r from-yellow-500 to-orange-500 h-2 rounded-full loading-spinner"
-                            initial={{ width: "0%" }}
-                            animate={{ width: "100%" }}
-                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
+            <div className="glass rounded-2xl p-8 border border-green-500/30 bg-green-500/5 text-center">
+              <Zap className="w-12 h-12 text-green-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-white mb-4">Ready to Talk to AI?</h2>
+              <p className="text-slate-300 mb-6 max-w-2xl mx-auto">
+                Your pitch deck has been analyzed. Now it's time to practice with Rohan and get real investor feedback.
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleStartConversation}
+                className="btn-primary text-lg px-8 py-3"
+              >
+                Start AI Conversation
+              </motion.button>
             </div>
           </motion.div>
         )}
 
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="glass rounded-2xl p-6 border border-slate-700/30"
-        >
-          <h3 className="text-lg font-bold text-white mb-4">Quick Actions</h3>
-          <div className="flex flex-wrap gap-3">
-            <button onClick={handleShowAgentIntro} className="btn-secondary text-sm">
-              Meet Rohan Again
-            </button>
-            <button onClick={() => navigate('/upload')} className="btn-secondary text-sm">
-              Upload New Deck
-            </button>
-            {hasProcessedDecks && (
-              <button onClick={() => navigate('/setup')} className="btn-primary text-sm">
-                Start Q&A Session
-              </button>
-            )}
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Uploaded Decks Section */}
+            <UploadedDecksSection
+              decks={pitchDecks}
+              onViewDeck={handleViewDeck}
+              onUploadNew={handleUploadNew}
+            />
+
+            {/* Session History Section */}
+            <SessionHistorySection
+              sessions={sessions}
+              onViewSession={handleViewSession}
+              onStartNew={handleStartNewSession}
+            />
           </div>
-        </motion.div>
+
+          {/* Right Column - Sidebar */}
+          <div className="space-y-8">
+            {/* Company Details Section */}
+            {company && profile && (
+              <CompanyDetailsSection
+                company={company}
+                profile={profile}
+                onEdit={handleEditCompany}
+              />
+            )}
+
+            {/* Quick Actions Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="glass rounded-2xl p-6 border border-slate-700/30"
+            >
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-indigo-400" />
+                Quick Actions
+              </h3>
+              <div className="space-y-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleShowAgentIntro}
+                  className="w-full btn-secondary text-sm justify-start"
+                >
+                  Meet Rohan Again
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleUploadNew}
+                  className="w-full btn-secondary text-sm justify-start flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Upload New Deck
+                </motion.button>
+                {hasProcessedDecks && (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleStartNewSession}
+                    className="w-full btn-primary text-sm justify-start flex items-center gap-2"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Start Q&A Session
+                  </motion.button>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );
