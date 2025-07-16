@@ -12,35 +12,100 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Types for our database tables
 export interface Profile {
   id: string;
-  email: string;
+  updated_at?: string;
   full_name?: string;
   avatar_url?: string;
+  startup_name?: string;
+  website?: string;
+  one_liner?: string;
+  industry?: string;
+  business_model?: string;
+  fundraise_stage?: string;
+  raise_amount?: string;
+  use_of_funds?: string;
+  linkedin_url?: string;
+  immediate_goals?: string;
+  company_id?: string;
+}
+
+export interface Company {
+  id: string;
+  user_id: string;
+  name: string;
+  industry?: string;
+  stage?: string;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface PitchDeck {
   id: string;
-  user_id: string;
-  deck_name: string;
-  storage_path: string;
-  extracted_text?: string;
-  file_size?: number;
-  file_type?: string;
+  company_id: string;
+  pitch_deck_url?: string;
+  pitch_deck_storage_path?: string;
+  financials_url?: string;
+  transcript_text?: string;
+  status: 'pending' | 'processing' | 'processed' | 'failed';
   created_at: string;
+  updated_at?: string;
 }
 
 export interface Session {
   id: string;
   user_id: string;
-  deck_id: string;
+  company_id?: string;
+  pitch_deck_id?: string;
   tavus_conversation_id?: string;
   tavus_persona_id: string;
   status: 'created' | 'active' | 'completed' | 'failed';
-  full_transcript?: any;
-  final_report?: any;
   duration_minutes?: number;
   created_at: string;
+  started_at?: string;
   completed_at?: string;
-  pitch_decks?: PitchDeck;
+}
+
+export interface ConversationTranscript {
+  id: string;
+  session_id: string;
+  speaker: 'founder' | 'investor';
+  content: string;
+  timestamp_ms: number;
+  created_at: string;
+}
+
+export interface ConversationAnalysis {
+  id: string;
+  session_id: string;
+  gemini_analysis?: any;
+  key_strengths: string[];
+  improvement_areas: string[];
+  follow_up_questions: string[];
+  overall_score?: number;
+  created_at: string;
+}
+
+export interface SessionReport {
+  id: string;
+  session_id: string;
+  report_data: {
+    summary: string;
+    transcript: ConversationTranscript[];
+    analysis: ConversationAnalysis;
+    recommendations: string[];
+    next_steps: string[];
+  };
+  email_sent: boolean;
+  email_sent_at?: string;
+  created_at: string;
+}
+
+export interface InvestorPersona {
+  id: string;
+  name: string;
+  description: string;
+  specialty: string;
+  experience: string;
+  conversationStyle: string;
+  focusAreas: string[];
+  avatarUrl: string;
 }
