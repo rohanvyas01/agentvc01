@@ -1,20 +1,24 @@
 /*
-  # Add updated_at column to pitches table
-
-  1. Changes
-    - Add `updated_at` column to `pitches` table
-    - Add trigger to automatically update `updated_at` on row updates
-
-  2. Security
-    - No changes to RLS policies needed
+  # Add updated_at column to pitch_decks table
+  
+  This migration adds the updated_at column to the pitch_decks table
+  and creates a trigger to automatically update it.
 */
 
--- Add updated_at column to pitches table
-ALTER TABLE pitches ADD COLUMN IF NOT EXISTS updated_at timestamptz DEFAULT now();
+-- Add updated_at column if it doesn't exist
+DO $
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'pitch_decks' AND column_name = 'updated_at'
+  ) THEN
+    ALTER TABLE pitch_decks ADD COLUMN updated_at timestamptz DEFAULT now();
+  END IF;
+END $;
 
--- Create trigger to automatically update updated_at column
-DROP TRIGGER IF EXISTS update_pitches_updated_at ON pitches;
-CREATE TRIGGER update_pitches_updated_at
-  BEFORE UPDATE ON pitches
+-- Create updated_at trigger for pitch_decks
+DROP TRIGGER IF EXISTS update_pitch_decks_updated_at ON pitch_decks;
+CREATE TRIGGER update_pitch_decks_updated_at
+  BEFORE UPDATE ON pitch_decks
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();

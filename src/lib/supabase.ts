@@ -34,18 +34,25 @@ export interface Company {
   name: string;
   industry?: string;
   stage?: string;
+  funding_round?: string;
+  funding_amount?: string;
+  one_liner?: string;
+  website?: string;
   created_at: string;
   updated_at?: string;
 }
 
 export interface PitchDeck {
   id: string;
-  company_id: string;
+  user_id: string;
+  company_id?: string;
+  deck_name: string;
+  file_type?: string;
   pitch_deck_url?: string;
   pitch_deck_storage_path?: string;
   financials_url?: string;
   transcript_text?: string;
-  status: 'pending' | 'processing' | 'processed' | 'failed';
+  processing_status: 'pending' | 'processing' | 'processed' | 'failed';
   created_at: string;
   updated_at?: string;
 }

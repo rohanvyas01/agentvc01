@@ -23,7 +23,6 @@ const UserFlowContext = createContext<UserFlowContextType | undefined>(undefined
 
 const defaultSteps: UserFlowStep[] = [
     { id: 'onboarding', name: 'Complete Profile', completed: false, required: true },
-    { id: 'agent_intro', name: 'Meet Your AI Investor', completed: false, required: true },
     { id: 'upload_deck', name: 'Upload Pitch Deck', completed: false, required: true },
     { id: 'deck_processed', name: 'Deck Analysis Complete', completed: false, required: true },
     { id: 'qa_session', name: 'Q&A Session Available', completed: false, required: false },
@@ -66,9 +65,6 @@ export const UserFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         .eq('user_id', user.id)
         .maybeSingle();
 
-      // Check if user has seen agent intro
-      const agentIntroSeen = localStorage.getItem(`agent_intro_seen_${user.id}`) === 'true';
-
       // Check uploaded decks
       const { data: pitchDecks } = await supabase
         .from('pitches')
@@ -84,12 +80,6 @@ export const UserFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           id: 'onboarding',
           name: 'Complete Profile',
           completed: !!(profile && company),
-          required: true
-        },
-        {
-          id: 'agent_intro',
-          name: 'Meet Your AI Investor',
-          completed: agentIntroSeen,
           required: true
         },
         {
@@ -127,17 +117,13 @@ export const UserFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [user]);
 
   const markStepComplete = useCallback(async (stepId: string) => {
-    if (stepId === 'agent_intro' && user) {
-      localStorage.setItem(`agent_intro_seen_${user.id}`, 'true');
-    }
-    
     setSteps(prev => prev.map(step => 
       step.id === stepId ? { ...step, completed: true } : step
     ));
     
     // Refresh to get accurate state
     await refreshSteps();
-  }, [user, refreshSteps]);
+  }, [refreshSteps]);
 
   const getNextIncompleteStep = useCallback(() => {
     return steps.find(step => step.required && !step.completed) || null;

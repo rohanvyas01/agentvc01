@@ -29,8 +29,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
-    { name: 'Upload Deck', href: '/upload', icon: Upload },
-    { name: 'Practice Session', href: '/setup', icon: Video },
   ];
 
   const isActivePath = (path: string) => location.pathname === path;

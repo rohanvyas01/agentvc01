@@ -24,7 +24,8 @@ const OnboardingPage: React.FC = () => {
     website: '',
     linkedin: '',
     industry: '',
-    fundraiseStage: '',
+    fundingRound: '',
+    fundingAmount: '',
     oneLiner: '',
     immediateGoals: ''
   });
@@ -46,7 +47,7 @@ const OnboardingPage: React.FC = () => {
       website: formData.website || 'https://example.com',
       linkedin_url: formData.linkedin || 'https://linkedin.com/in/demouser',
       industry: formData.industry || 'AI & SaaS',
-      fundraise_stage: formData.fundraiseStage || 'Seed Round, $500k',
+      fundraise_stage: `${formData.fundingRound || 'Seed'}, ${formData.fundingAmount || '$500k'}`,
       one_liner: formData.oneLiner || 'The best demo company for testing app flows.',
       use_of_funds: formData.immediateGoals || 'To test the application flow quickly and efficiently.',
       startup_name: formData.startupName || 'Demo Startup'
@@ -56,7 +57,11 @@ const OnboardingPage: React.FC = () => {
     const companyData = {
       name: formData.startupName || 'Demo Startup',
       industry: formData.industry || 'AI & SaaS',
-      stage: formData.fundraiseStage || 'Seed',
+      stage: formData.fundingRound || 'Seed',
+      funding_round: formData.fundingRound || 'Seed',
+      funding_amount: formData.fundingAmount || '$500k',
+      one_liner: formData.oneLiner || 'The best demo company for testing app flows.',
+      website: formData.website || 'https://example.com',
       user_id: user.id,
     };
 
@@ -175,9 +180,6 @@ const OnboardingPage: React.FC = () => {
 
       // Complete onboarding after successful upload
       setTimeout(() => {
-        if (user) {
-          localStorage.setItem(`just_completed_onboarding_${user.id}`, 'true');
-        }
         navigate('/dashboard');
       }, 2000);
 
@@ -302,15 +304,40 @@ const OnboardingPage: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
-              <DollarSign className="w-4 h-4" />
-              Fundraise Stage/Amount
+              <Target className="w-4 h-4" />
+              Funding Round
             </label>
-            <input
-              name="fundraiseStage"
-              value={formData.fundraiseStage}
+            <select
+              name="fundingRound"
+              value={formData.fundingRound}
               onChange={handleInputChange}
               className="input-field"
-              placeholder="e.g., Pre-seed, $500k"
+              required
+            >
+              <option value="">Select funding round</option>
+              <option value="Pre-seed">Pre-seed</option>
+              <option value="Seed">Seed</option>
+              <option value="Angel">Angel</option>
+              <option value="Friends & Family">Friends & Family</option>
+              <option value="Series A">Series A</option>
+              <option value="Series B">Series B</option>
+              <option value="Series C">Series C</option>
+              <option value="Series D+">Series D+</option>
+              <option value="Growth">Growth</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2 flex items-center gap-2">
+              <DollarSign className="w-4 h-4" />
+              Funding Amount
+            </label>
+            <input
+              name="fundingAmount"
+              value={formData.fundingAmount}
+              onChange={handleInputChange}
+              className="input-field"
+              placeholder="e.g., $500k, $2M, $10M"
               required
             />
           </div>

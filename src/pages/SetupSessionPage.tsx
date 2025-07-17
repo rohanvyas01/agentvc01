@@ -33,48 +33,26 @@ interface InvestorPersona {
 
 const investorPersonas: InvestorPersona[] = [
   {
-    id: 'saas-guru',
-    name: 'Sarah Chen',
-    description: 'SaaS Expert & Growth Investor',
-    specialty: 'B2B SaaS, Enterprise Software',
-    focus: ['Product-Market Fit', 'Unit Economics', 'Scalability'],
-    experience: '15+ years at Sequoia & Bessemer',
-    style: 'Direct, metrics-focused, thorough due diligence',
-    icon: TrendingUp,
-    color: 'blue'
-  },
-  {
-    id: 'deeptech-vc',
-    name: 'Dr. Michael Torres',
-    description: 'Deep Tech & AI Specialist',
-    specialty: 'AI/ML, Hardware, Biotech',
-    focus: ['Technical Innovation', 'IP Portfolio', 'Market Timing'],
-    experience: 'Former Google X, now at Andreessen Horowitz',
-    style: 'Technical depth, long-term vision oriented',
-    icon: Building,
-    color: 'purple'
-  },
-  {
-    id: 'consumer-expert',
-    name: 'Emma Rodriguez',
-    description: 'Consumer & Mobile Expert',
-    specialty: 'Consumer Apps, E-commerce, Fintech',
-    focus: ['User Acquisition', 'Retention', 'Monetization'],
-    experience: 'Led investments at Lightspeed & GV',
-    style: 'User-centric, growth and engagement focused',
+    id: 'rohan-angel',
+    name: 'Rohan Vyas',
+    description: 'Angel Investor',
+    specialty: 'Early Stage Startups, Seed Funding',
+    focus: ['Team Dynamics', 'Market Opportunity', 'Product Vision'],
+    experience: 'Serial entrepreneur and angel investor',
+    style: 'Founder-friendly, focused on vision and execution',
     icon: Target,
     color: 'green'
   },
   {
-    id: 'early-stage',
-    name: 'James Wilson',
-    description: 'Early Stage Generalist',
-    specialty: 'Seed & Series A across verticals',
-    focus: ['Team', 'Market Size', 'Business Model'],
-    experience: 'Partner at First Round Capital',
-    style: 'Founder-friendly, focused on team and vision',
-    icon: Briefcase,
-    color: 'orange'
+    id: 'rohan-vc',
+    name: 'Rohan Vyas',
+    description: 'Venture Capital',
+    specialty: 'Growth Stage, Series A/B Funding',
+    focus: ['Scalability', 'Unit Economics', 'Market Size'],
+    experience: 'VC partner with portfolio of successful exits',
+    style: 'Metrics-driven, thorough due diligence approach',
+    icon: TrendingUp,
+    color: 'blue'
   }
 ];
 
@@ -96,14 +74,33 @@ const SetupSessionPage: React.FC = () => {
 
   const fetchDecks = async () => {
     try {
-      const { data, error } = await supabase
-        .from('pitch_decks')
-        .select('*')
+      // First get user's company
+      const { data: company, error: companyError } = await supabase
+        .from('companies')
+        .select('id')
         .eq('user_id', user!.id)
+        .single();
+
+      if (companyError) throw companyError;
+
+      // Then get pitch decks for that company
+      const { data, error } = await supabase
+        .from('pitches')
+        .select('*')
+        .eq('company_id', company.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDecks(data || []);
+      
+      // Map the data to match PitchDeck interface
+      const mappedDecks = (data || []).map(deck => ({
+        ...deck,
+        deck_name: `Pitch Deck #${deck.id.slice(-8)}`,
+        processing_status: deck.status,
+        user_id: user!.id
+      }));
+      
+      setDecks(mappedDecks);
     } catch (err) {
       console.error('Error fetching decks:', err);
     } finally {
@@ -198,9 +195,9 @@ const SetupSessionPage: React.FC = () => {
         transition={{ duration: 0.6 }}
         className="text-center mb-8"
       >
-        <h1 className="text-3xl font-bold text-white mb-4">Setup Your Practice Session</h1>
-        <p className="text-xl text-white/80">
-          Choose your pitch deck and select an AI investor persona to practice with
+        <h1 className="text-3xl font-bold text-white mb-4">Pitch to Rohan</h1>
+        <p className="text-xl text-white/80 mb-8">
+          Get ready to practice your pitch with Rohan Vyas.
         </p>
       </motion.div>
 
@@ -261,9 +258,6 @@ const SetupSessionPage: React.FC = () => {
                             <Calendar className="w-3 h-3" />
                             <span>{formatDate(deck.created_at)}</span>
                           </div>
-                          {deck.file_size && (
-                            <span>{(deck.file_size / 1024 / 1024).toFixed(1)} MB</span>
-                          )}
                         </div>
                       </div>
                     </div>
