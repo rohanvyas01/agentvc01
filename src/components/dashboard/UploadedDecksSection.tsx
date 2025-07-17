@@ -14,24 +14,24 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
       case 'processing':
         return <ClipLoader color="#facc15" size={16} />;
       case 'processed':
-        return <CheckCircle className="w-4 h-4 text-green-400" />;
+        return <ClipLoader color="#facc15" size={16} />;
       case 'failed':
         return <AlertCircle className="w-4 h-4 text-red-400" />;
       default:
-        return <Clock className="w-4 h-4 text-slate-400" />;
+        return <ClipLoader color="#facc15" size={16} />;
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
       case 'processing':
-        return 'Analyzing';
+        return 'Analysis in Progress';
       case 'processed':
-        return 'Analysis Complete';
+        return 'Analysis in Progress';
       case 'failed':
         return 'Analysis Failed';
       default:
-        return 'Queued';
+        return 'Analysis in Progress';
     }
   };
 
@@ -40,7 +40,7 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
       case 'processing':
         return 'bg-yellow-500/20 border-yellow-500/30 text-yellow-300';
       case 'processed':
-        return 'bg-green-500/20 border-green-500/30 text-green-300';
+        return 'bg-yellow-500/20 border-yellow-500/30 text-yellow-300';
       case 'failed':
         return 'bg-red-500/20 border-red-500/30 text-red-300';
       default:
@@ -120,14 +120,14 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
               </div>
               
               <div className="flex items-center gap-3">
-                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${getStatusColor(deck.status)}`}>
-                  {getStatusIcon(deck.status)}
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${getStatusColor(deck.processing_status)}`}>
+                  {getStatusIcon(deck.processing_status)}
                   <span className="font-medium">
-                    {getStatusText(deck.status)}
+                    {getStatusText(deck.processing_status)}
                   </span>
                 </div>
                 
-                {deck.status === 'processed' && (
+                {deck.processing_status === 'processed' && (
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -141,7 +141,7 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
               </div>
             </div>
             
-            {deck.status === 'processing' && (
+            {deck.processing_status === 'processing' && (
               <div className="mt-4">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-sm text-yellow-300">

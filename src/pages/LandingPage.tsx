@@ -205,25 +205,25 @@ const LandingPage: React.FC = () => {
                           </div>
                         </div>
                         
-                        {/* Fallback Video Player */}
+                        {/* Video Player */}
                         <video
                           className="w-full h-full rounded-xl object-cover"
                           controls
                           poster="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
+                          preload="metadata"
                           onLoadStart={() => console.log('Video loading started')}
                           onCanPlay={() => console.log('Video can play')}
-                          onError={(e) => console.error('Video error:', e)}
+                          onError={(e) => {
+                            console.error('Video error:', e);
+                            // Hide loading state and show error
+                            const loadingDiv = e.currentTarget.previousElementSibling;
+                            if (loadingDiv) {
+                              loadingDiv.style.display = 'flex';
+                            }
+                          }}
                         >
-                          <source src="https://your-video-host.com/Introduction.mp4" type="video/mp4" />
-                          <div className="absolute inset-0 bg-slate-800 rounded-xl flex items-center justify-center">
-                            <div className="text-center">
-                              <div className="w-16 h-16 bg-indigo-500/20 rounded-full flex items-center justify-center mb-4 mx-auto">
-                                <Video className="w-8 h-8 text-indigo-400" />
-                              </div>
-                              <p className="text-white font-medium">Video Unavailable</p>
-                              <p className="text-slate-400 text-sm">Please check your connection</p>
-                            </div>
-                          </div>
+                          <source src="/Introduction.mp4" type="video/mp4" />
+                          Your browser does not support the video tag.
                         </video>
                       </div>
                     </div>
@@ -279,22 +279,24 @@ const LandingPage: React.FC = () => {
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </GlassButton>
                 
-                <motion.button
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSignIn}
-                  className="bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border border-slate-600/30 backdrop-blur-sm w-full sm:w-auto"
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="hidden sm:inline">
-                      {user ? 'Go to Dashboard' : 'Already have an account? Sign In'}
-                    </span>
-                    <span className="sm:hidden">
-                      {user ? 'Dashboard' : 'Sign In'}
-                    </span>
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </motion.button>
+                {!user && (
+                  <motion.button
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleSignIn}
+                    className="bg-gradient-to-r from-slate-700/50 to-slate-600/50 hover:from-slate-600/60 hover:to-slate-500/60 text-white font-semibold text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl border border-slate-600/30 backdrop-blur-sm w-full sm:w-auto"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="hidden sm:inline">
+                        Already have an account? Sign In
+                      </span>
+                      <span className="sm:hidden">
+                        Sign In
+                      </span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </motion.button>
+                )}
               </motion.div>
 
               {/* Statistics */}

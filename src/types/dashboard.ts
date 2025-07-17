@@ -77,7 +77,7 @@ export interface ConversationSetup {
 }
 
 export interface PersonaSelectionProps {
-  personas: InvestorPersona[];
+  personas?: InvestorPersona[];
   onSelect: (persona: InvestorPersona) => void;
   selectedPersona?: InvestorPersona;
 }
@@ -159,4 +159,4 @@ export interface LoadingStates {
   initialLoad: boolean;
 }
 
-export { Session };
+export type { Session };
