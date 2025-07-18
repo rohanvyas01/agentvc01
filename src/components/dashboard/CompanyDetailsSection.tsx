@@ -13,9 +13,10 @@ const CompanyDetailsSection: React.FC<CompanyDetailsProps> = ({
     const fields = [
       company?.name,
       company?.industry,
-      company?.stage,
-      profile?.one_liner,
-      profile?.website,
+      company?.funding_round,
+      company?.funding_amount,
+      company?.one_liner || profile?.one_liner,
+      company?.website || profile?.website,
       profile?.full_name,
       profile?.linkedin_url
     ];
@@ -93,52 +94,94 @@ const CompanyDetailsSection: React.FC<CompanyDetailsProps> = ({
           </div>
           
           <div>
-            <label className="text-sm text-slate-400 mb-1 block">Stage</label>
+            <label className="text-sm text-slate-400 mb-1 block">Funding Round</label>
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-indigo-400" />
               <p className="text-white font-medium">
-                {company?.stage || <span className="text-slate-500 italic">Not provided</span>}
+                {company?.funding_round || <span className="text-slate-500 italic">Not provided</span>}
               </p>
             </div>
+          </div>
+          
+          <div>
+            <label className="text-sm text-slate-400 mb-1 block">Funding Amount</label>
+            <p className="text-white font-medium">
+              {company?.funding_amount || <span className="text-slate-500 italic">Not provided</span>}
+            </p>
           </div>
           
           <div>
             <label className="text-sm text-slate-400 mb-1 block">Website</label>
             <div className="flex items-center gap-2">
               <Globe className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-              {profile?.website ? (
+              {company?.website || profile?.website ? (
                 <a 
-                  href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`}
+                  href={(company?.website || profile?.website)?.startsWith('http') ? (company?.website || profile?.website) : `https://${company?.website || profile?.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium truncate"
-                  title={profile.website}
+                  title={company?.website || profile?.website}
                 >
-                  {profile.website.length > 30 ? `${profile.website.substring(0, 30)}...` : profile.website}
+                  {((company?.website || profile?.website) || '').length > 30 ? `${((company?.website || profile?.website) || '').substring(0, 30)}...` : (company?.website || profile?.website)}
                 </a>
               ) : (
                 <span className="text-slate-500 italic">Not provided</span>
               )}
             </div>
           </div>
+          
+          <div>
+            <label className="text-sm text-slate-400 mb-1 block">Stage</label>
+            <p className="text-white font-medium">
+              {company?.stage || <span className="text-slate-500 italic">Not provided</span>}
+            </p>
+          </div>
         </div>
 
-        {profile?.one_liner && (
+        {(company?.one_liner || profile?.one_liner) && (
           <div>
             <label className="text-sm text-slate-400 mb-2 block">One-Liner</label>
             <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
               <p className="text-white leading-relaxed">
-                "{profile.one_liner}"
+                "{company?.one_liner || profile?.one_liner}"
               </p>
             </div>
           </div>
         )}
 
-        <div className="pt-4 border-t border-slate-700/50">
-          <label className="text-sm text-slate-400 mb-1 block">Founder</label>
-          <p className="text-white font-medium">
-            {profile?.full_name || <span className="text-slate-500 italic">Not provided</span>}
-          </p>
+        <div className="pt-4 border-t border-slate-700/50 space-y-4">
+          <div>
+            <label className="text-sm text-slate-400 mb-1 block">Founder</label>
+            <p className="text-white font-medium">
+              {profile?.full_name || <span className="text-slate-500 italic">Not provided</span>}
+            </p>
+          </div>
+          
+          {profile?.linkedin_url && (
+            <div>
+              <label className="text-sm text-slate-400 mb-1 block">LinkedIn</label>
+              <a 
+                href={profile.linkedin_url.startsWith('http') ? profile.linkedin_url : `https://${profile.linkedin_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium truncate"
+                title={profile.linkedin_url}
+              >
+                {profile.linkedin_url.length > 40 ? `${profile.linkedin_url.substring(0, 40)}...` : profile.linkedin_url}
+              </a>
+            </div>
+          )}
+          
+          {profile?.use_of_funds && (
+            <div>
+              <label className="text-sm text-slate-400 mb-2 block">Immediate Goals</label>
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                <p className="text-white leading-relaxed text-sm">
+                  {profile.use_of_funds}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>
