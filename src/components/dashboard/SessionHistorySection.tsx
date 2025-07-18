@@ -74,7 +74,7 @@ const SessionHistorySection: React.FC<SessionHistoryProps> = ({
             onClick={onStartNew}
             className="btn-primary"
           >
-            Start First Session
+            Pitch to Rohan
           </motion.button>
         </div>
       </motion.div>
@@ -101,7 +101,7 @@ const SessionHistorySection: React.FC<SessionHistoryProps> = ({
             className="btn-primary text-sm flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            New Session
+            Pitch to Rohan
           </motion.button>
         </div>
 

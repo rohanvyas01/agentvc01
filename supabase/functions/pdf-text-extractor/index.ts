@@ -50,7 +50,13 @@ serve(async (req) => {
     let extractedText = parsedPdf.text ? parsedPdf.text.trim() : '';
     
     // Sanitize the extracted text to prevent Unicode escape sequence errors
-    extractedText = extractedText.replace(/\\/g, '\\\\');
+    extractedText = extractedText
+      .replace(/\\/g, '\\\\')  // Escape backslashes
+      .replace(/"/g, '\\"')    // Escape double quotes
+      .replace(/\n/g, '\\n')   // Escape newlines
+      .replace(/\r/g, '\\r')   // Escape carriage returns
+      .replace(/\t/g, '\\t')   // Escape tabs
+      .replace(/[\u0000-\u001F\u007F-\u009F]/g, ''); // Remove control characters
     
     if (!extractedText) {
       console.warn(`PDF parsing for ${recordId} resulted in empty text. The PDF might be image-based.`);

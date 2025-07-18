@@ -98,16 +98,14 @@ const ConversationSetup: React.FC<ConversationSetupProps> = ({
       if (companyError) throw companyError;
       
       // Select persona based on funding round
-      const fundingRound = company?.funding_round?.toLowerCase() || '';
+      const fundingRound = company?.funding_round || '';
       
       // Default to VC for later stages, Angel for early stages
       let selectedId = 'rohan-vc';
       
       if (
-        fundingRound.includes('pre-seed') || 
-        fundingRound.includes('seed') || 
-        fundingRound.includes('angel') || 
-        fundingRound.includes('friends')
+        fundingRound === 'Angel Round' || 
+        fundingRound === 'Seed/Pre-Seed Round'
       ) {
         selectedId = 'rohan-angel';
       }

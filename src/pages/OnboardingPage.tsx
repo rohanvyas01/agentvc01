@@ -315,16 +315,8 @@ const OnboardingPage: React.FC = () => {
               required
             >
               <option value="">Select funding round</option>
-              <option value="Pre-seed">Pre-seed</option>
-              <option value="Seed">Seed</option>
-              <option value="Angel">Angel</option>
-              <option value="Friends & Family">Friends & Family</option>
-              <option value="Series A">Series A</option>
-              <option value="Series B">Series B</option>
-              <option value="Series C">Series C</option>
-              <option value="Series D+">Series D+</option>
-              <option value="Growth">Growth</option>
-              <option value="Other">Other</option>
+              <option value="Angel Round">Angel Round</option>
+              <option value="Seed/Pre-Seed Round">Seed/Pre-Seed Round</option>
             </select>
           </div>
           <div>
