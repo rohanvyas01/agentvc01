@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Simple Avatar Generator for testing
+  avatar-generator:
+    build:
+      context: ./docker/avatar-generator
+      dockerfile: Dockerfile.simple
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./assets/base-recordings:/app/input
+      - ./assets/generated-audio:/app/generated_audio
+      - ./public/videos:/app/output
+    environment:
+      - NODE_ENV=development
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY:-}
+      - ROHAN_VOICE_ID=${ROHAN_VOICE_ID:-}
+    restart: unless-stopped
+    
+  # Video processing service
+  video-processor:
+    build:
+      context: ./docker/video-processor
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./assets:/app/assets
+      - ./public/videos:/app/output
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - avatar-generator
+    restart: unless-stopped

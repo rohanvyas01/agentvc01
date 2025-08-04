@@ -54,7 +54,7 @@ const PitchDeckViewer: React.FC<PitchDeckViewerProps> = ({ deckId, onClose }) =>
       const downloadUrl = await apiService.getDownloadUrl(deck.storage_path);
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = deck.file_name;
+      link.download = deck.deck_name;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -125,7 +125,7 @@ const PitchDeckViewer: React.FC<PitchDeckViewerProps> = ({ deckId, onClose }) =>
           <div className="flex items-center gap-3">
             <FileText className="w-6 h-6 text-indigo-400" />
             <div>
-              <h2 className="text-xl font-bold text-white">{deck?.file_name}</h2>
+              <h2 className="text-xl font-bold text-white">{deck?.deck_name}</h2>
               <p className="text-slate-400 text-sm">
                 Uploaded {new Date(deck?.created_at).toLocaleDateString()}
               </p>

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { MessageSquare, Clock, CheckCircle, XCircle, Eye, Calendar, User, BarChart3 } from 'lucide-react';
 import { Session } from '../../lib/supabase';
+import InlineActions, { createSessionActions } from './InlineActions';
 
 interface SessionCardProps {
   session: Session;
@@ -10,6 +11,16 @@ interface SessionCardProps {
 }
 
 const SessionCard: React.FC<SessionCardProps> = ({ session, onViewSession, index }) => {
+  const handleRestartSession = (sessionId: string) => {
+    console.log('Restart session:', sessionId);
+    // TODO: Implement session restart functionality
+  };
+
+  const handleDeleteSession = (sessionId: string) => {
+    console.log('Delete session:', sessionId);
+    // TODO: Implement session deletion with confirmation
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
@@ -133,6 +144,20 @@ const SessionCard: React.FC<SessionCardProps> = ({ session, onViewSession, index
               <span>In Progress</span>
             </div>
           )}
+
+          {/* Inline Actions */}
+          <InlineActions
+            actions={createSessionActions(
+              session.id,
+              session.status,
+              onViewSession,
+              handleRestartSession,
+              handleDeleteSession
+            )}
+            trigger="click"
+            position="left"
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          />
         </div>
       </div>
     </motion.div>

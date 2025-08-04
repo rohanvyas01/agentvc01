@@ -1,42 +1,85 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, MessageSquare, Clock, User, BarChart3, FileText, Download, Mail } from 'lucide-react';
+import { X, MessageSquare, BarChart3, FileText, Download, Mail, HelpCircle, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
 import { Session, ConversationTranscript, ConversationAnalysis, SessionReport } from '../../lib/supabase';
-import { getSessionTranscripts, getSessionAnalysis, getSessionReport } from '../../lib/database';
+import { getSessionTranscripts, getSessionAnalysis } from '../../lib/database';
+import { 
+  getSessionReport as getReportService, 
+  emailSessionReport, 
+  exportReportAsPDF,
+  subscribeToReportUpdates 
+} from '../../services/reportService';
+import FollowUpQuestions from './FollowUpQuestions';
+import QuestionPracticeModal from './QuestionPracticeModal';
 
 interface SessionDetailModalProps {
   session: Session;
   isOpen: boolean;
   onClose: () => void;
+  onStartNewSession?: () => void;
 }
 
-const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session, isOpen, onClose }) => {
+const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session, isOpen, onClose, onStartNewSession }) => {
   const [transcripts, setTranscripts] = useState<ConversationTranscript[]>([]);
   const [analysis, setAnalysis] = useState<ConversationAnalysis | null>(null);
   const [report, setReport] = useState<SessionReport | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'transcript' | 'analysis' | 'report'>('transcript');
+  const [activeTab, setActiveTab] = useState<'transcript' | 'analysis' | 'report' | 'questions'>('transcript');
+  const [showPracticeModal, setShowPracticeModal] = useState(false);
+  
+  // Report-specific states
+  const [reportLoading, setReportLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [reportError, setReportError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen && session.id) {
       loadSessionDetails();
+      
+      // Subscribe to report updates
+      const subscription = subscribeToReportUpdates(
+        session.id,
+        (updatedReport) => {
+          setReport(updatedReport);
+          setReportError(null);
+        },
+        (error) => {
+          setReportError(error.message);
+        }
+      );
+
+      return () => {
+        subscription.unsubscribe();
+      };
     }
   }, [isOpen, session.id]);
 
   const loadSessionDetails = async () => {
     try {
       setLoading(true);
-      const [transcriptsData, analysisData, reportData] = await Promise.all([
+      setReportError(null);
+      
+      const [transcriptsData, analysisData] = await Promise.all([
         getSessionTranscripts(session.id),
-        getSessionAnalysis(session.id),
-        getSessionReport(session.id)
+        getSessionAnalysis(session.id)
       ]);
       
       setTranscripts(transcriptsData);
       setAnalysis(analysisData);
-      setReport(reportData);
+      
+      // Load report using the enhanced service
+      const { data: reportData, error: reportError } = await getReportService(session.id);
+      if (reportError) {
+        setReportError(reportError.message);
+      } else {
+        setReport(reportData);
+        setEmailSent(reportData?.email_sent || false);
+      }
     } catch (error) {
       console.error('Failed to load session details:', error);
+      setReportError('Failed to load session details');
     } finally {
       setLoading(false);
     }
@@ -54,6 +97,91 @@ const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session, isOpen
     const minutes = Math.floor(timestampMs / 60000);
     const seconds = Math.floor((timestampMs % 60000) / 1000);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const handleStartPractice = (practiceSessionId: string) => {
+    setShowPracticeModal(true);
+  };
+
+  const handleClosePracticeModal = () => {
+    setShowPracticeModal(false);
+  };
+
+  const handleStartNewSessionFromPractice = () => {
+    setShowPracticeModal(false);
+    onClose();
+    onStartNewSession?.();
+  };
+
+  const handleRegenerateReport = async () => {
+    try {
+      setReportLoading(true);
+      setReportError(null);
+      
+      const { data: newReport, error } = await getReportService(session.id, true);
+      if (error) {
+        setReportError(error.message);
+      } else {
+        setReport(newReport);
+        setEmailSent(newReport?.email_sent || false);
+      }
+    } catch (error) {
+      console.error('Failed to regenerate report:', error);
+      setReportError('Failed to regenerate report');
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  const handleEmailReport = async () => {
+    try {
+      setEmailLoading(true);
+      setReportError(null);
+      
+      const { success, error } = await emailSessionReport(session.id);
+      if (error) {
+        setReportError(error.message);
+      } else {
+        setEmailSent(true);
+        // Refresh report to get updated email status
+        const { data: updatedReport } = await getReportService(session.id);
+        if (updatedReport) {
+          setReport(updatedReport);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to email report:', error);
+      setReportError('Failed to send email');
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      setPdfLoading(true);
+      setReportError(null);
+      
+      const { data: pdfBlob, error } = await exportReportAsPDF(session.id);
+      if (error) {
+        setReportError(error.message);
+      } else if (pdfBlob) {
+        // Create download link
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `session-report-${session.id}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error('Failed to download PDF:', error);
+      setReportError('Failed to generate PDF');
+    } finally {
+      setPdfLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -104,6 +232,7 @@ const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session, isOpen
             {[
               { id: 'transcript', label: 'Transcript', icon: MessageSquare },
               { id: 'analysis', label: 'Analysis', icon: BarChart3 },
+              { id: 'questions', label: 'Practice Questions', icon: HelpCircle },
               { id: 'report', label: 'Report', icon: FileText }
             ].map(({ id, label, icon: Icon }) => (
               <button
@@ -246,73 +375,200 @@ const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session, isOpen
                   </div>
                 )}
 
+                {activeTab === 'questions' && (
+                  <div className="space-y-6">
+                    <FollowUpQuestions
+                      sessionId={session.id}
+                      onStartPractice={handleStartPractice}
+                    />
+                  </div>
+                )}
+
                 {activeTab === 'report' && (
                   <div className="space-y-6">
-                    {!report ? (
-                      <div className="text-center py-8 text-slate-400">
-                        No report available for this session.
+                    {reportError && (
+                      <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 flex items-center gap-3">
+                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                        <div>
+                          <p className="text-red-400 text-sm font-medium">Report Error</p>
+                          <p className="text-red-300 text-sm">{reportError}</p>
+                        </div>
+                        <button
+                          onClick={handleRegenerateReport}
+                          disabled={reportLoading}
+                          className="ml-auto btn-secondary text-sm flex items-center gap-2"
+                        >
+                          <RefreshCw className={`w-4 h-4 ${reportLoading ? 'animate-spin' : ''}`} />
+                          Retry
+                        </button>
                       </div>
-                    ) : (
+                    )}
+
+                    {!report && !reportError ? (
+                      <div className="text-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400 mx-auto mb-4"></div>
+                        <p className="text-slate-400">Generating report...</p>
+                      </div>
+                    ) : report ? (
                       <>
                         <div className="flex items-center justify-between">
                           <h3 className="text-lg font-semibold text-white">Session Report</h3>
                           <div className="flex items-center gap-2">
-                            <button className="btn-secondary text-sm flex items-center gap-2">
-                              <Download className="w-4 h-4" />
-                              Download PDF
+                            <button
+                              onClick={handleDownloadPDF}
+                              disabled={pdfLoading}
+                              className="btn-secondary text-sm flex items-center gap-2"
+                            >
+                              <Download className={`w-4 h-4 ${pdfLoading ? 'animate-spin' : ''}`} />
+                              {pdfLoading ? 'Generating...' : 'Download PDF'}
                             </button>
-                            {report.email_sent ? (
+                            
+                            {emailSent || report.email_sent ? (
                               <div className="flex items-center gap-2 text-green-400 text-sm">
-                                <Mail className="w-4 h-4" />
+                                <CheckCircle className="w-4 h-4" />
                                 Email Sent
                               </div>
                             ) : (
-                              <button className="btn-primary text-sm flex items-center gap-2">
-                                <Mail className="w-4 h-4" />
-                                Email Report
+                              <button
+                                onClick={handleEmailReport}
+                                disabled={emailLoading}
+                                className="btn-primary text-sm flex items-center gap-2"
+                              >
+                                <Mail className={`w-4 h-4 ${emailLoading ? 'animate-spin' : ''}`} />
+                                {emailLoading ? 'Sending...' : 'Email Report'}
                               </button>
                             )}
+                            
+                            <button
+                              onClick={handleRegenerateReport}
+                              disabled={reportLoading}
+                              className="btn-secondary text-sm flex items-center gap-2"
+                            >
+                              <RefreshCw className={`w-4 h-4 ${reportLoading ? 'animate-spin' : ''}`} />
+                              Regenerate
+                            </button>
                           </div>
                         </div>
 
-                        <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
-                          <h4 className="font-semibold text-white mb-2">Summary</h4>
-                          <p className="text-slate-300 text-sm leading-relaxed">
-                            {report.report_data.summary}
-                          </p>
-                        </div>
+                        {/* Report Summary */}
+                        {report.report_data.summary && (
+                          <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
+                            <h4 className="font-semibold text-white mb-2">Session Summary</h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                              <div>
+                                <p className="text-slate-400">Date</p>
+                                <p className="text-white">{new Date(report.report_data.summary.session_date).toLocaleDateString()}</p>
+                              </div>
+                              <div>
+                                <p className="text-slate-400">Duration</p>
+                                <p className="text-white">{report.report_data.summary.duration_minutes}m</p>
+                              </div>
+                              <div>
+                                <p className="text-slate-400">Score</p>
+                                <p className="text-white">{report.report_data.summary.overall_score}/10</p>
+                              </div>
+                              <div>
+                                <p className="text-slate-400">Status</p>
+                                <p className="text-white capitalize">{report.report_data.summary.status}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
-                        <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
-                          <h4 className="font-semibold text-white mb-3">Recommendations</h4>
-                          <ul className="space-y-2">
-                            {report.report_data.recommendations.map((rec, index) => (
-                              <li key={index} className="text-slate-300 text-sm flex items-start gap-2">
-                                <span className="text-indigo-400 mt-1">•</span>
-                                {rec}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                        {/* Analysis Section */}
+                        {report.report_data.analysis && (
+                          <div className="grid md:grid-cols-2 gap-6">
+                            {report.report_data.analysis.key_strengths?.length > 0 && (
+                              <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
+                                <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
+                                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                                  Key Strengths
+                                </h4>
+                                <ul className="space-y-2">
+                                  {report.report_data.analysis.key_strengths.map((strength: string, index: number) => (
+                                    <li key={index} className="text-slate-300 text-sm flex items-start gap-2">
+                                      <span className="text-green-400 mt-1">•</span>
+                                      {strength}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
 
-                        <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
-                          <h4 className="font-semibold text-white mb-3">Next Steps</h4>
-                          <ul className="space-y-2">
-                            {report.report_data.next_steps.map((step, index) => (
-                              <li key={index} className="text-slate-300 text-sm flex items-start gap-2">
-                                <span className="text-purple-400 mt-1">→</span>
-                                {step}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                            {report.report_data.analysis.improvement_areas?.length > 0 && (
+                              <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
+                                <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
+                                  <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                  Areas for Improvement
+                                </h4>
+                                <ul className="space-y-2">
+                                  {report.report_data.analysis.improvement_areas.map((area: string, index: number) => (
+                                    <li key={index} className="text-slate-300 text-sm flex items-start gap-2">
+                                      <span className="text-yellow-400 mt-1">•</span>
+                                      {area}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Detailed Feedback */}
+                        {report.report_data.analysis?.detailed_feedback && (
+                          <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
+                            <h4 className="font-semibold text-white mb-3">Detailed Feedback</h4>
+                            <p className="text-slate-300 text-sm leading-relaxed">
+                              {report.report_data.analysis.detailed_feedback}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Recommendations */}
+                        {report.report_data.recommendations?.length > 0 && (
+                          <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
+                            <h4 className="font-semibold text-white mb-3">Recommendations</h4>
+                            <ul className="space-y-2">
+                              {report.report_data.recommendations.map((rec: string, index: number) => (
+                                <li key={index} className="text-slate-300 text-sm flex items-start gap-2">
+                                  <span className="text-indigo-400 mt-1">•</span>
+                                  {rec}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Next Steps */}
+                        {report.report_data.next_steps?.length > 0 && (
+                          <div className="glass-dark rounded-lg p-4 border border-slate-700/30">
+                            <h4 className="font-semibold text-white mb-3">Next Steps</h4>
+                            <ul className="space-y-2">
+                              {report.report_data.next_steps.map((step: string, index: number) => (
+                                <li key={index} className="text-slate-300 text-sm flex items-start gap-2">
+                                  <span className="text-purple-400 mt-1">→</span>
+                                  {step}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </>
-                    )}
+                    ) : null}
                   </div>
                 )}
               </>
             )}
           </div>
         </motion.div>
+
+        {/* Practice Modal */}
+        <QuestionPracticeModal
+          sessionId={session.id}
+          isOpen={showPracticeModal}
+          onClose={handleClosePracticeModal}
+          onStartNewSession={handleStartNewSessionFromPractice}
+        />
       </motion.div>
     </AnimatePresence>
   );

@@ -2,12 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Building2, Edit3, Globe, TrendingUp, AlertCircle } from 'lucide-react';
 import { CompanyDetailsProps } from '../../types/dashboard';
+import { useResponsive } from '../../hooks/useResponsive';
 
 const CompanyDetailsSection: React.FC<CompanyDetailsProps> = ({ 
   company, 
   profile, 
   onEdit 
 }) => {
+  const { isMobile, isTablet } = useResponsive();
   // Calculate completion percentage based on available data
   const calculateCompletionPercentage = () => {
     const fields = [
@@ -78,40 +80,40 @@ const CompanyDetailsSection: React.FC<CompanyDetailsProps> = ({
       )}
 
       <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
           <div>
-            <label className="text-sm text-slate-400 mb-1 block">Company Name</label>
-            <p className="text-white font-medium">
+            <label className={`text-slate-400 mb-1 block ${isMobile ? 'text-xs' : 'text-sm'}`}>Company Name</label>
+            <p className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>
               {company?.name || <span className="text-slate-500 italic">Not provided</span>}
             </p>
           </div>
           
           <div>
-            <label className="text-sm text-slate-400 mb-1 block">Industry</label>
-            <p className="text-white font-medium">
+            <label className={`text-slate-400 mb-1 block ${isMobile ? 'text-xs' : 'text-sm'}`}>Industry</label>
+            <p className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>
               {company?.industry || <span className="text-slate-500 italic">Not provided</span>}
             </p>
           </div>
           
           <div>
-            <label className="text-sm text-slate-400 mb-1 block">Funding Round</label>
+            <label className={`text-slate-400 mb-1 block ${isMobile ? 'text-xs' : 'text-sm'}`}>Funding Round</label>
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-indigo-400" />
-              <p className="text-white font-medium">
+              <p className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>
                 {company?.funding_round || <span className="text-slate-500 italic">Not provided</span>}
               </p>
             </div>
           </div>
           
           <div>
-            <label className="text-sm text-slate-400 mb-1 block">Funding Amount</label>
-            <p className="text-white font-medium">
+            <label className={`text-slate-400 mb-1 block ${isMobile ? 'text-xs' : 'text-sm'}`}>Funding Amount</label>
+            <p className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>
               {company?.funding_amount || <span className="text-slate-500 italic">Not provided</span>}
             </p>
           </div>
           
           <div>
-            <label className="text-sm text-slate-400 mb-1 block">Website</label>
+            <label className={`text-slate-400 mb-1 block ${isMobile ? 'text-xs' : 'text-sm'}`}>Website</label>
             <div className="flex items-center gap-2">
               <Globe className="w-4 h-4 text-indigo-400 flex-shrink-0" />
               {company?.website || profile?.website ? (
@@ -119,20 +121,20 @@ const CompanyDetailsSection: React.FC<CompanyDetailsProps> = ({
                   href={(company?.website || profile?.website)?.startsWith('http') ? (company?.website || profile?.website) : `https://${company?.website || profile?.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium truncate"
+                  className={`text-indigo-400 hover:text-indigo-300 transition-colors font-medium truncate ${isMobile ? 'text-sm' : ''}`}
                   title={company?.website || profile?.website}
                 >
-                  {((company?.website || profile?.website) || '').length > 30 ? `${((company?.website || profile?.website) || '').substring(0, 30)}...` : (company?.website || profile?.website)}
+                  {((company?.website || profile?.website) || '').length > (isMobile ? 20 : 30) ? `${((company?.website || profile?.website) || '').substring(0, isMobile ? 20 : 30)}...` : (company?.website || profile?.website)}
                 </a>
               ) : (
-                <span className="text-slate-500 italic">Not provided</span>
+                <span className={`text-slate-500 italic ${isMobile ? 'text-sm' : ''}`}>Not provided</span>
               )}
             </div>
           </div>
           
           <div>
-            <label className="text-sm text-slate-400 mb-1 block">Stage</label>
-            <p className="text-white font-medium">
+            <label className={`text-slate-400 mb-1 block ${isMobile ? 'text-xs' : 'text-sm'}`}>Stage</label>
+            <p className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>
               {company?.stage || <span className="text-slate-500 italic">Not provided</span>}
             </p>
           </div>

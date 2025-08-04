@@ -1,0 +1,24 @@
+# Simple test version of avatar generator
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install minimal dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install basic Python packages
+RUN pip install --no-cache-dir flask requests
+
+# Copy simple API server
+COPY api.simple.py /app/api.py
+
+# Create directories
+RUN mkdir -p /app/input /app/generated_audio /app/output
+
+EXPOSE 8001
+
+# Start the API server
+CMD ["python", "api.py"]

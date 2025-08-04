@@ -1,32 +1,21 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useDropzone, FileRejection } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.tsx';
+import { useUserFlow } from '../contexts/UserFlowContext.tsx';
 import { supabase } from '../lib/supabase.ts';
 import { ClipLoader } from 'react-spinners';
-import {
-  Upload,
-  FileText,
-  X,
-  CheckCircle,
-  AlertCircle,
-  Loader,
-  Building,
-  ArrowLeft,
-} from 'lucide-react';
+import { Building } from 'lucide-react';
+import PitchDeckUploader from '../components/PitchDeckUploader.tsx';
 
 const UploadDeckPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const { refreshSteps } = useUserFlow();
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [isFetchingCompany, setIsFetchingCompany] = useState(true);
-  const [acceptedFile, setAcceptedFile] = useState<File | null>(null);
+  const [error, setError] = useState('');
 
-  // Fetch the user's company ID when the component loads
   useEffect(() => {
     const fetchCompany = async () => {
       if (!user) {
@@ -40,13 +29,9 @@ const UploadDeckPage: React.FC = () => {
           .eq('user_id', user.id)
           .maybeSingle();
 
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-          setCompanyId(data.id);
-        }
+        if (error) throw error;
+        if (data) setCompanyId(data.id);
+        
       } catch (err: any) {
         setError('Could not fetch company details. Please try again.');
         console.error(err);
@@ -58,100 +43,16 @@ const UploadDeckPage: React.FC = () => {
     fetchCompany();
   }, [user]);
 
-  const onDrop = useCallback((acceptedFiles: File[], fileRejections: FileRejection[]) => {
-    setError('');
-    setSuccess('');
-    setAcceptedFile(null);
-
-    if (fileRejections.length > 0) {
-        setError('File rejected. Please ensure it is a PDF and under 10MB.');
-        return;
-    }
-    
-    if (acceptedFiles.length > 0) {
-        setAcceptedFile(acceptedFiles[0]);
-    }
-  }, []);
-
-  const handleUpload = async () => {
-    if (!acceptedFile || !user) return;
-
-    if (!companyId) {
-      setError('You must complete your company profile before uploading a deck.');
-      return;
-    }
-
-    setUploading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const fileName = `${user.id}/${companyId}/${Date.now()}_${acceptedFile.name}`;
-
-      // 1. Upload file to Supabase Storage
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('pitchdecks') // Your storage bucket name
-        .upload(fileName, acceptedFile, { cacheControl: '3600', upsert: false });
-
-      if (uploadError) throw uploadError;
-
-      // 2. Create a record in the 'pitches' table AND get it back
-      const { data: newPitchRecord, error: dbError } = await supabase
-        .from('pitches')
-        .insert({
-          company_id: companyId,
-          pitch_deck_storage_path: uploadData.path,
-          status: 'processing', // Set initial status
-        })
-        .select() // Ask Supabase to return the newly created row
-        .single(); // Expect only one row
-
-      if (dbError) throw dbError;
-      if (!newPitchRecord) throw new Error("Failed to create pitch record in database.");
-
-      // 3. Invoke the Edge Function for processing
-      console.log('Invoking pdf-text-extractor function with record:', newPitchRecord);
-      const { error: invokeError } = await supabase.functions.invoke('pdf-text-extractor', {
-        body: { record: newPitchRecord },
-      });
-
-      if (invokeError) {
-        // If invoking fails, we should try to update the status to 'failed'
-        await supabase.from('pitches').update({ status: 'failed' }).eq('id', newPitchRecord.id);
-        throw new Error(`Processing failed to start: ${invokeError.message}`);
-      }
-
-      setSuccess('Pitch deck uploaded and processed successfully!');
-      setAcceptedFile(null); // Clear the file after successful upload
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
-
-    } catch (err: any) {
-      setError(err.message || 'Failed to upload and process pitch deck');
-    } finally {
-      setUploading(false);
-    }
+  const handleUploadSuccess = () => {
+    refreshSteps();
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 1500);
   };
-
-  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
-    onDrop,
-    noClick: true,
-    noKeyboard: true,
-    accept: { 'application/pdf': ['.pdf'] },
-    maxFiles: 1,
-    maxSize: 10 * 1024 * 1024, // 10MB
-    disabled: uploading || isFetchingCompany || !companyId,
-  });
-  
-  const removeFile = () => {
-      setAcceptedFile(null);
-      setError('');
-  }
 
   if (isFetchingCompany) {
     return (
-      <div className="flex justify-center items-center h-96">
+      <div className="flex justify-center items-center min-h-screen">
         <motion.div
           className="glass rounded-2xl p-8 text-center"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -165,159 +66,39 @@ const UploadDeckPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-8"
+        className="w-full max-w-2xl"
       >
-        <h1 className="text-3xl font-bold text-white mb-4">Upload Your Pitch Deck</h1>
-        <p className="text-xl text-white/80">
-          Present your deck for AI-powered analysis and practice.
-        </p>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="glass rounded-2xl border border-slate-700/30 p-8"
-      >
-        {!companyId && !isFetchingCompany && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-center"
+        {!companyId ? (
+          <div className="glass rounded-2xl p-8 text-center">
+            <Building className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-white mb-2">Onboarding Incomplete</h2>
+            <p className="text-slate-300 mb-6">
+              Please complete your company profile before uploading a pitch deck.
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/onboarding')}
+              className="btn-primary"
             >
-                <Building className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
-                <h4 className="font-semibold text-yellow-300">Onboarding Incomplete</h4>
-                <p className="text-sm text-yellow-200">
-                    Please complete your company profile before uploading a pitch deck.
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/onboarding')}
-                  className="mt-3 btn-primary text-sm"
-                >
-                    Go to Onboarding
-                </motion.button>
-            </motion.div>
-        )}
-
-        <div
-          {...getRootProps()}
-          className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
-            isDragActive ? 'border-indigo-400 bg-indigo-500/10' :
-            !companyId ? 'border-slate-600 bg-slate-800/30 cursor-not-allowed' :
-            'border-slate-600 hover:border-indigo-400 hover:bg-indigo-500/10 cursor-pointer'
-          }`}
-        >
-          <input {...getInputProps()} />
-          <div className="space-y-3">
-            {uploading ? (
-              <motion.div
-                className="mx-auto"
-              >
-                <ClipLoader color="#6366f1" size={48} />
-              </motion.div>
-            ) : (
-              <Upload className="w-12 h-12 text-slate-400 mx-auto" />
-            )}
-            <h3 className="text-lg font-semibold text-white">
-              {uploading ? 'Analyzing Deck...' : 'Drag & drop your PDF here'}
-            </h3>
-            {!uploading && (
-              <p className="text-slate-400">
-                or{' '}
-                <button
-                  type="button"
-                  onClick={open}
-                  disabled={!companyId}
-                  className="text-indigo-400 font-medium hover:underline disabled:text-slate-500 disabled:no-underline"
-                >
-                  browse files
-                </button>{' '}
-                to upload
-              </p>
-            )}
+              Go to Onboarding
+            </motion.button>
           </div>
-        </div>
-        
-        {acceptedFile && !success && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 glass-dark p-4 rounded-lg flex items-center justify-between"
-            >
-                <div className="flex items-center gap-3 overflow-hidden">
-                    <FileText className="w-5 h-5 text-indigo-400 flex-shrink-0" />
-                    <p className="text-sm text-white truncate">{acceptedFile.name}</p>
-                </div>
-                {!uploading && (
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={removeFile}
-                      className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-700"
-                    >
-                        <X className="h-5 w-5" />
-                    </motion.button>
-                )}
-            </motion.div>
+        ) : (
+          <PitchDeckUploader
+            companyId={companyId}
+            onUploadSuccess={handleUploadSuccess}
+          />
         )}
 
         {error && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
-          >
-            <div className="flex items-center space-x-3">
-              <AlertCircle className="w-5 h-5 text-red-400" />
-              <p className="text-sm text-red-300">{error}</p>
-            </div>
-          </motion.div>
+          <p className="text-red-400 text-sm mt-4 text-center">{error}</p>
         )}
-
-        {success && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg"
-          >
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="w-5 h-5 text-green-400" />
-              <p className="text-sm text-green-300">{success}</p>
-            </div>
-          </motion.div>
-        )}
-
-        {acceptedFile && !success && (
-            <div className="mt-8">
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleUpload}
-                    disabled={uploading}
-                    className="w-full btn-primary py-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                    {uploading ? (
-                      <>
-                        <ClipLoader color="#ffffff" size={20} />
-                        <span>Uploading & Analyzing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="h-5 w-5" />
-                        <span>Upload and Analyze</span>
-                      </>
-                    )}
-                </motion.button>
-            </div>
-        )}
-
       </motion.div>
     </div>
   );

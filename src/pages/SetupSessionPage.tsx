@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, PitchDeck } from '../lib/supabase';
+
+import { ConversationButton } from '../components/ConversationButton';
 import { ClipLoader } from 'react-spinners';
 import { 
   Video, 
@@ -14,9 +16,7 @@ import {
   Calendar,
   Clock,
   Target,
-  Briefcase,
-  TrendingUp,
-  Building
+  TrendingUp
 } from 'lucide-react';
 
 interface InvestorPersona {
@@ -69,44 +69,68 @@ const SetupSessionPage: React.FC = () => {
   useEffect(() => {
     if (user) {
       fetchDecks();
+      autoSelectPersona();
     }
   }, [user]);
 
-  const fetchDecks = async () => {
+  const autoSelectPersona = async () => {
     try {
-      // First get user's company
+      // Get company information to determine funding round
       const { data: company, error: companyError } = await supabase
         .from('companies')
-        .select('id')
+        .select('funding_round')
         .eq('user_id', user!.id)
         .single();
 
-      if (companyError) throw companyError;
+      if (companyError || !company) {
+        // Default to VC if no company info
+        setSelectedPersona('rohan-vc');
+        return;
+      }
 
-      // Then get pitch decks for that company
-      const { data, error } = await supabase
-        .from('pitches')
+      // Auto-select persona based on funding round
+      const isEarlyStage = ['pre-seed', 'seed'].includes(company.funding_round?.toLowerCase());
+      const personaId = isEarlyStage ? 'rohan-angel' : 'rohan-vc';
+      setSelectedPersona(personaId);
+
+    } catch (error) {
+      // Default to VC on error
+      setSelectedPersona('rohan-vc');
+    }
+  };
+
+  const fetchDecks = async () => {
+    try {
+      const { data: pitchDecksData, error: pitchDecksError } = await supabase
+        .from('pitch_decks')
         .select('*')
-        .eq('company_id', company.id)
+        .eq('user_id', user!.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (pitchDecksError) {
+        console.error('Error fetching pitch decks:', pitchDecksError);
+        throw pitchDecksError;
+      }
       
       // Map the data to match PitchDeck interface
-      const mappedDecks = (data || []).map(deck => ({
+      const mappedDecks = (pitchDecksData || []).map(deck => ({
         ...deck,
-        deck_name: `Pitch Deck #${deck.id.slice(-8)}`,
-        processing_status: deck.status,
+        deck_name: deck.deck_name || `Pitch Deck #${deck.id.slice(-8)}`,
+        processing_status: 'processed', // All uploaded decks are considered processed
         user_id: user!.id
       }));
       
       setDecks(mappedDecks);
+      console.log('Loaded pitch decks:', mappedDecks);
     } catch (err) {
-      console.error('Error fetching decks:', err);
+      console.error('Failed to load pitch decks:', err);
+      setError('Failed to load pitch decks. Please try refreshing the page.');
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const startSession = async () => {
     if (!selectedDeck || !selectedPersona) {
@@ -118,37 +142,29 @@ const SetupSessionPage: React.FC = () => {
     setError('');
 
     try {
-      // Create session record
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('sessions')
-        .insert({
-          user_id: user!.id,
-          deck_id: selectedDeck,
-          tavus_persona_id: selectedPersona,
-          status: 'created'
-        })
-        .select()
-        .single();
-
-      if (sessionError) throw sessionError;
-
-      // In a real implementation, you would call your backend API here
-      // to create the Tavus conversation and get the conversation URL
-      
-      // For demo purposes, we'll simulate this
-      const mockConversationUrl = `https://demo-tavus-session.com/${sessionData.id}`;
-      
-      // Navigate to live session page with the session data
-      navigate('/session/live', { 
-        state: { 
-          sessionId: sessionData.id,
-          conversationUrl: mockConversationUrl,
-          selectedPersona: investorPersonas.find(p => p.id === selectedPersona)
-        } 
+      // Create a new conversation session
+      const { data, error } = await supabase.functions.invoke('create-conversation-session', {
+        body: {
+          user_id: user?.id,
+          pitch_deck_id: selectedDeck,
+          persona_id: selectedPersona
+        }
       });
 
+      if (error) {
+        throw new Error(error.message || 'Failed to create session');
+      }
+
+      if (!data?.session_id) {
+        throw new Error('No session ID returned');
+      }
+
+      // Navigate to conversation page with real session ID
+      navigate(`/conversation/${data.session_id}`);
+
     } catch (err: any) {
-      setError(err.message || 'Failed to start session');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to start session';
+      setError(errorMessage);
     } finally {
       setStarting(false);
     }
@@ -221,15 +237,19 @@ const SetupSessionPage: React.FC = () => {
               <p className="text-slate-400 mb-4">
                 You need to upload a pitch deck before starting a practice session.
               </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('/upload')}
-                className="btn-primary inline-flex items-center space-x-2"
-              >
-                <Upload className="w-4 h-4" />
-                <span>Upload Deck</span>
-              </motion.button>
+              <div className="flex flex-col space-y-3">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => navigate('/upload')}
+                  className="btn-primary inline-flex items-center space-x-2"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>Upload Deck</span>
+                </motion.button>
+
+
+              </div>
             </div>
           ) : (
             <div className="space-y-3">
@@ -278,9 +298,16 @@ const SetupSessionPage: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="glass rounded-xl border border-slate-700/30 p-6"
         >
-          <div className="flex items-center space-x-3 mb-6">
-            <User className="w-6 h-6 text-indigo-400" />
-            <h2 className="text-xl font-semibold text-white">Choose AI Investor</h2>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <User className="w-6 h-6 text-indigo-400" />
+              <h2 className="text-xl font-semibold text-white">Choose AI Investor</h2>
+            </div>
+            {selectedPersona && (
+              <div className="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full border border-green-500/30">
+                Auto-selected
+              </div>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -367,7 +394,7 @@ const SetupSessionPage: React.FC = () => {
             )}
           </div>
 
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-4">
             {error && (
               <div className="text-red-400 text-sm">{error}</div>
             )}
@@ -386,7 +413,7 @@ const SetupSessionPage: React.FC = () => {
               ) : (
                 <>
                   <Video className="w-4 h-4" />
-                  <span>Start Practice Session</span>
+                  <span>Pitch to Rohan</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

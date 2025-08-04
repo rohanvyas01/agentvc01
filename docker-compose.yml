@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # YourTTS + Wav2Lip Avatar Generation
+  avatar-generator:
+    build:
+      context: ./docker/avatar-generator
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./assets/base-recordings:/app/input
+      - ./assets/generated-audio:/app/generated_audio
+      - ./public/videos:/app/output
+    environment:
+      - CUDA_VISIBLE_DEVICES=0  # Use GPU if available
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    
+  # Video processing service
+  video-processor:
+    build:
+      context: ./docker/video-processor
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./assets:/app/assets
+      - ./public/videos:/app/output
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - avatar-generator
+    restart: unless-stopped
+
+volumes:
+  video_cache:
+  audio_cache:

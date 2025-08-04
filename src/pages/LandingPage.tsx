@@ -193,37 +193,29 @@ const LandingPage: React.FC = () => {
                   >
                     <div className="glass rounded-2xl p-2 sm:p-4 border border-slate-700/30">
                       <div className="relative w-full h-64 sm:h-80 lg:h-96 rounded-xl overflow-hidden">
-                        {/* Video Loading State */}
-                        <div className="absolute inset-0 bg-slate-800 rounded-xl flex items-center justify-center">
-                          <div className="text-center">
-                            <motion.div
-                              className="w-12 h-12 border-2 border-indigo-500 border-t-transparent rounded-full mx-auto mb-4"
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            />
-                            <p className="text-white text-sm">Loading video...</p>
-                          </div>
-                        </div>
-                        
-                        {/* Video Player */}
+                        {/* Rohan Vyas AI Investor Introduction Video */}
                         <video
-                          className="w-full h-full rounded-xl object-cover"
+                          className="w-full h-full object-cover rounded-xl"
                           controls
-                          poster="/5874fe52-4169-461c-aff3-3c84ab6638fc.png"
+                          autoPlay
+                          loop
+                          muted
                           preload="metadata"
-                          onLoadStart={() => console.log('Video loading started')}
-                          onCanPlay={() => console.log('Video can play')}
-                          onError={(e) => {
-                            console.error('Video error:', e);
-                            // Hide loading state and show error
-                            const loadingDiv = e.currentTarget.previousElementSibling;
-                            if (loadingDiv) {
-                              loadingDiv.style.display = 'flex';
-                            }
-                          }}
                         >
-                          <source src="/Introduction.mp4" type="video/mp4" />
-                          Your browser does not support the video tag.
+                          <source src="/videos/Start-9sec.mp4" type="video/mp4" />
+                          {/* Fallback for browsers that don't support video */}
+                          <div className="relative w-full h-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="w-20 h-20 bg-indigo-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Video className="w-10 h-10 text-indigo-400" />
+                              </div>
+                              <h3 className="text-xl font-semibold text-white mb-2">Meet Rohan Vyas</h3>
+                              <p className="text-gray-400 mb-4">Your AI Investor Introduction Video</p>
+                              <div className="bg-indigo-500/20 border border-indigo-500/30 rounded-lg px-4 py-2 text-sm text-indigo-300">
+                                Your browser doesn't support video playback
+                              </div>
+                            </div>
+                          </div>
                         </video>
                       </div>
                     </div>

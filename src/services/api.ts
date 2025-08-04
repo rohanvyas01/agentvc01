@@ -3,7 +3,7 @@ import { pdfParserService, PDFParseResult } from './pdfParser';
 interface PitchDeck {
   id: string;
   user_id: string;
-  file_name: string;
+  deck_name: string;
   storage_path: string;
   extracted_text: string;
   created_at: string;
@@ -40,16 +40,11 @@ class ApiService {
         throw new Error('File size must be less than 10MB');
       }
 
-      console.log('🚀 Starting pitch deck upload and processing...');
-
       // Parse PDF and extract comprehensive data
       let extractedData: PDFParseResult;
       try {
-        console.log('📄 Parsing PDF content with enhanced extraction...');
         extractedData = await pdfParserService.parsePDF(file);
-        console.log(`✅ Successfully extracted ${extractedData.extractionStats.totalCharacters} characters from ${extractedData.pageCount} pages`);
       } catch (parseError) {
-        console.error('❌ PDF parsing failed:', parseError);
         throw new Error(`Failed to parse PDF: ${parseError instanceof Error ? parseError.message : 'Unknown parsing error'}`);
       }
 
@@ -80,7 +75,7 @@ class ApiService {
       const deckData: PitchDeck = {
         id: deckId,
         user_id: user.id,
-        file_name: fileName,
+        deck_name: fileName,
         storage_path: storagePath,
         extracted_text: JSON.stringify(extractedTextData),
         created_at: new Date().toISOString()
@@ -95,8 +90,6 @@ class ApiService {
       const fileStorage = JSON.parse(localStorage.getItem('agentvc_files') || '{}');
       fileStorage[storagePath] = fileData;
       localStorage.setItem('agentvc_files', JSON.stringify(fileStorage));
-
-      console.log('🎉 Pitch deck record created successfully with extracted data');
 
       // Clean up OCR resources
       await pdfParserService.cleanup();
@@ -130,7 +123,6 @@ class ApiService {
           try {
             parsedExtractedText = JSON.parse(deck.extracted_text);
           } catch (parseError) {
-            console.warn(`Failed to parse extracted text for deck ${deck.id}:`, parseError);
             parsedExtractedText = { fullText: deck.extracted_text };
           }
         }
@@ -169,7 +161,6 @@ class ApiService {
         try {
           extractedData = JSON.parse(deck.extracted_text);
         } catch (parseError) {
-          console.warn(`Failed to parse extracted text for deck ${deckId}:`, parseError);
           extractedData = { fullText: deck.extracted_text };
         }
       }
@@ -206,7 +197,6 @@ class ApiService {
       delete fileStorage[deck.storage_path];
       localStorage.setItem('agentvc_files', JSON.stringify(fileStorage));
 
-      console.log('Pitch deck deleted successfully');
     } catch (error) {
       console.error('Delete pitch deck error:', error);
       throw error;

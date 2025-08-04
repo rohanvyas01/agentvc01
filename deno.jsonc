@@ -20,7 +20,9 @@
     "start": "deno run --allow-net --allow-read --allow-env supabase/functions/pitch-deck-processor/index.ts"
   },
   "imports": {
-    "pdf-parse": "npm:pdf-parse@1.1.1"
+    "pdf-parse": "npm:pdf-parse@1.1.1",
+    "std/": "https://deno.land/std@0.168.0/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
   },
   // This tells Deno to create a node_modules directory
   "nodeModulesDir": true

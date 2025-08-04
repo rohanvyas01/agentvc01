@@ -56,7 +56,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
         }
       }
     } catch (error: any) {
-      console.error('Auth error:', error);
       setError(error.message || 'An error occurred during authentication.');
     } finally {
       setLoading(false);

@@ -12,6 +12,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 // Types for our database tables
 export interface Profile {
   id: string;
+  user_id: string;
   updated_at?: string;
   full_name?: string;
   avatar_url?: string;
@@ -103,6 +104,16 @@ export interface SessionReport {
   };
   email_sent: boolean;
   email_sent_at?: string;
+  created_at: string;
+}
+
+export interface FollowUpQuestion {
+  id: string;
+  session_id: string;
+  question: string;
+  category: 'business_model' | 'market' | 'financials' | 'team' | 'competition' | 'growth' | 'general';
+  difficulty: 'easy' | 'medium' | 'hard';
+  is_selected: boolean;
   created_at: string;
 }
 

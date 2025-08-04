@@ -5,18 +5,20 @@ import { SessionHistoryProps } from '../../types/dashboard';
 import SessionCard from './SessionCard';
 import SessionDetailModal from './SessionDetailModal';
 import { Session } from '../../lib/supabase';
+import { useResponsive } from '../../hooks/useResponsive';
 
 const SessionHistorySection: React.FC<SessionHistoryProps> = ({ 
   sessions, 
   onViewSession, 
   onStartNew 
 }) => {
+  const { isMobile, isTablet } = useResponsive();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'failed' | 'active'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const sessionsPerPage = 5;
+  const sessionsPerPage = isMobile ? 3 : 5;
 
   // Filter and search sessions
   const filteredSessions = useMemo(() => {
@@ -84,6 +86,7 @@ const SessionHistorySection: React.FC<SessionHistoryProps> = ({
   return (
     <>
       <motion.div
+        id="session-history"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -107,15 +110,17 @@ const SessionHistorySection: React.FC<SessionHistoryProps> = ({
 
         {/* Filters and Search */}
         {sessions.length > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className={`flex gap-4 mb-6 ${isMobile ? 'flex-col' : 'flex-col sm:flex-row'}`}>
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search sessions..."
+                placeholder={isMobile ? "Search..." : "Search sessions..."}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50"
+                className={`w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 ${
+                  isMobile ? 'text-sm' : ''
+                }`}
               />
             </div>
             <div className="flex items-center gap-2">
@@ -123,7 +128,9 @@ const SessionHistorySection: React.FC<SessionHistoryProps> = ({
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as any)}
-                className="bg-slate-800/50 border border-slate-700/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50"
+                className={`bg-slate-800/50 border border-slate-700/50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 ${
+                  isMobile ? 'text-sm' : ''
+                }`}
               >
                 <option value="all">All Status</option>
                 <option value="completed">Completed</option>
@@ -202,6 +209,7 @@ const SessionHistorySection: React.FC<SessionHistoryProps> = ({
           session={selectedSession}
           isOpen={showModal}
           onClose={handleCloseModal}
+          onStartNewSession={onStartNew}
         />
       )}
     </>

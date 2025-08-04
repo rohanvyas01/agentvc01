@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useDropzone, FileRejection } from 'react-dropzone';
-import Header from '../components/Header';
+import Header from '../components/Header.tsx';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { supabase } from '../lib/supabase.ts';
 import { ClipLoader } from 'react-spinners';
@@ -19,15 +19,15 @@ const OnboardingPage: React.FC = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
-    fullName: '',
-    startupName: '',
-    website: '',
-    linkedin: '',
-    industry: '',
-    fundingRound: '',
-    fundingAmount: '',
-    oneLiner: '',
-    immediateGoals: ''
+    fullName: 'John Doe',
+    startupName: 'TechCorp AI',
+    website: 'https://techcorp.ai',
+    linkedin: 'https://linkedin.com/in/johndoe',
+    industry: 'AI & Machine Learning',
+    fundingRound: 'Seed',
+    fundingAmount: '$1M',
+    oneLiner: 'AI-powered solutions for modern businesses',
+    immediateGoals: 'Scale our AI platform and expand to new markets'
   });
 
   // Handle profile form submission (Step 1)
@@ -66,8 +66,6 @@ const OnboardingPage: React.FC = () => {
     };
 
     try {
-      console.log("Submitting profile data for user:", user);
-
       // Use 'upsert' to create or update the profile row.
       const { error: profileError } = await supabase
         .from('profiles')
@@ -153,13 +151,17 @@ const OnboardingPage: React.FC = () => {
 
       if (uploadError) throw uploadError;
 
-      // 2. Create a record in the 'pitches' table
+      // 2. Create a record in the 'pitch_decks' table
       const { data: newPitchRecord, error: dbError } = await supabase
-        .from('pitches')
+        .from('pitch_decks')
         .insert({
           company_id: companyId,
+          user_id: user.id,
+          deck_name: acceptedFile.name,
+          file_type: acceptedFile.type,
           pitch_deck_storage_path: uploadData.path,
-          status: 'processing',
+          file_size: acceptedFile.size,
+          processing_status: 'processing',
         })
         .select()
         .single();
@@ -167,13 +169,20 @@ const OnboardingPage: React.FC = () => {
       if (dbError) throw dbError;
 
       // 3. Invoke the Edge Function for processing
-      const { error: invokeError } = await supabase.functions.invoke('pdf-text-extractor', {
-        body: { record: newPitchRecord },
-      });
+      try {
+        const { error: invokeError } = await supabase.functions.invoke('pdf-text-extractor', {
+          body: { record: newPitchRecord },
+        });
 
-      if (invokeError) {
-        await supabase.from('pitches').update({ status: 'failed' }).eq('id', newPitchRecord.id);
-        throw new Error(`Processing failed to start: ${invokeError.message}`);
+        if (invokeError) {
+          console.warn('PDF processing failed to start:', invokeError.message);
+          await supabase.from('pitch_decks').update({ processing_status: 'failed' }).eq('id', newPitchRecord.id);
+          // Don't throw error - allow onboarding to complete even if PDF processing fails
+        }
+      } catch (pdfError) {
+        console.warn('PDF processing error:', pdfError);
+        await supabase.from('pitch_decks').update({ processing_status: 'failed' }).eq('id', newPitchRecord.id);
+        // Don't throw error - allow onboarding to complete even if PDF processing fails
       }
 
       setUploadSuccess(true);
@@ -195,7 +204,7 @@ const OnboardingPage: React.FC = () => {
     setError('');
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };

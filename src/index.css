@@ -511,4 +511,125 @@ section {
   .hover-lift:hover {
     transform: none;
   }
+  
+  /* Touch-friendly button sizes */
+  .btn-primary, .btn-secondary {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Larger tap targets for mobile */
+  button, .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .btn-primary:hover::before {
+    left: -100%;
+  }
+}
+
+/* Mobile-specific responsive utilities */
+@media (max-width: 767px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Mobile typography scaling */
+  .text-display {
+    @apply text-3xl;
+  }
+  
+  .text-headline {
+    @apply text-2xl;
+  }
+  
+  .text-title {
+    @apply text-xl;
+  }
+  
+  .text-subtitle {
+    @apply text-lg;
+  }
+  
+  /* Mobile spacing adjustments */
+  .space-section {
+    @apply space-y-8;
+  }
+  
+  .space-content {
+    @apply space-y-6;
+  }
+  
+  .space-items {
+    @apply space-y-4;
+  }
+  
+  /* Mobile card adjustments */
+  .glass, .glass-dark {
+    padding: 1rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .card-elevated {
+    padding: 1.5rem;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Touch gesture support */
+.touch-pan-y {
+  touch-action: pan-y;
+}
+
+.touch-pan-x {
+  touch-action: pan-x;
+}
+
+.touch-none {
+  touch-action: none;
+}
+
+/* Improved focus states for keyboard navigation */
+.focus-visible:focus-visible {
+  @apply outline-none ring-2 ring-indigo-500/50 ring-offset-2 ring-offset-slate-900;
+}
+
+/* Better scrolling on mobile */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-optimized animations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass, .glass-dark {
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .btn-primary, .btn-secondary {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
 }

@@ -1,20 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Clock, CheckCircle, AlertCircle, Eye, Upload } from 'lucide-react';
+import { FileText, Clock, CheckCircle, AlertCircle, Eye, Upload, Download, Trash2 } from 'lucide-react';
 import { ClipLoader } from 'react-spinners';
-import { UploadedDecksProps } from '../../types/dashboard';
+import { UploadedDecksProps, PitchDeck } from '../../types/dashboard.ts';
+import InlineActions, { createDeckActions } from './InlineActions.tsx';
+import { useResponsive, useTouch } from '../../hooks/useResponsive.ts';
 
 const UploadedDecksSection: React.FC<UploadedDecksProps> = ({ 
   decks, 
   onViewDeck, 
   onUploadNew 
 }) => {
+  const { isMobile, isTablet } = useResponsive();
+  const isTouch = useTouch();
+  const handleDownloadDeck = (deckId: string) => {
+    console.log('Download deck:', deckId);
+    // TODO: Implement deck download functionality
+  };
+
+  const handleDeleteDeck = (deckId: string) => {
+    console.log('Delete deck:', deckId);
+    // TODO: Implement deck deletion with confirmation
+  };
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'processing':
         return <ClipLoader color="#facc15" size={16} />;
       case 'processed':
-        return <ClipLoader color="#facc15" size={16} />;
+        return <CheckCircle className="w-4 h-4 text-green-400" />;
       case 'failed':
         return <AlertCircle className="w-4 h-4 text-red-400" />;
       default:
@@ -27,7 +40,7 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
       case 'processing':
         return 'Analysis in Progress';
       case 'processed':
-        return 'Analysis in Progress';
+        return 'Ready for Review';
       case 'failed':
         return 'Analysis Failed';
       default:
@@ -40,7 +53,7 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
       case 'processing':
         return 'bg-yellow-500/20 border-yellow-500/30 text-yellow-300';
       case 'processed':
-        return 'bg-yellow-500/20 border-yellow-500/30 text-yellow-300';
+        return 'bg-green-500/20 border-green-500/30 text-green-300';
       case 'failed':
         return 'bg-red-500/20 border-red-500/30 text-red-300';
       default:
@@ -96,7 +109,7 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
       </div>
       
       <div className="space-y-4">
-        {decks.map((deck, index) => (
+        {decks.map((deck: PitchDeck, index: number) => (
           <motion.div
             key={deck.id}
             initial={{ opacity: 0, x: -20 }}
@@ -104,23 +117,23 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
             transition={{ duration: 0.4, delay: index * 0.1 }}
             className="glass-dark rounded-xl p-4 border border-slate-700/30 hover:border-slate-600/50 transition-all duration-300"
           >
-            <div className="flex items-center justify-between">
+            <div className={`${isMobile ? 'space-y-4' : 'flex items-center justify-between'}`}>
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 rounded-lg flex items-center justify-center border border-indigo-500/30">
-                  <FileText className="w-5 h-5 text-indigo-400" />
+                <div className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} bg-gradient-to-br from-indigo-500/20 to-purple-600/20 rounded-lg flex items-center justify-center border border-indigo-500/30`}>
+                  <FileText className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-indigo-400`} />
                 </div>
-                <div>
-                  <h3 className="font-medium text-white">
+                <div className="flex-1 min-w-0">
+                  <h3 className={`font-medium text-white ${isMobile ? 'text-sm' : ''}`}>
                     Pitch Deck #{deck.id.slice(-8)}
                   </h3>
-                  <p className="text-sm text-slate-400">
+                  <p className={`text-slate-400 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                     Uploaded {new Date(deck.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3">
-                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${getStatusColor(deck.processing_status)}`}>
+              <div className={`flex items-center gap-3 ${isMobile ? 'flex-wrap' : ''}`}>
+                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${isMobile ? 'text-xs' : 'text-sm'} ${getStatusColor(deck.processing_status)}`}>
                   {getStatusIcon(deck.processing_status)}
                   <span className="font-medium">
                     {getStatusText(deck.processing_status)}
@@ -129,14 +142,28 @@ const UploadedDecksSection: React.FC<UploadedDecksProps> = ({
                 
                 {deck.processing_status === 'processed' && (
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={!isTouch ? { scale: 1.05 } : {}}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => onViewDeck(deck.id)}
-                    className="btn-secondary flex items-center gap-2 text-sm py-1.5 px-3"
+                    className={`btn-secondary flex items-center gap-2 ${isMobile ? 'text-xs py-1 px-2' : 'text-sm py-1.5 px-3'}`}
                   >
                     <Eye className="w-4 h-4" />
-                    View
+                    {!isMobile && 'View'}
                   </motion.button>
+                )}
+
+                {/* Inline Actions - Hide on mobile to reduce clutter */}
+                {!isMobile && (
+                  <InlineActions
+                    actions={createDeckActions(
+                      deck.id,
+                      onViewDeck,
+                      handleDownloadDeck,
+                      handleDeleteDeck
+                    )}
+                    trigger="click"
+                    position="left"
+                  />
                 )}
               </div>
             </div>

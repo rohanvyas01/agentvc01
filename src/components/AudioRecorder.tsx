@@ -92,7 +92,6 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
       }, 1000);
 
     } catch (error) {
-      console.error('Error starting recording:', error);
       alert('Could not access microphone. Please check permissions.');
     }
   };

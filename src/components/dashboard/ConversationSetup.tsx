@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { tavusService } from '../../services/tavusService';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -162,23 +163,22 @@ const ConversationSetup: React.FC<ConversationSetupProps> = ({
           company ? 'Company information available' : 'Company information missing');
       }
 
-      // Check processed pitch decks
+      // Check pitch decks - using same query as Dashboard
       if (company && !companyError) {
         const { data: pitchDecks, error: deckError } = await supabase
-          .from('pitches')
+          .from('pitch_decks')
           .select('*')
           .eq('company_id', company.id)
-          .eq('status', 'processed')
           .order('created_at', { ascending: false });
 
         if (deckError) {
           console.error('Deck error:', deckError);
           updatePrerequisite('deck', 'failed', 'Error checking pitch decks');
         } else if (pitchDecks && pitchDecks.length > 0) {
-          updatePrerequisite('deck', 'passed', `${pitchDecks.length} processed deck(s) available`);
-          setSelectedDeckId(pitchDecks[0].id); // Auto-select the most recent processed deck
+          updatePrerequisite('deck', 'passed', `${pitchDecks.length} deck(s) available`);
+          setSelectedDeckId(pitchDecks[0].id); // Auto-select the most recent deck
         } else {
-          updatePrerequisite('deck', 'failed', 'No processed pitch decks found');
+          updatePrerequisite('deck', 'failed', 'No pitch decks found');
         }
       } else {
         updatePrerequisite('deck', 'failed', 'Company required to check decks');
@@ -210,8 +210,20 @@ const ConversationSetup: React.FC<ConversationSetupProps> = ({
   const handleStartConversation = async (persona?: InvestorPersona) => {
     const personaToUse = persona || selectedPersona;
     
-    if (!personaToUse || !selectedDeckId) {
-      setError('Please select a persona to continue');
+    console.log('handleStartConversation called with:', { persona, selectedPersona, personaToUse, selectedDeckId });
+    
+    if (!personaToUse) {
+      setError('No persona selected. Please select a persona to continue.');
+      return;
+    }
+    
+    if (!selectedDeckId) {
+      setError('No pitch deck selected. Please select a pitch deck to continue.');
+      return;
+    }
+
+    if (!personaToUse.id) {
+      setError('Invalid persona data. Please try again.');
       return;
     }
 
@@ -223,50 +235,39 @@ const ConversationSetup: React.FC<ConversationSetupProps> = ({
       // Get company information for session creation
       const { data: company, error: companyError } = await supabase
         .from('companies')
-        .select('id')
+        .select('id, funding_round')
         .eq('user_id', user!.id)
         .single();
 
       if (companyError) throw new Error('Company information not found');
 
-      // Create session record in database
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('sessions')
-        .insert({
-          user_id: user!.id,
-          company_id: company.id,
-          pitch_deck_id: selectedDeckId,
-          tavus_persona_id: personaToUse.id,
-          status: 'created'
-        })
-        .select()
-        .single();
+      // Determine persona type based on the selected persona
+      const personaType = personaToUse.id.includes('angel') ? 'angel' : 'vc';
 
-      if (sessionError) {
-        console.error('Session creation error:', sessionError);
-        throw new Error('Failed to create session record');
-      }
-
-      // Simulate Tavus API call with proper error handling
-      await new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Simulate occasional API failures for realistic error handling
-          if (Math.random() < 0.1) {
-            reject(new Error('Tavus API temporarily unavailable'));
-          } else {
-            resolve(null);
-          }
-        }, 2000);
+      // Create Tavus conversation using the service
+      const result = await tavusService.createConversation({
+        companyId: company.id,
+        pitchDeckId: selectedDeckId,
+        fundingRound: company.funding_round,
+        personaType: personaType
       });
 
-      const mockConversationUrl = `https://demo-tavus-session.com/${sessionData.id}`;
-      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create conversation');
+      }
+
+      // Create conversation setup object
       const conversationSetup: ConversationSetupType = {
-        sessionId: sessionData.id,
+        sessionId: result.session_id!,
         selectedPersona: personaToUse,
         pitchDeckId: selectedDeckId,
-        tavusConversationUrl: mockConversationUrl
+        tavusConversationUrl: result.conversation_url!
       };
+
+      // Redirect to conversation URL
+      if (result.conversation_url) {
+        tavusService.redirectToConversation(result.conversation_url);
+      }
 
       onSetupComplete(conversationSetup);
 
@@ -275,9 +276,6 @@ const ConversationSetup: React.FC<ConversationSetupProps> = ({
       setError(err.message || 'Failed to create conversation session');
       setIsCreatingSession(false);
       setStep('persona-selection');
-      
-      // If session was created but Tavus failed, clean up
-      // In a real implementation, you might want to mark the session as failed
     }
   };
 
@@ -390,7 +388,7 @@ const ConversationSetup: React.FC<ConversationSetupProps> = ({
                 className="btn-primary px-8 py-3 flex items-center space-x-2"
               >
                 <Video className="w-4 h-4" />
-                <span>Start Practice Session</span>
+                <span>Pitch to Rohan</span>
                 <ArrowRight className="w-4 h-4" />
               </motion.button>
             </div>

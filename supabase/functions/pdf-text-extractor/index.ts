@@ -61,8 +61,8 @@ serve(async (req) => {
     if (!extractedText) {
       console.warn(`PDF parsing for ${recordId} resulted in empty text. The PDF might be image-based.`);
       await supabaseAdmin
-        .from('pitches')
-        .update({ status: 'processed_no_text', transcript_text: '' })
+        .from('pitch_decks')
+        .update({ processing_status: 'processed', extracted_text: '' })
         .eq('id', recordId);
 
       return new Response(JSON.stringify({ success: true, message: "Processed, but no text content found." }), {
@@ -74,10 +74,10 @@ serve(async (req) => {
     // STEP 3: Update the record in the 'pitches' table.
     console.log("Step 3: Updating database record...");
     const { error: updateError } = await supabaseAdmin
-      .from('pitches')
+      .from('pitch_decks')
       .update({
-        transcript_text: extractedText,
-        status: 'processed',
+        extracted_text: extractedText,
+        processing_status: 'processed',
       })
       .eq('id', recordId);
 
@@ -96,8 +96,8 @@ serve(async (req) => {
     
     if (recordId) {
       await supabaseAdmin
-        .from('pitches')
-        .update({ status: 'failed', error_message: errorMessage })
+        .from('pitch_decks')
+        .update({ processing_status: 'failed' })
         .eq('id', recordId);
     }
     

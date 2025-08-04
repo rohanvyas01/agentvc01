@@ -74,13 +74,17 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId, onUplo
 
       if (uploadError) throw uploadError;
 
-      // 2. Create a record in the 'pitches' table AND get it back
+      // 2. Create a record in the 'pitch_decks' table AND get it back
       const { data: newPitchRecord, error: dbError } = await supabase
-        .from('pitches')
+        .from('pitch_decks')
         .insert({
           company_id: companyId,
+          user_id: user.id,
+          deck_name: file.name,
+          file_type: file.type,
           pitch_deck_storage_path: uploadData.path,
-          status: 'processing', // Set initial status
+          file_size: file.size,
+          processing_status: 'processing',
         })
         .select() // Ask Supabase to return the newly created row
         .single(); // Expect only one row
@@ -95,8 +99,7 @@ const PitchDeckUploader: React.FC<PitchDeckUploaderProps> = ({ companyId, onUplo
       });
 
       if (invokeError) {
-        // If invoking fails, we should try to update the status to 'failed'
-        await supabase.from('pitches').update({ status: 'failed' }).eq('id', newPitchRecord.id);
+        await supabase.from('pitch_decks').update({ processing_status: 'failed' }).eq('id', newPitchRecord.id);
         throw new Error(`Processing failed to start: ${invokeError.message}`);
       }
       

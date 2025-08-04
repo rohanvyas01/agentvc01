@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext.tsx';
+import { supabase } from '../../lib/supabase.ts';
+import { apiService } from '../../services/api.ts';
 import { 
   Zap, 
   MessageSquare, 
@@ -17,8 +18,9 @@ import {
   Target,
   TrendingUp
 } from 'lucide-react';
-import { TalkToAIProps } from '../../types/dashboard';
-import ConversationSetup from './ConversationSetup';
+import { TalkToAIProps } from '../../types/dashboard.ts';
+import ConversationSetup from './ConversationSetup.tsx';
+import { useResponsive, useTouch } from '../../hooks/useResponsive.ts';
 
 interface PrerequisiteStatus {
   profile: boolean;
@@ -31,6 +33,8 @@ const TalkToAISection: React.FC<TalkToAIProps> = ({
   isFirstTime,
   onStartConversation
 }) => {
+  const { isMobile, isTablet } = useResponsive();
+  const isTouch = useTouch();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isValidating, setIsValidating] = useState(false);
@@ -72,26 +76,36 @@ const TalkToAISection: React.FC<TalkToAIProps> = ({
         .eq('user_id', user.id)
         .maybeSingle();
 
-      // Check pitch decks
+      // Check pitch decks - using same query as Dashboard
       let hasDecks = false;
       let hasProcessedDecks = false;
       
-      if (company) {
+      if (company && !companyError) {
         const { data: pitchDecks, error: deckError } = await supabase
-          .from('pitches')
+          .from('pitch_decks')
           .select('*')
           .eq('company_id', company.id)
           .order('created_at', { ascending: false });
 
         hasDecks = pitchDecks && pitchDecks.length > 0;
-        hasProcessedDecks = !!pitchDecks?.some(deck => deck.status === 'processed');
+        // For now, allow any uploaded deck to be used (even if still processing)
+        // In production, you might want to be more strict about this
+        hasProcessedDecks = hasDecks;
+        
+        console.log('Pitch decks found:', pitchDecks?.map((d: any) => ({ 
+          id: d.id, 
+          status: d.processing_status,
+          created_at: d.created_at 
+        })));
+      } else {
+        console.log('No company found, cannot check pitch decks');
       }
 
       const newPrerequisites = {
         profile: !!profile,
         company: !!company,
         deck: hasDecks,
-        deckProcessed: hasProcessedDecks
+        deckProcessed: hasDecks
       };
 
       setPrerequisites(newPrerequisites);
@@ -360,33 +374,33 @@ const TalkToAISection: React.FC<TalkToAIProps> = ({
         </motion.button>
 
         {/* Enhanced info section for all users */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-slate-800/30 rounded-lg border border-slate-700/30">
-            <div className="flex items-center space-x-3 mb-2">
-              <User className="w-5 h-5 text-indigo-400" />
-              <h4 className="text-white font-medium">Meet Rohan</h4>
+        <div className={`mt-6 grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-3'}`}>
+          <div className={`bg-slate-800/30 rounded-lg border border-slate-700/30 ${isMobile ? 'p-3' : 'p-4'}`}>
+            <div className={`flex items-center mb-2 ${isMobile ? 'space-x-2' : 'space-x-3'}`}>
+              <User className={`text-indigo-400 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <h4 className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>Meet Rohan</h4>
             </div>
-            <p className="text-sm text-slate-300">
+            <p className={`text-slate-300 ${isMobile ? 'text-xs' : 'text-sm'}`}>
               Pitch to Rohan Vyas, an experienced investor tailored to your funding stage
             </p>
           </div>
           
-          <div className="p-4 bg-slate-800/30 rounded-lg border border-slate-700/30">
-            <div className="flex items-center space-x-3 mb-2">
-              <Video className="w-5 h-5 text-green-400" />
-              <h4 className="text-white font-medium">Live Practice</h4>
+          <div className={`bg-slate-800/30 rounded-lg border border-slate-700/30 ${isMobile ? 'p-3' : 'p-4'}`}>
+            <div className={`flex items-center mb-2 ${isMobile ? 'space-x-2' : 'space-x-3'}`}>
+              <Video className={`text-green-400 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <h4 className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>Live Practice</h4>
             </div>
-            <p className="text-sm text-slate-300">
+            <p className={`text-slate-300 ${isMobile ? 'text-xs' : 'text-sm'}`}>
               15-30 minute video conversation with real-time feedback and analysis
             </p>
           </div>
           
-          <div className="p-4 bg-slate-800/30 rounded-lg border border-slate-700/30">
-            <div className="flex items-center space-x-3 mb-2">
-              <TrendingUp className="w-5 h-5 text-orange-400" />
-              <h4 className="text-white font-medium">Get Report</h4>
+          <div className={`bg-slate-800/30 rounded-lg border border-slate-700/30 ${isMobile ? 'p-3' : 'p-4'}`}>
+            <div className={`flex items-center mb-2 ${isMobile ? 'space-x-2' : 'space-x-3'}`}>
+              <TrendingUp className={`text-orange-400 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <h4 className={`text-white font-medium ${isMobile ? 'text-sm' : ''}`}>Get Report</h4>
             </div>
-            <p className="text-sm text-slate-300">
+            <p className={`text-slate-300 ${isMobile ? 'text-xs' : 'text-sm'}`}>
               Detailed analysis with strengths, improvements, and follow-up questions
             </p>
           </div>

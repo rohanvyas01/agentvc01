@@ -1,5 +1,5 @@
 // Dashboard-specific types and interfaces
-import { Session, ConversationAnalysis, ConversationTranscript, PitchDeck, Company, Profile } from '../lib/supabase';
+import { Session, ConversationAnalysis, ConversationTranscript, PitchDeck, Company, Profile } from '../lib/supabase.ts';
 
 // Dashboard state and component types
 export interface DashboardState {
@@ -159,4 +159,34 @@ export interface LoadingStates {
   initialLoad: boolean;
 }
 
-export type { Session };
+// Follow-up questions types
+export interface FollowUpQuestion {
+  id: string;
+  session_id: string;
+  question: string;
+  category: 'business_model' | 'market' | 'financials' | 'team' | 'competition' | 'growth' | 'general';
+  difficulty: 'easy' | 'medium' | 'hard';
+  is_selected: boolean;
+  created_at: string;
+}
+
+export interface QuestionCategory {
+  id: string;
+  name: string;
+  description: string;
+  questions: string[];
+}
+
+export interface FollowUpQuestionsProps {
+  sessionId: string;
+  onStartPractice?: (practiceSessionId: string) => void;
+}
+
+export interface QuestionPracticeModalProps {
+  sessionId: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onStartNewSession?: () => void;
+}
+
+export type { Session, PitchDeck, Company, Profile, ConversationAnalysis, ConversationTranscript };
