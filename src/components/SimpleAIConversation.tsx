@@ -39,11 +39,11 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
   const speechRecognitionRef = useRef<any>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Video segments for each phase (Tavus generated videos)
+  // Video segments for each phase (Tavus generated videos) - with cache busting
   const videoSegments = {
-    start: '/videos/rohan_intro.mp4',      // Start video
-    mid: '/videos/rohan_transition.mp4',   // Mid video  
-    end: '/videos/rohan_wrap_up.mp4'       // End video
+    start: `/videos/rohan_intro.mp4?cache=intro_${Date.now()}`,      // Start video
+    mid: `/videos/Mid.mp4?cache=transition_${Date.now()}`,   // Mid video
+    end: `/videos/rohan_wrap_up.mp4?cache=wrapup_${Date.now()}`       // End video
   };
 
   // Script texts matching your exact Tavus video scripts
@@ -62,14 +62,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
     setShowVideo(true);
     setVideoLoaded(false);
     setVideoError(false);
-    
-    // Cleanup function
-    return () => {
-      // Clean up Whisper model
-      if (whisperModelRef.current) {
-        whisperModelRef.current = null;
-      }
-    };
   }, []);
 
   const handleVideoEnded = () => {
@@ -112,8 +104,7 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
     }
   };
 
-  // Initialize Whisper model once and reuse
-  const whisperModelRef = useRef<any>(null);
+
   
   // Method 1: Web Speech API (Real-time, no API key needed)
   const transcribeWithWebSpeech = (): Promise<string> => {
@@ -395,6 +386,8 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
           console.error('Error updating session for founder intro:', err);
         }
 
+        console.log('🎬 Transitioning to mid phase, playing:', videoSegments.mid);
+        console.log('🎬 Current video URL being set:', videoSegments.mid);
         setPhase('mid');
         setCurrentVideoUrl(videoSegments.mid);
         setVideoEnded(false);
@@ -454,20 +447,42 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
   return (
     <div className="max-w-5xl mx-auto">
       {/* Video Persona Section */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+      <div className="glass rounded-xl border border-slate-700/30 overflow-hidden mb-8">
         {showVideo ? (
           <div className="relative bg-black">
             <video
               ref={videoRef}
-              src={currentVideoUrl}
+              key={currentVideoUrl} // Force re-render when URL changes
               autoPlay
               muted
               onEnded={handleVideoEnded}
-              onLoadedData={handleVideoLoaded}
-              onError={handleVideoError}
+              onLoadedData={() => {
+                console.log('🎥 Video loaded:', currentVideoUrl);
+                console.log('🎥 Video element src:', videoRef.current?.src);
+                console.log('🎥 Video element currentSrc:', videoRef.current?.currentSrc);
+                console.log('🎥 Video duration:', videoRef.current?.duration);
+                console.log('🎥 Video readyState:', videoRef.current?.readyState);
+                
+                // Force a network request to verify what's actually being served
+                fetch(currentVideoUrl)
+                  .then(response => {
+                    console.log('🌐 Fetch response status:', response.status);
+                    console.log('🌐 Fetch response headers:', response.headers.get('content-length'));
+                    console.log('🌐 Fetch response URL:', response.url);
+                  })
+                  .catch(err => console.error('🌐 Fetch error:', err));
+                
+                handleVideoLoaded();
+              }}
+              onError={(e) => {
+                console.error('🎥 Video error:', currentVideoUrl, e);
+                handleVideoError();
+              }}
               className="w-full h-[500px] object-cover"
               controls={false}
-            />
+            >
+              <source src={currentVideoUrl} type="video/mp4" />
+            </video>
             
             {/* Mute/Unmute Button */}
             <button
@@ -497,24 +512,24 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
           </div>
         ) : (
           // Static image when video is not playing
-          <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="w-40 h-40 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+          <div className="text-center py-12 bg-gradient-to-br from-slate-800 to-slate-900">
+            <div className="w-40 h-40 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
               <div className="text-white text-5xl font-bold">RV</div>
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Rohan Vyas</h2>
-            <p className="text-gray-600 text-lg">AI Investor • AgentVC</p>
+            <h2 className="text-3xl font-bold text-white mb-2">Rohan Vyas</h2>
+            <p className="text-slate-300 text-lg">AI Investor • AgentVC</p>
           </div>
         )}
         
         {/* Script Display */}
         {getCurrentScript() && (
-          <div className="bg-blue-50 border-t border-blue-100 p-6">
+          <div className="bg-slate-800/50 border-t border-slate-700/30 p-6">
             <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-sm font-bold">RV</span>
               </div>
               <div>
-                <p className="text-gray-800 leading-relaxed">{getCurrentScript()}</p>
+                <p className="text-white leading-relaxed">{getCurrentScript()}</p>
               </div>
             </div>
           </div>
@@ -523,20 +538,20 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
 
       {/* Recording Controls - Only show when needed */}
       {(phase === 'founder_intro' || phase === 'pitch_recording' || phase === 'completed') && (
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div className="glass rounded-xl border border-slate-700/30 p-8 mb-8">
           {phase === 'founder_intro' && (
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Tell us about yourself</h3>
-              <p className="text-gray-600">Share your background and introduce your company</p>
+              <h3 className="text-2xl font-bold text-white mb-2">Tell us about yourself</h3>
+              <p className="text-slate-300">Share your background and introduce your company</p>
             </div>
             
             {!isRecording && !isProcessing && (
               <div className="space-y-4">
                 {/* Microphone Test Section */}
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/30">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium text-gray-900">Microphone Test</h4>
+                    <h4 className="font-medium text-white">Microphone Test</h4>
                     <button
                       onClick={async () => {
                         if (isTesting) {
@@ -600,7 +615,7 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                           }
                         }
                       }}
-                      className={`px-4 py-2 ${isTesting ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-600 hover:bg-yellow-700'} text-white rounded-lg font-medium text-sm transition-colors`}
+                      className={`px-4 py-2 ${isTesting ? 'bg-green-600 hover:bg-green-700' : 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700'} text-white rounded-lg font-medium text-sm transition-colors`}
                     >
                       {isTesting ? '✅ Test Complete' : '🎤 Test Microphone'}
                     </button>
@@ -608,8 +623,8 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                   
                   {/* Test Results */}
                   {testTranscript && (
-                    <div className={`${testTranscript.includes('✅') ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border rounded-lg p-3 mb-3`}>
-                      <p className={`text-sm ${testTranscript.includes('✅') ? 'text-green-800' : 'text-red-800'} font-medium`}>
+                    <div className={`${testTranscript.includes('✅') ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'} border rounded-lg p-3 mb-3`}>
+                      <p className={`text-sm ${testTranscript.includes('✅') ? 'text-green-300' : 'text-red-300'} font-medium`}>
                         {testTranscript}
                       </p>
                     </div>
@@ -620,63 +635,63 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                 <div className="flex flex-col items-center space-y-4">
                   <button
                     onClick={handleStartFounderIntro}
-                    className="px-10 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold text-lg transition-colors shadow-lg hover:shadow-xl"
+                    className="px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 font-semibold text-lg transition-colors shadow-lg hover:shadow-xl"
                   >
                     🎤 Start Voice Introduction
                   </button>
                   
                   <div className="flex items-center space-x-3">
-                    <div className="h-px bg-gray-300 w-16"></div>
-                    <span className="text-gray-500 text-sm font-medium">or</span>
-                    <div className="h-px bg-gray-300 w-16"></div>
+                    <div className="h-px bg-slate-600 w-16"></div>
+                    <span className="text-slate-400 text-sm font-medium">or</span>
+                    <div className="h-px bg-slate-600 w-16"></div>
                   </div>
                   
                   <button
                     onClick={() => setShowTextInput(!showTextInput)}
-                    className="px-8 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 font-medium transition-colors"
+                    className="px-8 py-3 bg-slate-700 text-white rounded-xl hover:bg-slate-600 font-medium transition-colors"
                   >
                     ⌨️ Type Introduction
                   </button>
                 </div>
                 
-                {/* Text Input Form */}
-                {showTextInput && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 space-y-4 mt-6">
-                    <h4 className="font-medium text-gray-900">Type your introduction</h4>
-                    <textarea
-                      value={textInput}
-                      onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Tell us about yourself and your company..."
-                      className="w-full p-4 border border-gray-300 rounded-lg resize-none h-32 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                    />
-                    <div className="flex justify-end space-x-3">
-                      <button
-                        onClick={() => {
-                          setShowTextInput(false);
-                          setTextInput('');
-                        }}
-                        className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (textInput.trim()) {
-                            setTranscript(textInput.trim());
-                            setIsProcessing(true);
-                            saveTranscriptAndAdvance(textInput.trim());
+                  {/* Text Input Form */}
+                  {showTextInput && (
+                    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 space-y-4 mt-6">
+                      <h4 className="font-medium text-slate-100">Type your introduction</h4>
+                      <textarea
+                        value={textInput}
+                        onChange={(e) => setTextInput(e.target.value)}
+                        placeholder="Tell us about yourself and your company..."
+                        className="w-full p-4 bg-slate-700 text-slate-100 border border-slate-600 rounded-lg resize-none h-32 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      />
+                      <div className="flex justify-end space-x-3">
+                        <button
+                          onClick={() => {
                             setShowTextInput(false);
                             setTextInput('');
-                          }
-                        }}
-                        disabled={!textInput.trim()}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-medium transition-colors"
-                      >
-                        Submit Introduction
-                      </button>
+                          }}
+                          className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-500 font-medium transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (textInput.trim()) {
+                              setTranscript(textInput.trim());
+                              setIsProcessing(true);
+                              saveTranscriptAndAdvance(textInput.trim());
+                              setShowTextInput(false);
+                              setTextInput('');
+                            }
+                          }}
+                          disabled={!textInput.trim()}
+                          className="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 disabled:opacity-50 font-semibold transition-all"
+                        >
+                          Submit Introduction
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             )}
 
@@ -751,44 +766,44 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                   </button>
                 </div>
                 
-                {/* Text Input Form for Pitch */}
-                {showTextInput && (
-                  <div className="bg-green-50 border border-green-200 rounded-xl p-6 space-y-4 mt-6">
-                    <h4 className="font-medium text-gray-900">Type your pitch</h4>
-                    <textarea
-                      value={textInput}
-                      onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Present your startup pitch here..."
-                      className="w-full p-4 border border-gray-300 rounded-lg resize-none h-40 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
-                    />
-                    <div className="flex justify-end space-x-3">
-                      <button
-                        onClick={() => {
-                          setShowTextInput(false);
-                          setTextInput('');
-                        }}
-                        className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => {
-                          if (textInput.trim()) {
-                            setTranscript(textInput.trim());
-                            setIsProcessing(true);
-                            saveTranscriptAndAdvance(textInput.trim());
+                  {/* Text Input Form for Pitch */}
+                  {showTextInput && (
+                    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 space-y-4 mt-6">
+                      <h4 className="font-medium text-slate-100">Type your pitch</h4>
+                      <textarea
+                        value={textInput}
+                        onChange={(e) => setTextInput(e.target.value)}
+                        placeholder="Present your startup pitch here..."
+                        className="w-full p-4 bg-slate-700 text-slate-100 border border-slate-600 rounded-lg resize-none h-40 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      />
+                      <div className="flex justify-end space-x-3">
+                        <button
+                          onClick={() => {
                             setShowTextInput(false);
                             setTextInput('');
-                          }
-                        }}
-                        disabled={!textInput.trim()}
-                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 font-medium transition-colors"
-                      >
-                        Submit Pitch
-                      </button>
+                          }}
+                          className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-500 font-medium transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (textInput.trim()) {
+                              setTranscript(textInput.trim());
+                              setIsProcessing(true);
+                              saveTranscriptAndAdvance(textInput.trim());
+                              setShowTextInput(false);
+                              setTextInput('');
+                            }
+                          }}
+                          disabled={!textInput.trim()}
+                          className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 font-semibold transition-all"
+                        >
+                          Submit Pitch
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             )}
 
@@ -860,29 +875,29 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
 
       {/* Transcript Display - Only show when there's actual content */}
       {transcript && transcript.trim() && !transcript.includes('🎤') && (
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h3 className="font-semibold text-gray-900 mb-3 text-lg">Your Response:</h3>
-          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <p className="text-gray-800 italic leading-relaxed">"{transcript}"</p>
+        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-8">
+          <h3 className="font-semibold text-slate-100 mb-3 text-lg">Your Response:</h3>
+          <div className="bg-slate-700 rounded-lg p-4 border border-slate-600">
+            <p className="text-slate-300 italic leading-relaxed">"{transcript}"</p>
           </div>
         </div>
       )}
 
-      {/* Progress Indicator */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
-          <span className="font-medium">Session Progress</span>
-          <span className="font-semibold">{phase === 'start' ? '20' : phase === 'founder_intro' ? '40' : phase === 'mid' ? '60' : phase === 'pitch_recording' ? '80' : '100'}%</span>
+      {/* Session Progress -- Dark Theme */}
+      <div className="mt-8 bg-slate-800 p-5 rounded-lg">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-base font-semibold text-slate-100">Session Progress</span>
+          <span className="text-sm font-medium text-slate-300">{phase === 'start' ? '20' : phase === 'founder_intro' ? '40' : phase === 'mid' ? '60' : phase === 'pitch_recording' ? '80' : '100'}%</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
-          <div 
-            className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-700 ease-out"
-            style={{ 
-              width: `${phase === 'start' ? 20 : phase === 'founder_intro' ? 40 : phase === 'mid' ? 60 : phase === 'pitch_recording' ? 80 : 100}%` 
+        <div className="w-full bg-slate-600 rounded-full h-2 mb-3">
+          <div
+            className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+            style={{
+              width: `${phase === 'start' ? 20 : phase === 'founder_intro' ? 40 : phase === 'mid' ? 60 : phase === 'pitch_recording' ? 80 : 100}%`
             }}
           ></div>
         </div>
-        <div className="flex justify-between text-xs text-gray-500 mt-2">
+        <div className="flex justify-between text-xs text-slate-400">
           <span>Start</span>
           <span>Introduction</span>
           <span>Pitch</span>
