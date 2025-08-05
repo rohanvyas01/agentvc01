@@ -23,3 +23,20 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Documentation and optional files
+README-*.md
+AGENTVC_SETUP_GUIDE.md
+CLONE_SETUP_GUIDE.md
+QUICK_START.md
+RECORDING_INSTRUCTIONS.md
+TECH_STACK.md
+VIDEO_SETUP_GUIDE.md
+.env.example
+docs/
+assets/reference-videos/
+server/
+api/transcribe.js
+scripts/download-whisper-model.*
+scripts/serve-models.js
+public/models/
