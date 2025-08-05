@@ -7,9 +7,8 @@ import Dashboard from './pages/WorkingDashboard';
 import LandingPage from './pages/LandingPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
-import UploadDeckPage from './pages/UploadDeckPage';
-import SetupSessionPage from './pages/SetupSessionPage';
 import OnboardingPage from './pages/OnboardingPage';
+import SetupSessionPage from './pages/SetupSessionPage';
 import { ConversationPage } from './pages/ConversationPage';
 
 function App() {
@@ -36,23 +35,12 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
-            path="/upload"
+            path="/setup-session"
             element={
               <ProtectedRoute>
-                <Layout>
-                  <UploadDeckPage />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/setup"
-            element={
-              <ProtectedRoute>
-                <Layout>
-                  <SetupSessionPage />
-                </Layout>
+                <SetupSessionPage />
               </ProtectedRoute>
             }
           />

@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase, PitchDeck } from '../lib/supabase';
 
-import { ConversationButton } from '../components/ConversationButton';
+
 import { ClipLoader } from 'react-spinners';
-import { 
-  Video, 
-  FileText, 
-  User, 
-  ArrowRight, 
+import {
+  Video,
+  FileText,
+  User,
+  ArrowRight,
   CheckCircle,
   Upload,
   Calendar,
@@ -111,7 +111,7 @@ const SetupSessionPage: React.FC = () => {
         console.error('Error fetching pitch decks:', pitchDecksError);
         throw pitchDecksError;
       }
-      
+
       // Map the data to match PitchDeck interface
       const mappedDecks = (pitchDecksData || []).map(deck => ({
         ...deck,
@@ -119,7 +119,7 @@ const SetupSessionPage: React.FC = () => {
         processing_status: 'processed', // All uploaded decks are considered processed
         user_id: user!.id
       }));
-      
+
       setDecks(mappedDecks);
       console.log('Loaded pitch decks:', mappedDecks);
     } catch (err) {
@@ -260,17 +260,15 @@ const SetupSessionPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedDeck(deck.id)}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
-                    selectedDeck === deck.id
-                      ? 'border-indigo-500 bg-indigo-500/10'
-                      : 'border-slate-600 hover:border-slate-500 hover:bg-slate-800/30'
-                  }`}
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${selectedDeck === deck.id
+                    ? 'border-indigo-500 bg-indigo-500/10'
+                    : 'border-slate-600 hover:border-slate-500 hover:bg-slate-800/30'
+                    }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <FileText className={`w-5 h-5 ${
-                        selectedDeck === deck.id ? 'text-indigo-400' : 'text-slate-400'
-                      }`} />
+                      <FileText className={`w-5 h-5 ${selectedDeck === deck.id ? 'text-indigo-400' : 'text-slate-400'
+                        }`} />
                       <div>
                         <h3 className="font-medium text-white">{deck.deck_name}</h3>
                         <div className="flex items-center space-x-4 text-sm text-slate-400">
@@ -320,11 +318,10 @@ const SetupSessionPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedPersona(persona.id)}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
-                    selectedPersona === persona.id
-                      ? 'border-indigo-500 bg-indigo-500/10'
-                      : 'border-slate-600 hover:border-slate-500 hover:bg-slate-800/30'
-                  }`}
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${selectedPersona === persona.id
+                    ? 'border-indigo-500 bg-indigo-500/10'
+                    : 'border-slate-600 hover:border-slate-500 hover:bg-slate-800/30'
+                    }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">

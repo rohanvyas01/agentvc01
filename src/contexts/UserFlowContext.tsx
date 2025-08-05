@@ -119,7 +119,7 @@ export const UserFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       // Check conversation/session history
       const { data: sessions } = await supabase
-        .from('sessions')
+        .from('conversation_sessions')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -256,7 +256,7 @@ export const UserFlowProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
 
       await supabase
-        .from('sessions')
+        .from('conversation_sessions')
         .update(updateData)
         .eq('id', sessionId);
 

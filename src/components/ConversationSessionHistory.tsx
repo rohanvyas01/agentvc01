@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { 
-  MessageSquare, 
-  Clock, 
-  CheckCircle, 
-  AlertCircle, 
+import {
+  MessageSquare,
+  Clock,
+  CheckCircle,
+  AlertCircle,
   Play,
   BarChart3,
   Calendar
@@ -38,45 +38,39 @@ export const ConversationSessionHistory: React.FC = () => {
     if (!user) return;
 
     try {
-      // Try conversation_sessions first, fallback to sessions
-      let data, error;
-      
-      try {
-        const result = await supabase
+      // Try sessions table first (where sessions are actually created)
+      let result = await supabase
+        .from('sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      // If sessions table doesn't work, try conversation_sessions
+      if (result.error) {
+        result = await supabase
           .from('conversation_sessions')
           .select('*')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(10);
-        data = result.data;
-        error = result.error;
-      } catch (convError) {
-        // Fallback to sessions table
-        const result = await supabase
-          .from('sessions')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(10);
-        
-        // Map sessions data to ConversationSession format
-        if (result.data) {
-          data = result.data.map((session: any) => ({
-            id: session.id,
-            founder_name: 'Founder', // Default since sessions table doesn't have this
-            status: mapSessionStatus(session.status),
-            current_question_index: 0,
-            responses: [],
-            started_at: session.created_at,
-            completed_at: session.completed_at,
-            created_at: session.created_at
-          }));
-        }
-        error = result.error;
       }
 
-      if (error) throw error;
-      setSessions(data || []);
+      if (result.error) throw result.error;
+
+      // Map the data to ensure it has all required fields
+      const mappedSessions = (result.data || []).map((session: any) => ({
+        id: session.id,
+        founder_name: session.founder_name || 'Founder',
+        status: session.status || 'greeting',
+        current_question_index: session.current_question_index || 0,
+        responses: session.responses || [],
+        started_at: session.started_at || session.created_at,
+        completed_at: session.completed_at,
+        created_at: session.created_at
+      }));
+
+      setSessions(mappedSessions);
     } catch (error) {
       // Error loading sessions - will show empty state
     } finally {
@@ -168,10 +162,10 @@ export const ConversationSessionHistory: React.FC = () => {
     const end = completedAt ? new Date(completedAt) : new Date();
     const diffMs = end.getTime() - start.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    
+
     if (diffMins < 1) return '< 1 min';
     if (diffMins < 60) return `${diffMins} min`;
-    
+
     const hours = Math.floor(diffMins / 60);
     const mins = diffMins % 60;
     return `${hours}h ${mins}m`;
@@ -245,12 +239,12 @@ export const ConversationSessionHistory: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-3">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(session.status)}`}>
                     {getStatusText(session.status)}
                   </span>
-                  
+
                   {session.status === 'completed' && (
                     <button className="text-indigo-400 hover:text-indigo-300 text-sm font-medium">
                       View Report
@@ -258,7 +252,7 @@ export const ConversationSessionHistory: React.FC = () => {
                   )}
                 </div>
               </div>
-              
+
               {session.status === 'analysis' && (
                 <div className="mt-3 p-3 bg-yellow-400/10 border border-yellow-400/20 rounded-lg">
                   <div className="flex items-center space-x-2 text-yellow-400">

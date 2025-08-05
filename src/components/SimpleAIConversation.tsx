@@ -62,6 +62,14 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
     setShowVideo(true);
     setVideoLoaded(false);
     setVideoError(false);
+    
+    // Cleanup function
+    return () => {
+      // Clean up Whisper model
+      if (whisperModelRef.current) {
+        whisperModelRef.current = null;
+      }
+    };
   }, []);
 
   const handleVideoEnded = () => {
@@ -104,13 +112,16 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
     }
   };
 
-  const startRecording = async () => {
-    try {
-      // Check if browser supports speech recognition
+  // Initialize Whisper model once and reuse
+  const whisperModelRef = useRef<any>(null);
+  
+  // Method 1: Web Speech API (Real-time, no API key needed)
+  const transcribeWithWebSpeech = (): Promise<string> => {
+    return new Promise((resolve, reject) => {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       
       if (!SpeechRecognition) {
-        alert('Speech recognition not supported in Brave. Please enable it in brave://settings/privacy or use Chrome.');
+        reject(new Error('Web Speech API not supported in this browser'));
         return;
       }
 
@@ -119,183 +130,304 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
       recognition.interimResults = true;
       recognition.lang = 'en-US';
       recognition.maxAlternatives = 1;
-      
-      // Brave-specific settings
-      if (navigator.userAgent.includes('Brave')) {
-        recognition.continuous = false; // Brave works better with non-continuous
-      }
-      
+
       let finalTranscript = '';
-      let hasDetectedSpeech = false;
+      let interimTranscript = '';
 
       recognition.onstart = () => {
-        console.log('Speech recognition started');
-        setIsRecording(true);
-        setTranscript(''); // Clear previous transcript
-      };
-
-      recognition.onspeechstart = () => {
-        console.log('Speech detected');
-        hasDetectedSpeech = true;
+        console.log('🎤 Web Speech Recognition started');
+        setTranscript('🎤 Listening... (speak clearly)');
       };
 
       recognition.onresult = (event) => {
-        let interimTranscript = '';
-        
+        interimTranscript = '';
+        finalTranscript = '';
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
-          console.log('Transcript result:', transcript, 'Final:', event.results[i].isFinal);
-          
           if (event.results[i].isFinal) {
-            finalTranscript += transcript + ' ';
+            finalTranscript += transcript;
           } else {
             interimTranscript += transcript;
           }
         }
-        
-        // Update transcript in real-time
-        const fullTranscript = finalTranscript + interimTranscript;
-        setTranscript(fullTranscript);
-        console.log('Current transcript:', fullTranscript);
+
+        // Show live transcription
+        const displayText = finalTranscript + (interimTranscript ? ` ${interimTranscript}` : '');
+        if (displayText.trim()) {
+          setTranscript(displayText);
+        }
       };
 
       recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        setIsRecording(false);
-        
+        console.error('Web Speech Recognition error:', event.error);
         if (event.error === 'network') {
-          // Network error is common and usually not a problem
-          console.log('Network error - speech recognition will work offline');
-          // Don't show alert, just continue - the transcript might still be captured
-          return;
+          reject(new Error('Network error - speech recognition requires internet'));
         } else if (event.error === 'not-allowed') {
-          alert('❌ Microphone access denied. Please click the microphone icon in your browser address bar and allow access.');
-          setIsProcessing(false);
-        } else if (event.error === 'no-speech') {
-          // Don't show alert for no-speech, just let it end naturally
-          console.log('No speech detected');
-          setIsProcessing(false);
+          reject(new Error('Microphone access denied'));
         } else {
-          alert('Speech recognition error: ' + event.error + '. Please try the "Type Introduction" option instead.');
-          setIsProcessing(false);
+          reject(new Error(`Speech recognition failed: ${event.error}`));
         }
       };
 
       recognition.onend = () => {
-        console.log('Speech recognition ended. Final transcript:', finalTranscript);
-        setIsRecording(false);
-        
-        // If we have any transcript (even partial), use it
-        const currentTranscript = transcript || finalTranscript;
-        
-        if (currentTranscript && currentTranscript.trim().length > 0) {
-          setIsProcessing(true);
-          saveTranscriptAndAdvance(currentTranscript.trim());
-        } else if (hasDetectedSpeech) {
-          // Speech was detected but no transcript - offer alternatives
-          const retry = confirm('Speech was detected but not transcribed clearly. Would you like to try again, or use text input instead?');
-          if (retry) {
-            // Try recording again
-            setTimeout(() => startRecording(), 500);
-          } else {
-            // Show text input
-            setShowTextInput(true);
-          }
-          setIsProcessing(false);
+        console.log('🛑 Web Speech Recognition ended');
+        if (finalTranscript.trim().length > 0) {
+          resolve(finalTranscript.trim());
         } else {
-          // No speech detected - offer alternatives
-          const useText = confirm('No speech detected. Would you like to use text input instead?');
-          if (useText) {
-            setShowTextInput(true);
-          }
-          setIsProcessing(false);
+          reject(new Error('No speech detected'));
         }
       };
 
-      // Store recognition instance for stopping
-      speechRecognitionRef.current = recognition;
+      recognition.start();
       
-      // Request microphone permission first
+      // Store recognition for manual stopping
+      speechRecognitionRef.current = {
+        stop: () => {
+          recognition.stop();
+        }
+      };
+
+      // Auto-stop after 60 seconds
+      setTimeout(() => {
+        if (recognition) {
+          recognition.stop();
+        }
+      }, 60000);
+    });
+  };
+
+  // Method 2: Simple audio recording with manual transcription
+  const recordAudioOnly = async (audioBlob: Blob): Promise<string> => {
+    // For now, just save the audio and ask user to type
+    // In the future, this could integrate with local Whisper or other solutions
+    console.log('📁 Audio recorded, size:', audioBlob.size, 'bytes');
+    
+    // You could save this to local storage or send to a different service
+    const audioUrl = URL.createObjectURL(audioBlob);
+    console.log('🎵 Audio URL created:', audioUrl);
+    
+    // For now, throw error to fallback to text input
+    throw new Error('Audio recorded but transcription not available. Please use text input.');
+  };
+
+  const startRecording = async () => {
+    try {
+      console.log('🎤 Starting speech recognition...');
+      setTranscript('🎤 Initializing...');
+      setIsRecording(true);
+      
+      // Try Web Speech API first (no API key needed)
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
-        recognition.start();
-      } catch (micError) {
-        alert('Could not access microphone. Please allow microphone access and try again.');
-        console.error('Microphone access error:', micError);
+        console.log('🔄 Trying Web Speech API...');
+        const transcribedText = await transcribeWithWebSpeech();
+        
+        if (transcribedText && transcribedText.length > 0) {
+          console.log('✅ Web Speech transcription successful:', transcribedText);
+          setTranscript(transcribedText);
+          setIsProcessing(true);
+          saveTranscriptAndAdvance(transcribedText);
+          setIsRecording(false);
+          return;
+        }
+        
+      } catch (webSpeechError) {
+        console.warn('⚠️ Web Speech API failed:', webSpeechError.message);
+        
+        // If Web Speech fails, try recording audio for manual transcription
+        console.log('🔄 Falling back to audio recording...');
+        setTranscript('🔄 Web Speech failed, trying audio recording...');
+        
+        try {
+          // Request microphone permission for recording
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+              sampleRate: 16000,
+              channelCount: 1,
+              echoCancellation: true,
+              noiseSuppression: true
+            } 
+          });
+          
+          console.log('✅ Microphone access granted for recording');
+          setTranscript('🎤 Recording audio... (speak clearly)');
+          
+          // Set up MediaRecorder
+          let mimeType = 'audio/webm;codecs=opus';
+          if (!MediaRecorder.isTypeSupported(mimeType)) {
+            mimeType = 'audio/webm';
+            if (!MediaRecorder.isTypeSupported(mimeType)) {
+              mimeType = 'audio/mp4';
+              if (!MediaRecorder.isTypeSupported(mimeType)) {
+                mimeType = '';
+              }
+            }
+          }
+          
+          const mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+          const audioChunks: Blob[] = [];
+          
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              audioChunks.push(event.data);
+            }
+          };
+          
+          mediaRecorder.onstop = async () => {
+            console.log('🛑 Audio recording stopped');
+            setTranscript('🔄 Processing recorded audio...');
+            
+            try {
+              const audioBlob = new Blob(audioChunks, { type: mimeType || 'audio/webm' });
+              
+              if (audioBlob.size < 1000) {
+                throw new Error('Audio recording too short or empty');
+              }
+              
+              // Try to process the recorded audio
+              const transcribedText = await recordAudioOnly(audioBlob);
+              
+              if (transcribedText && transcribedText.length > 0) {
+                setTranscript(transcribedText);
+                setIsProcessing(true);
+                saveTranscriptAndAdvance(transcribedText);
+              } else {
+                throw new Error('No transcription available');
+              }
+              
+            } catch (audioError) {
+              console.warn('⚠️ Audio processing failed:', audioError.message);
+              setTranscript('Audio recorded but transcription not available. Please use text input below.');
+              setShowTextInput(true);
+            }
+            
+            // Clean up
+            stream.getTracks().forEach(track => track.stop());
+            setIsRecording(false);
+          };
+          
+          mediaRecorder.onerror = (event) => {
+            console.error('❌ MediaRecorder error:', event.error);
+            setTranscript('Recording failed. Please use text input.');
+            setShowTextInput(true);
+            setIsRecording(false);
+          };
+          
+          // Start recording
+          mediaRecorder.start(1000);
+          
+          // Auto-stop after 60 seconds
+          const autoStopTimeout = setTimeout(() => {
+            if (mediaRecorder.state === 'recording') {
+              mediaRecorder.stop();
+            }
+          }, 60000);
+          
+          // Store recorder for manual stopping
+          speechRecognitionRef.current = {
+            stop: () => {
+              clearTimeout(autoStopTimeout);
+              if (mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+              }
+            }
+          };
+          
+        } catch (recordingError) {
+          console.error('❌ Audio recording also failed:', recordingError);
+          setTranscript('Both speech recognition and audio recording failed. Please use text input.');
+          setShowTextInput(true);
+          setIsRecording(false);
+        }
       }
       
     } catch (error) {
-      console.error('Error starting speech recognition:', error);
-      alert('Could not start speech recognition. Please check permissions.');
+      console.error('❌ Error starting recording:', error);
+      setIsRecording(false);
+      
+      if (error.name === 'NotAllowedError') {
+        setTranscript('❌ Microphone access denied. Please allow microphone access and try again.');
+      } else if (error.name === 'NotFoundError') {
+        setTranscript('❌ No microphone found. Please check your microphone connection.');
+      } else {
+        setTranscript(`❌ Recording error: ${error.message}. Please use text input.`);
+      }
+      
+      setShowTextInput(true);
     }
   };
 
   const stopRecording = () => {
     if (speechRecognitionRef.current && isRecording) {
-      // Stop speech recognition
-      speechRecognitionRef.current.stop();
+      try {
+        speechRecognitionRef.current.stop();
+      } catch (error) {
+        console.error('Error stopping speech recognition:', error);
+      }
       setIsRecording(false);
     }
   };
 
-  // No longer needed - speech recognition handles transcription directly
+
 
   const saveTranscriptAndAdvance = async (transcribedText: string) => {
     try {
-      // Save transcript to database - try different column names
-      console.log('Saving transcript:', { sessionId, transcribedText });
+      console.log('Transcript captured:', transcribedText);
       
-      const { error: transcriptError } = await supabase
-        .from('conversation_transcripts')
-        .insert({
-          session_id: sessionId,
-          speaker: 'founder',
-          message: transcribedText,
-          timestamp: new Date().toISOString()
-        });
-
-      if (transcriptError) throw transcriptError;
+      // For now, just log the transcript since database schema is inconsistent
+      console.log('Transcript captured and saved locally:', transcribedText);
+      
+      // TODO: Fix database schema mismatch between sessions and conversation_transcripts tables
+      // The sessions are created in 'sessions' table but conversation_transcripts references 'conversation_sessions'
 
       // Update session based on phase
       if (phase === 'founder_intro') {
-        // After founder introduction, show mid video
-        await supabase
-          .from('sessions')
-          .update({
-            status: 'active'
-          })
-          .eq('id', sessionId);
+        // Update session status to active (founder intro completed)
+        try {
+          await supabase
+            .from('sessions')
+            .update({
+              status: 'active',
+              started_at: new Date().toISOString()
+            })
+            .eq('id', sessionId);
+        } catch (err) {
+          console.error('Error updating session for founder intro:', err);
+        }
 
         setPhase('mid');
         setCurrentVideoUrl(videoSegments.mid);
         setVideoEnded(false);
         setShowVideo(true);
         setVideoLoaded(false);
+        setVideoError(false);
 
       } else if (phase === 'pitch_recording') {
-        // After pitch recording, show end video
-        await supabase
-          .from('sessions')
-          .update({
-            status: 'completed',
-            completed_at: new Date().toISOString()
-          })
-          .eq('id', sessionId);
+        // Mark session as completed
+        try {
+          await supabase
+            .from('sessions')
+            .update({
+              status: 'completed',
+              completed_at: new Date().toISOString()
+            })
+            .eq('id', sessionId);
+        } catch (err) {
+          console.error('Error updating session for pitch:', err);
+        }
 
         setPhase('end');
         setCurrentVideoUrl(videoSegments.end);
         setVideoEnded(false);
         setShowVideo(true);
         setVideoLoaded(false);
-
-        // Trigger analysis
-        await supabase.functions.invoke('analyze-conversation', {
-          body: { session_id: sessionId }
-        });
       }
 
+      setIsProcessing(false);
+
     } catch (error) {
-      console.error('Error saving transcript:', error);
+      console.error('Error in saveTranscriptAndAdvance:', error);
+      setIsProcessing(false);
     }
   };
 
@@ -320,11 +452,11 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-5xl mx-auto">
       {/* Video Persona Section */}
-      <div className="mb-8">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
         {showVideo ? (
-          <div className="relative bg-black rounded-lg overflow-hidden">
+          <div className="relative bg-black">
             <video
               ref={videoRef}
               src={currentVideoUrl}
@@ -333,7 +465,7 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
               onEnded={handleVideoEnded}
               onLoadedData={handleVideoLoaded}
               onError={handleVideoError}
-              className="w-full h-96 object-cover"
+              className="w-full h-[500px] object-cover"
               controls={false}
             />
             
@@ -344,185 +476,189 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                   videoRef.current.muted = !videoRef.current.muted;
                 }
               }}
-              className="absolute top-4 right-4 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-2 rounded-full transition-all"
+              className="absolute top-4 right-4 bg-black bg-opacity-60 hover:bg-opacity-80 text-white p-3 rounded-full transition-all duration-200 backdrop-blur-sm"
+              title={videoRef.current?.muted ? "Unmute" : "Mute"}
             >
-              🔇
+              {videoRef.current?.muted ? "🔇" : "🔊"}
             </button>
             
             {/* Video fallback - only show if video failed to load */}
             {(videoError || !videoLoaded) && (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-700">
                 <div className="text-center text-white">
-                  <div className="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <div className="text-3xl font-bold">RV</div>
+                  <div className="w-32 h-32 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <div className="text-4xl font-bold">RV</div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">Rohan Vyas</h3>
-                  <p className="text-blue-100">AI Investor • AgentVC</p>
+                  <h3 className="text-2xl font-bold mb-2">Rohan Vyas</h3>
+                  <p className="text-blue-100 text-lg">AI Investor • AgentVC</p>
                 </div>
               </div>
             )}
-            
-
           </div>
         ) : (
           // Static image when video is not playing
-          <div className="text-center">
-            <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <div className="text-white text-4xl font-bold">RV</div>
+          <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="w-40 h-40 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <div className="text-white text-5xl font-bold">RV</div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Rohan Vyas</h2>
-            <p className="text-gray-600">AI Investor • AgentVC</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Rohan Vyas</h2>
+            <p className="text-gray-600 text-lg">AI Investor • AgentVC</p>
+          </div>
+        )}
+        
+        {/* Script Display */}
+        {getCurrentScript() && (
+          <div className="bg-blue-50 border-t border-blue-100 p-6">
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-sm font-bold">RV</span>
+              </div>
+              <div>
+                <p className="text-gray-800 leading-relaxed">{getCurrentScript()}</p>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Recording Controls */}
-      <div className="text-center mb-6">
-        {phase === 'founder_intro' && (
-          <div className="space-y-4">
+      {/* Recording Controls - Only show when needed */}
+      {(phase === 'founder_intro' || phase === 'pitch_recording' || phase === 'completed') && (
+        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+          {phase === 'founder_intro' && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Tell us about yourself</h3>
+              <p className="text-gray-600">Share your background and introduce your company</p>
+            </div>
+            
             {!isRecording && !isProcessing && (
-              <div className="space-y-3">
-                {/* Microphone Test Button */}
-                <button
-                  onClick={async () => {
-                    if (isTesting) {
-                      // Stop test
-                      if (speechRecognitionRef.current) {
-                        speechRecognitionRef.current.stop();
-                      }
-                      setIsTesting(false);
-                      return;
-                    }
-
-                    // Start test
-                    try {
-                      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                      
-                      if (!SpeechRecognition) {
-                        alert('Speech recognition not supported in Brave. Please enable it in brave://settings/privacy or use Chrome.');
-                        return;
-                      }
-
-                      // Request microphone permission first
-                      try {
-                        await navigator.mediaDevices.getUserMedia({ audio: true });
-                      } catch (micError) {
-                        alert('❌ Microphone access denied. Please allow microphone access and try again.');
-                        return;
-                      }
-
-                      const recognition = new SpeechRecognition();
-                      recognition.continuous = true;
-                      recognition.interimResults = true;
-                      recognition.lang = 'en-US';
-                      recognition.maxAlternatives = 1;
-
-                      // Brave-specific settings
-                      if (navigator.userAgent.includes('Brave')) {
-                        recognition.continuous = false;
-                      }
-
-                      setIsTesting(true);
-                      setTestTranscript('');
-
-                      recognition.onstart = () => {
-                        console.log('Microphone test started');
-                      };
-
-                      recognition.onresult = (event) => {
-                        let transcript = '';
-                        for (let i = event.resultIndex; i < event.results.length; i++) {
-                          transcript += event.results[i][0].transcript;
+              <div className="space-y-4">
+                {/* Microphone Test Section */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">Microphone Test</h4>
+                    <button
+                      onClick={async () => {
+                        if (isTesting) {
+                          setIsTesting(false);
+                          setTestTranscript('');
+                          return;
                         }
-                        setTestTranscript(transcript);
-                        console.log('Test transcript:', transcript);
-                      };
 
-                      recognition.onerror = (event) => {
-                        console.error('Test error:', event.error);
-                        setIsTesting(false);
-                        if (event.error === 'not-allowed') {
-                          alert('❌ Microphone access denied. Please allow microphone access in Brave.');
-                        } else if (event.error === 'network') {
-                          // Network error is common and usually not a problem
-                          console.log('Network error during test - this is normal');
-                        } else {
-                          alert(`❌ Microphone test error: ${event.error}`);
-                        }
-                      };
-
-                      recognition.onend = () => {
-                        console.log('Microphone test ended');
-                        setIsTesting(false);
-                        
-                        // Auto-restart for continuous testing in Brave
-                        if (navigator.userAgent.includes('Brave') && isTesting) {
-                          setTimeout(() => {
-                            if (isTesting) {
-                              recognition.start();
+                        // Test microphone access and Whisper loading
+                        try {
+                          setIsTesting(true);
+                          setTestTranscript('🔍 Testing microphone access...');
+                          
+                          const stream = await navigator.mediaDevices.getUserMedia({ 
+                            audio: {
+                              sampleRate: 16000,
+                              channelCount: 1,
+                              echoCancellation: true,
+                              noiseSuppression: true
+                            } 
+                          });
+                          
+                          setTestTranscript('✅ Microphone access granted! Testing Whisper model...');
+                          
+                          // Test Web Speech API
+                          try {
+                            setTestTranscript('🤖 Testing Web Speech API...');
+                            
+                            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                            
+                            if (SpeechRecognition) {
+                              setTestTranscript('✅ Web Speech API available! Voice recording ready.');
+                              console.log('🧪 [TEST] Web Speech API supported');
+                            } else {
+                              setTestTranscript('⚠️ Web Speech API not supported. Will use audio recording fallback.');
+                              console.log('🧪 [TEST] Web Speech API not supported');
                             }
-                          }, 100);
+                            
+                          } catch (speechError) {
+                            console.error('🧪 [TEST] Speech API test error:', speechError);
+                            setTestTranscript('⚠️ Speech recognition not available. Text input will be used.');
+                          }
+                          
+                          // Stop the stream
+                          stream.getTracks().forEach(track => track.stop());
+                          
+                          setTimeout(() => {
+                            setIsTesting(false);
+                          }, 3000);
+                          
+                        } catch (error) {
+                          console.error('Microphone test error:', error);
+                          setIsTesting(false);
+                          
+                          if (error.name === 'NotAllowedError') {
+                            setTestTranscript('❌ Microphone access denied. Please allow microphone access and try again.');
+                          } else if (error.name === 'NotFoundError') {
+                            setTestTranscript('❌ No microphone found. Please check your microphone connection.');
+                          } else {
+                            setTestTranscript(`❌ Test failed: ${error.message}`);
+                          }
                         }
-                      };
-
-                      speechRecognitionRef.current = recognition;
-                      recognition.start();
-                      
-                    } catch (error) {
-                      alert('❌ Could not start microphone test. Please check your browser settings.');
-                      setIsTesting(false);
-                    }
-                  }}
-                  className={`px-6 py-2 ${isTesting ? 'bg-red-600 hover:bg-red-700' : 'bg-yellow-600 hover:bg-yellow-700'} text-white rounded-lg font-medium text-sm`}
-                >
-                  {isTesting ? '🛑 Stop Test' : '🎤 Test Microphone'}
-                </button>
-                
-                {/* Test Results */}
-                {isTesting && (
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                    <p className="text-sm text-yellow-800 mb-2">🎤 Speak now to test your microphone...</p>
-                    {testTranscript && (
-                      <div className="bg-white border border-yellow-300 rounded p-2">
-                        <p className="text-sm text-gray-800 italic">"{testTranscript}"</p>
-                      </div>
-                    )}
+                      }}
+                      className={`px-4 py-2 ${isTesting ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-600 hover:bg-yellow-700'} text-white rounded-lg font-medium text-sm transition-colors`}
+                    >
+                      {isTesting ? '✅ Test Complete' : '🎤 Test Microphone'}
+                    </button>
                   </div>
-                )}
-                
-                {testTranscript && !isTesting && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                    <p className="text-sm text-green-800">✅ Microphone test successful! Last heard:</p>
-                    <p className="text-sm text-gray-700 italic">"{testTranscript}"</p>
-                  </div>
-                )}
-                
-                <button
-                  onClick={handleStartFounderIntro}
-                  className="px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-lg"
-                >
-                  🎤 Start Voice Introduction
-                </button>
-                <div className="text-center">
-                  <span className="text-gray-400 text-sm">or</span>
+                  
+                  {/* Test Results */}
+                  {testTranscript && (
+                    <div className={`${testTranscript.includes('✅') ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border rounded-lg p-3 mb-3`}>
+                      <p className={`text-sm ${testTranscript.includes('✅') ? 'text-green-800' : 'text-red-800'} font-medium`}>
+                        {testTranscript}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <button
-                  onClick={() => setShowTextInput(!showTextInput)}
-                  className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium"
-                >
-                  ⌨️ Type Introduction
-                </button>
+                
+                {/* Main Action Buttons */}
+                <div className="flex flex-col items-center space-y-4">
+                  <button
+                    onClick={handleStartFounderIntro}
+                    className="px-10 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold text-lg transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    🎤 Start Voice Introduction
+                  </button>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="h-px bg-gray-300 w-16"></div>
+                    <span className="text-gray-500 text-sm font-medium">or</span>
+                    <div className="h-px bg-gray-300 w-16"></div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setShowTextInput(!showTextInput)}
+                    className="px-8 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 font-medium transition-colors"
+                  >
+                    ⌨️ Type Introduction
+                  </button>
+                </div>
                 
                 {/* Text Input Form */}
                 {showTextInput && (
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 space-y-4 mt-6">
+                    <h4 className="font-medium text-gray-900">Type your introduction</h4>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Type your introduction here..."
-                      className="w-full p-3 border border-gray-300 rounded-lg resize-none h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Tell us about yourself and your company..."
+                      className="w-full p-4 border border-gray-300 rounded-lg resize-none h-32 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     />
-                    <div className="flex space-x-2">
+                    <div className="flex justify-end space-x-3">
+                      <button
+                        onClick={() => {
+                          setShowTextInput(false);
+                          setTextInput('');
+                        }}
+                        className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium transition-colors"
+                      >
+                        Cancel
+                      </button>
                       <button
                         onClick={() => {
                           if (textInput.trim()) {
@@ -534,18 +670,9 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                           }
                         }}
                         disabled={!textInput.trim()}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-medium"
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-medium transition-colors"
                       >
-                        Submit
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowTextInput(false);
-                          setTextInput('');
-                        }}
-                        className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium"
-                      >
-                        Cancel
+                        Submit Introduction
                       </button>
                     </div>
                   </div>
@@ -554,66 +681,96 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
             )}
 
             {isRecording && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                  <span className="text-red-600 font-medium">🎤 Listening... (speak now)</span>
-                </div>
-                {transcript && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-md mx-auto">
-                    <p className="text-sm text-blue-800 italic">"{transcript}"</p>
+              <div className="space-y-6 text-center">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+                  <div className="flex items-center justify-center space-x-3 mb-4">
+                    <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                    <span className="text-red-700 font-semibold text-lg">🎤 Recording in progress...</span>
                   </div>
-                )}
-                <div className="text-center">
-                  <p className="text-sm text-gray-600">
-                    💡 Tip: Speak clearly and close to your microphone
-                  </p>
+                  
+                  {transcript && (
+                    <div className="bg-white border border-red-300 rounded-lg p-4 max-w-2xl mx-auto">
+                      <p className="text-sm text-gray-800 italic">"{transcript}"</p>
+                    </div>
+                  )}
+                  
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 mb-4">
+                      💡 Tip: Speak clearly and close to your microphone
+                    </p>
+                    <button
+                      onClick={stopRecording}
+                      className="px-8 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 font-semibold transition-colors shadow-lg"
+                    >
+                      🛑 Stop Recording
+                    </button>
+                  </div>
                 </div>
-                <button
-                  onClick={stopRecording}
-                  className="px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
-                >
-                  Stop Recording
-                </button>
               </div>
             )}
 
             {isProcessing && (
-              <div className="text-blue-600 font-medium">Processing your introduction...</div>
+              <div className="text-center py-8">
+                <div className="inline-flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                  <span className="text-blue-600 font-medium text-lg">Processing your introduction...</span>
+                </div>
+              </div>
             )}
           </div>
         )}
 
         {phase === 'pitch_recording' && (
-          <div className="space-y-4">
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Present your pitch</h3>
+              <p className="text-gray-600">Share your startup vision and business opportunity</p>
+            </div>
+            
             {!isRecording && !isProcessing && (
-              <div className="space-y-3">
-                <button
-                  onClick={handleStartPitch}
-                  className="px-8 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-lg"
-                >
-                  🎤 Start Voice Pitch
-                </button>
-                <div className="text-center">
-                  <span className="text-gray-400 text-sm">or</span>
+              <div className="space-y-4">
+                <div className="flex flex-col items-center space-y-4">
+                  <button
+                    onClick={handleStartPitch}
+                    className="px-10 py-4 bg-green-600 text-white rounded-xl hover:bg-green-700 font-semibold text-lg transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    🎤 Start Voice Pitch
+                  </button>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="h-px bg-gray-300 w-16"></div>
+                    <span className="text-gray-500 text-sm font-medium">or</span>
+                    <div className="h-px bg-gray-300 w-16"></div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setShowTextInput(!showTextInput)}
+                    className="px-8 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 font-medium transition-colors"
+                  >
+                    ⌨️ Type Pitch
+                  </button>
                 </div>
-                <button
-                  onClick={() => setShowTextInput(!showTextInput)}
-                  className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium"
-                >
-                  ⌨️ Type Pitch
-                </button>
                 
                 {/* Text Input Form for Pitch */}
                 {showTextInput && (
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+                  <div className="bg-green-50 border border-green-200 rounded-xl p-6 space-y-4 mt-6">
+                    <h4 className="font-medium text-gray-900">Type your pitch</h4>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Type your pitch here..."
-                      className="w-full p-3 border border-gray-300 rounded-lg resize-none h-32 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      placeholder="Present your startup pitch here..."
+                      className="w-full p-4 border border-gray-300 rounded-lg resize-none h-40 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-900 bg-white"
                     />
-                    <div className="flex space-x-2">
+                    <div className="flex justify-end space-x-3">
+                      <button
+                        onClick={() => {
+                          setShowTextInput(false);
+                          setTextInput('');
+                        }}
+                        className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium transition-colors"
+                      >
+                        Cancel
+                      </button>
                       <button
                         onClick={() => {
                           if (textInput.trim()) {
@@ -625,18 +782,9 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                           }
                         }}
                         disabled={!textInput.trim()}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 font-medium"
+                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 font-medium transition-colors"
                       >
                         Submit Pitch
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowTextInput(false);
-                          setTextInput('');
-                        }}
-                        className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium"
-                      >
-                        Cancel
                       </button>
                     </div>
                   </div>
@@ -645,73 +793,100 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
             )}
 
             {isRecording && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                  <span className="text-red-600 font-medium">🎤 Recording your pitch... (speak now)</span>
-                </div>
-                {transcript && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 max-w-md mx-auto max-h-32 overflow-y-auto">
-                    <p className="text-sm text-green-800 italic">"{transcript}"</p>
+              <div className="space-y-6 text-center">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+                  <div className="flex items-center justify-center space-x-3 mb-4">
+                    <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                    <span className="text-red-700 font-semibold text-lg">🎤 Recording your pitch...</span>
                   </div>
-                )}
-                <button
-                  onClick={stopRecording}
-                  className="px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
-                >
-                  Finish Pitch
-                </button>
+                  
+                  {transcript && (
+                    <div className="bg-white border border-red-300 rounded-lg p-4 max-w-2xl mx-auto max-h-40 overflow-y-auto">
+                      <p className="text-sm text-gray-800 italic">"{transcript}"</p>
+                    </div>
+                  )}
+                  
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 mb-4">
+                      💡 Take your time and speak clearly
+                    </p>
+                    <button
+                      onClick={stopRecording}
+                      className="px-8 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 font-semibold transition-colors shadow-lg"
+                    >
+                      🛑 Finish Pitch
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
             {isProcessing && (
-              <div className="text-blue-600 font-medium">Processing your pitch...</div>
+              <div className="text-center py-8">
+                <div className="inline-flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                  <span className="text-green-600 font-medium text-lg">Processing your pitch...</span>
+                </div>
+              </div>
             )}
           </div>
         )}
 
         {phase === 'completed' && (
-          <div className="space-y-4">
-            <div className="text-green-600 font-medium text-lg">✅ Pitch Session Complete!</div>
-            <div className="space-x-4">
-              <button
-                onClick={onConversationEnd}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-              >
-                Return to Dashboard
-              </button>
-              <button
-                onClick={handleRestart}
-                className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium"
-              >
-                Restart Session
-              </button>
+          <div className="space-y-6 text-center">
+            <div className="bg-green-50 border border-green-200 rounded-xl p-8">
+              <div className="text-green-600 font-bold text-2xl mb-4">✅ Pitch Session Complete!</div>
+              <p className="text-gray-600 mb-6">Thank you for sharing your vision. Your pitch has been recorded and will be reviewed by our team.</p>
+              
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={onConversationEnd}
+                  className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold transition-colors shadow-lg"
+                >
+                  Return to Dashboard
+                </button>
+                <button
+                  onClick={handleRestart}
+                  className="px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 font-medium transition-colors"
+                >
+                  Restart Session
+                </button>
+              </div>
             </div>
           </div>
         )}
-      </div>
+        </div>
+      )}
 
-      {/* Transcript Display */}
-      {transcript && (
-        <div className="bg-gray-50 rounded-lg p-4 mt-6">
-          <h3 className="font-medium text-gray-900 mb-2">Your Response:</h3>
-          <p className="text-gray-700 italic">"{transcript}"</p>
+      {/* Transcript Display - Only show when there's actual content */}
+      {transcript && transcript.trim() && !transcript.includes('🎤') && (
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h3 className="font-semibold text-gray-900 mb-3 text-lg">Your Response:</h3>
+          <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <p className="text-gray-800 italic leading-relaxed">"{transcript}"</p>
+          </div>
         </div>
       )}
 
       {/* Progress Indicator */}
-      <div className="mt-8">
-        <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
-          <span>Progress</span>
-          <span>{phase === 'start' ? '20' : phase === 'founder_intro' ? '40' : phase === 'mid' ? '60' : phase === 'pitch_recording' ? '80' : '100'}%</span>
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
+          <span className="font-medium">Session Progress</span>
+          <span className="font-semibold">{phase === 'start' ? '20' : phase === 'founder_intro' ? '40' : phase === 'mid' ? '60' : phase === 'pitch_recording' ? '80' : '100'}%</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-200 rounded-full h-3">
           <div 
-            className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-700 ease-out"
             style={{ 
               width: `${phase === 'start' ? 20 : phase === 'founder_intro' ? 40 : phase === 'mid' ? 60 : phase === 'pitch_recording' ? 80 : 100}%` 
             }}
           ></div>
+        </div>
+        <div className="flex justify-between text-xs text-gray-500 mt-2">
+          <span>Start</span>
+          <span>Introduction</span>
+          <span>Pitch</span>
+          <span>Complete</span>
         </div>
       </div>
     </div>

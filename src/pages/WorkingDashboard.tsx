@@ -74,7 +74,7 @@ const WorkingDashboard: React.FC = () => {
 
       // Load sessions (don't throw on error)
       const { data: sessions, error: sessionsError } = await supabase
-        .from('sessions')
+        .from('conversation_sessions')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -100,12 +100,12 @@ const WorkingDashboard: React.FC = () => {
 
   const handlePitchToRohan = () => {
     // Navigate to the setup session page
-    navigate('/setup');
+    navigate('/setup-session');
   };
 
   const handleStartFirstSession = () => {
     // Same as Pitch to Rohan
-    navigate('/setup');
+    navigate('/setup-session');
   };
 
   const handleEditCompany = () => {

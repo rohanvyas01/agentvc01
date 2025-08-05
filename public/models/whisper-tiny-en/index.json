@@ -1,0 +1,16 @@
+{
+  "model_name": "whisper-tiny.en",
+  "files": [
+    "config.json",
+    "generation_config.json",
+    "merges.txt",
+    "normalizer.json",
+    "preprocessor_config.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "vocab.json",
+    "onnx/decoder_model_merged.onnx",
+    "onnx/encoder_model.onnx"
+  ],
+  "downloaded_at": "2025-01-08"
+}
