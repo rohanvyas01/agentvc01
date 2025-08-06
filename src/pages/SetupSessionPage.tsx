@@ -108,7 +108,6 @@ const SetupSessionPage: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (pitchDecksError) {
-        console.error('Error fetching pitch decks:', pitchDecksError);
         throw pitchDecksError;
       }
 
@@ -121,9 +120,7 @@ const SetupSessionPage: React.FC = () => {
       }));
 
       setDecks(mappedDecks);
-      console.log('Loaded pitch decks:', mappedDecks);
     } catch (err) {
-      console.error('Failed to load pitch decks:', err);
       setError('Failed to load pitch decks. Please try refreshing the page.');
     } finally {
       setLoading(false);

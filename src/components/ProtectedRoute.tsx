@@ -39,8 +39,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           setNeedsOnboarding(false);
         }
       } catch (error) {
-        console.error('Error checking onboarding status:', error);
-        // On error, allow access but log the issue
+        // On error, allow access but don't log the issue
         setNeedsOnboarding(false);
       } finally {
         setCheckingOnboarding(false);

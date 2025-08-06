@@ -113,7 +113,6 @@ const OnboardingPage: React.FC = () => {
       setCurrentStep(2);
 
     } catch (err: any) {
-      console.error("Profile submission error:", err);
       setError(err.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
@@ -175,12 +174,10 @@ const OnboardingPage: React.FC = () => {
         });
 
         if (invokeError) {
-          console.warn('PDF processing failed to start:', invokeError.message);
           await supabase.from('pitch_decks').update({ processing_status: 'failed' }).eq('id', newPitchRecord.id);
           // Don't throw error - allow onboarding to complete even if PDF processing fails
         }
       } catch (pdfError) {
-        console.warn('PDF processing error:', pdfError);
         await supabase.from('pitch_decks').update({ processing_status: 'failed' }).eq('id', newPitchRecord.id);
         // Don't throw error - allow onboarding to complete even if PDF processing fails
       }

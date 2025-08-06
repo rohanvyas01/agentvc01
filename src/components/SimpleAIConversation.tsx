@@ -128,7 +128,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
       let interimTranscript = '';
 
       recognition.onstart = () => {
-        console.log('🎤 Web Speech Recognition started');
         setTranscript('🎤 Listening... (speak clearly)');
       };
 
@@ -164,7 +163,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
       };
 
       recognition.onerror = (event) => {
-        console.error('Web Speech Recognition error:', event.error);
         if (event.error === 'network') {
           reject(new Error('Network error - speech recognition requires internet'));
         } else if (event.error === 'not-allowed') {
@@ -175,7 +173,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
       };
 
       recognition.onend = () => {
-        console.log('🛑 Web Speech Recognition ended');
         if (finalTranscript.trim().length > 0) {
           resolve(finalTranscript.trim());
         } else {
@@ -205,11 +202,8 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
   const recordAudioOnly = async (audioBlob: Blob): Promise<string> => {
     // For now, just save the audio and ask user to type
     // In the future, this could integrate with local Whisper or other solutions
-    console.log('📁 Audio recorded, size:', audioBlob.size, 'bytes');
-
     // You could save this to local storage or send to a different service
     const audioUrl = URL.createObjectURL(audioBlob);
-    console.log('🎵 Audio URL created:', audioUrl);
 
     // For now, throw error to fallback to text input
     throw new Error('Audio recorded but transcription not available. Please use text input.');
@@ -217,17 +211,14 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
 
   const startRecording = async () => {
     try {
-      console.log('🎤 Starting speech recognition...');
       setTranscript('🎤 Initializing...');
       setIsRecording(true);
 
       // Try Web Speech API first (no API key needed)
       try {
-        console.log('🔄 Trying Web Speech API...');
         const transcribedText = await transcribeWithWebSpeech();
 
         if (transcribedText && transcribedText.length > 0) {
-          console.log('✅ Web Speech transcription successful:', transcribedText);
           setTranscript(transcribedText);
           setIsProcessing(true);
           saveTranscriptAndAdvance(transcribedText);
@@ -236,10 +227,7 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
         }
 
       } catch (webSpeechError) {
-        console.warn('⚠️ Web Speech API failed:', webSpeechError.message);
-
         // If Web Speech fails, try recording audio for manual transcription
-        console.log('🔄 Falling back to audio recording...');
         setTranscript('🔄 Web Speech failed, trying audio recording...');
 
         try {
@@ -253,7 +241,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
             }
           });
 
-          console.log('✅ Microphone access granted for recording');
           setTranscript('🎤 Recording audio... (speak clearly)');
 
           // Set up MediaRecorder
@@ -278,7 +265,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
           };
 
           mediaRecorder.onstop = async () => {
-            console.log('🛑 Audio recording stopped');
             setTranscript('🔄 Processing recorded audio...');
 
             try {
@@ -300,7 +286,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
               }
 
             } catch (audioError) {
-              console.warn('⚠️ Audio processing failed:', audioError.message);
               setTranscript('Audio recorded but transcription not available. Please use text input below.');
               setShowTextInput(true);
             }
@@ -311,7 +296,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
           };
 
           mediaRecorder.onerror = (event) => {
-            console.error('❌ MediaRecorder error:', event.error);
             setTranscript('Recording failed. Please use text input.');
             setShowTextInput(true);
             setIsRecording(false);
@@ -338,7 +322,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
           };
 
         } catch (recordingError) {
-          console.error('❌ Audio recording also failed:', recordingError);
           setTranscript('Both speech recognition and audio recording failed. Please use text input.');
           setShowTextInput(true);
           setIsRecording(false);
@@ -346,7 +329,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
       }
 
     } catch (error) {
-      console.error('❌ Error starting recording:', error);
       setIsRecording(false);
 
       if (error.name === 'NotAllowedError') {
@@ -366,7 +348,7 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
       try {
         speechRecognitionRef.current.stop();
       } catch (error) {
-        console.error('Error stopping speech recognition:', error);
+        // Error stopping speech recognition
       }
       setIsRecording(false);
     }
@@ -376,10 +358,7 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
 
   const saveTranscriptAndAdvance = async (transcribedText: string) => {
     try {
-      console.log('Transcript captured:', transcribedText);
-
-      // For now, just log the transcript since database schema is inconsistent
-      console.log('Transcript captured and saved locally:', transcribedText);
+      // For now, just save the transcript since database schema is inconsistent
 
       // TODO: Fix database schema mismatch between sessions and conversation_transcripts tables
       // The sessions are created in 'sessions' table but conversation_transcripts references 'conversation_sessions'
@@ -399,11 +378,9 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
             })
             .eq('id', sessionId);
         } catch (err) {
-          console.error('Error updating session for founder intro:', err);
+          // Error updating session for founder intro
         }
 
-        console.log('🎬 Transitioning to mid phase, playing:', videoSegments.mid);
-        console.log('🎬 Current video URL being set:', videoSegments.mid);
         setPhase('mid');
         setCurrentVideoUrl(videoSegments.mid);
         setVideoEnded(false);
@@ -425,7 +402,7 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
             })
             .eq('id', sessionId);
         } catch (err) {
-          console.error('Error updating session for pitch:', err);
+          // Error updating session for pitch
         }
 
         setPhase('end');
@@ -438,7 +415,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
       setIsProcessing(false);
 
     } catch (error) {
-      console.error('Error in saveTranscriptAndAdvance:', error);
       setIsProcessing(false);
     }
   };
@@ -477,25 +453,9 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
               autoPlay
               onEnded={handleVideoEnded}
               onLoadedData={() => {
-                console.log('🎥 Video loaded:', currentVideoUrl);
-                console.log('🎥 Video element src:', videoRef.current?.src);
-                console.log('🎥 Video element currentSrc:', videoRef.current?.currentSrc);
-                console.log('🎥 Video duration:', videoRef.current?.duration);
-                console.log('🎥 Video readyState:', videoRef.current?.readyState);
-
-                // Force a network request to verify what's actually being served
-                fetch(currentVideoUrl)
-                  .then(response => {
-                    console.log('🌐 Fetch response status:', response.status);
-                    console.log('🌐 Fetch response headers:', response.headers.get('content-length'));
-                    console.log('🌐 Fetch response URL:', response.url);
-                  })
-                  .catch(err => console.error('🌐 Fetch error:', err));
-
                 handleVideoLoaded();
               }}
               onError={(e) => {
-                console.error('🎥 Video error:', currentVideoUrl, e);
                 handleVideoError();
               }}
               className="w-full h-[500px] object-cover"
@@ -604,14 +564,11 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
 
                               if (SpeechRecognition) {
                                 setTestTranscript('✅ Web Speech API available! Voice recording ready.');
-                                console.log('🧪 [TEST] Web Speech API supported');
                               } else {
                                 setTestTranscript('⚠️ Web Speech API not supported. Will use audio recording fallback.');
-                                console.log('🧪 [TEST] Web Speech API not supported');
                               }
 
                             } catch (speechError) {
-                              console.error('🧪 [TEST] Speech API test error:', speechError);
                               setTestTranscript('⚠️ Speech recognition not available. Text input will be used.');
                             }
 
@@ -623,7 +580,6 @@ export const SimpleAIConversation: React.FC<VideoPersonaConversationProps> = ({
                             }, 3000);
 
                           } catch (error) {
-                            console.error('Microphone test error:', error);
                             setIsTesting(false);
 
                             if (error.name === 'NotAllowedError') {

@@ -68,7 +68,6 @@ const WorkingDashboard: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (pitchDecksError) {
-        console.log('Pitch decks error:', pitchDecksError);
         // Pitch decks error - will use fallback
       }
 
@@ -91,7 +90,6 @@ const WorkingDashboard: React.FC = () => {
       });
 
     } catch (err: any) {
-      console.error('Dashboard error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
