@@ -246,7 +246,10 @@ export const ConversationSessionHistory: React.FC = () => {
                   </span>
 
                   {session.status === 'completed' && (
-                    <button className="text-indigo-400 hover:text-indigo-300 text-sm font-medium">
+                    <button 
+                      onClick={() => window.open('/AgentVC Analysis.pdf', '_blank')}
+                      className="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors"
+                    >
                       View Report
                     </button>
                   )}
